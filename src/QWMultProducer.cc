@@ -7,10 +7,10 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-class QWNtrkOfflineProducer : public edm::EDProducer {
+class QWMultProducer : public edm::EDProducer {
 public:
-        explicit QWNtrkOfflineProducer(const edm::ParameterSet&);
-        ~QWNtrkOfflineProducer();
+        explicit QWMultProducer(const edm::ParameterSet&);
+        ~QWMultProducer();
 
 private:
         virtual void produce(edm::Event&, const edm::EventSetup&) override;
@@ -18,18 +18,18 @@ private:
 	edm::InputTag	trackSrc_;
 };
 
-QWNtrkOfflineProducer::QWNtrkOfflineProducer(const edm::ParameterSet& pset) :
+QWMultProducer::QWMultProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc"))
 {
 	        produces<int>();
 }
 
-QWNtrkOfflineProducer::~QWNtrkOfflineProducer() {
+QWMultProducer::~QWMultProducer() {
 	return;
 }
 
-void QWNtrkOfflineProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+void QWMultProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 	using namespace reco;
@@ -58,7 +58,7 @@ void QWNtrkOfflineProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
 		if ( !itTrack->quality(reco::TrackBase::highPurity) ) continue;
 		if ( itTrack->charge() == 0 ) continue;
-		if ( itTrack->pt() < 0.4 ) continue;
+		if ( itTrack->pt() < 0.3 or itTrack->pt() > 3.0 ) continue;
 
 		double d0 = -1.* itTrack->dxy(v1);
 		double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
@@ -75,4 +75,4 @@ void QWNtrkOfflineProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 	iEvent.put(pNoff);
 }
 
-DEFINE_FWK_MODULE(QWNtrkOfflineProducer);
+DEFINE_FWK_MODULE(QWMultProducer);
