@@ -7,6 +7,11 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
+
 class QWMultProducer : public edm::EDProducer {
 public:
         explicit QWMultProducer(const edm::ParameterSet&);
@@ -33,6 +38,7 @@ void QWMultProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 	using namespace reco;
+
 	int Noff = 0;
 
 	Handle<VertexCollection> vertexCollection;
