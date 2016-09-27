@@ -176,7 +176,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		double eff = 0.;
 
 		if ( bEff_ ) {
-			eff = hEff_cbin[]->GetBinContent( hEff_cbin[t->Noff]->FindBin(t->Eta[t->Mult], t->Pt[t->Mult] ) );
+			eff = hEff_cbin[Cent]->GetBinContent( hEff_cbin[Cent]->FindBin( itTrack->eta(), itTrack->pt() ) );
 		} else {
 			eff = 1.;
 		}
