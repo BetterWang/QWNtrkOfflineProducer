@@ -32,6 +32,7 @@ private:
 	edm::InputTag	vertexSrc_;
 	edm::InputTag	trackSrc_;
 	edm::InputTag	fweight_;
+	edm::InputTag	centralitySrc_;
 
 	enum    TrackCut {trackUndefine = 0, ppReco = 1, HIReco, Pixel};
 	TrackCut sTrackQuality;
@@ -52,7 +53,8 @@ private:
 QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc")),
-	fweight_(pset.getUntrackedParameter<edm::InputTag>("fweight"))
+	fweight_(pset.getUntrackedParameter<edm::InputTag>("fweight")),
+	centralitySrc_(pset.getUntrackedParameter<edm::InputTag>("centralitySrc"))
 {
 	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.);
 	d0d0error_ = pset.getUntrackedParameter<double>("d0d0error", 3.);
@@ -65,6 +67,15 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 
 	bEff_ = true;
 
+	if ( trackSrc_.label() == "hiGeneralTracks" ) {
+		sTrackQuality = HIReco;
+	} else if ( trackSrc_.label() == "generalTracks" ) {
+		sTrackQuality = ppReco;
+	} else if ( trackSrc_.label() == "hiGeneralAndPixelTracks" ) {
+		sTrackQuality = Pixel;
+	} else {
+		sTrackQuality = trackUndefine;
+	}
 	string streff = fweight_.label();
 	if ( streff == string("NA") ) {
 		cout << "!!! eff NA" << endl;
@@ -151,6 +162,10 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	Handle<TrackCollection> tracks;
 	iEvent.getByLabel(trackSrc_,tracks);
+
+	edm::Handle<int> ch;
+	iEvent.getByLabel(centralitySrc_,ch);
+	int Cent = *(ch.product());
 	for(TrackCollection::const_iterator itTrack = tracks->begin();
 			itTrack != tracks->end();
 			++itTrack) {
@@ -159,8 +174,9 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		else if ( sTrackQuality == Pixel  and not TrackQuality_Pixel (itTrack, recoVertices) ) continue;
 
 		double eff = 0.;
+
 		if ( bEff_ ) {
-			eff = hEff_cbin[t->Noff]->GetBinContent( hEff_cbin[t->Noff]->FindBin(t->Eta[t->Mult], t->Pt[t->Mult] ) );
+			eff = hEff_cbin[]->GetBinContent( hEff_cbin[t->Noff]->FindBin(t->Eta[t->Mult], t->Pt[t->Mult] ) );
 		} else {
 			eff = 1.;
 		}

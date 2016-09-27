@@ -14,11 +14,11 @@
 
 class QWMultProducer : public edm::EDProducer {
 public:
-        explicit QWMultProducer(const edm::ParameterSet&);
-        ~QWMultProducer();
+	explicit QWMultProducer(const edm::ParameterSet&);
+	~QWMultProducer();
 
 private:
-        virtual void produce(edm::Event&, const edm::EventSetup&) override;
+	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 	edm::InputTag	vertexSrc_;
 	edm::InputTag	trackSrc_;
 };
@@ -27,7 +27,7 @@ QWMultProducer::QWMultProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc"))
 {
-	        produces<int>();
+	produces<int>();
 }
 
 QWMultProducer::~QWMultProducer() {
@@ -45,10 +45,10 @@ void QWMultProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
 	VertexCollection recoVertices = *vertexCollection;
 
-        sort(recoVertices.begin(), recoVertices.end(), [](const reco::Vertex &a, const reco::Vertex &b){
-                        if ( a.tracksSize() == b.tracksSize() ) return a.chi2() < b.chi2();
-                        return a.tracksSize() > b.tracksSize();
-                        });
+	sort(recoVertices.begin(), recoVertices.end(), [](const reco::Vertex &a, const reco::Vertex &b){
+			if ( a.tracksSize() == b.tracksSize() ) return a.chi2() < b.chi2();
+			return a.tracksSize() > b.tracksSize();
+			});
 
 	int primaryvtx = 0;
 	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
@@ -77,7 +77,7 @@ void QWMultProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		Noff++;
 	}
-        std::auto_ptr<int> pNoff(new int(Noff));
+	std::auto_ptr<int> pNoff(new int(Noff));
 	iEvent.put(pNoff);
 }
 
