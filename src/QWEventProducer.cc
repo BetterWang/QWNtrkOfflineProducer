@@ -66,16 +66,16 @@ private:
 QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc")),
-	fweight_(pset.getUntrackedParameter<edm::InputTag>("fweight")),
+	fweight_(pset.getUntrackedParameter<edm::InputTag>("fweight"))
 {
-	dzdzerror_ = iConfig.getUntrackedParameter<double>("dzdzerror", 3.);
-	d0d0error_ = iConfig.getUntrackedParameter<double>("d0d0error", 3.);
-	pterrorpt_ = iConfig.getUntrackedParameter<double>("pterrorpt", 0.1);
+	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.);
+	d0d0error_ = pset.getUntrackedParameter<double>("d0d0error", 3.);
+	pterrorpt_ = pset.getUntrackedParameter<double>("pterrorpt", 0.1);
 
-	pTmin_ = iConfig.getUntrackedParameter<double>("ptMin", 0.3);
-	pTmax_ = iConfig.getUntrackedParameter<double>("ptMax", 3.0);
-	Etamin_ = iConfig.getUntrackedParameter<double>("Etamin", -2.4);
-	Etamax_ = iConfig.getUntrackedParameter<double>("Etamax", 2.4);
+	pTmin_ = pset.getUntrackedParameter<double>("ptMin", 0.3);
+	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 3.0);
+	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
+	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
 
 	bEff_ = true;
 
