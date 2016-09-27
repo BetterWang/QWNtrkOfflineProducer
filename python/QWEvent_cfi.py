@@ -1,8 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
 QWEvent = cms.EDProducer("QWEventProducer",
-		vertexSrc = cms.InputTag("offlinePrimaryVertices"),
-		trackSrc  = cms.InputTag("generalTracks"),
-		centralitySrc = cms.InputTag("centralityBin"),
-		fweight = cms.InputTag("NA"),
+		vertexSrc = cms.untracked.InputTag("offlinePrimaryVertices"),
+		trackSrc  = cms.untracked.InputTag("generalTracks"),
+		centralitySrc = cms.untracked.InputTag("centralityBin"),
+		fweight = cms.untracked.InputTag("NA"),
 		)

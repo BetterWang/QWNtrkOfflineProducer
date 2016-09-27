@@ -27,6 +27,8 @@ QWMultProducer::QWMultProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc"))
 {
+	consumes<reco::TrackCollection>(trackSrc_);
+	consumes<reco::VertexCollection>(vertexSrc_);
 	produces<int>();
 }
 

@@ -56,6 +56,9 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	fweight_(pset.getUntrackedParameter<edm::InputTag>("fweight")),
 	centralitySrc_(pset.getUntrackedParameter<edm::InputTag>("centralitySrc"))
 {
+	consumes<int>(centralitySrc_);
+	consumes<reco::TrackCollection>(trackSrc_);
+	consumes<reco::VertexCollection>(vertexSrc_);
 	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.);
 	d0d0error_ = pset.getUntrackedParameter<double>("d0d0error", 3.);
 	pterrorpt_ = pset.getUntrackedParameter<double>("pterrorpt", 0.1);
@@ -134,6 +137,11 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 		}
 		cout << "!!! eff histo done" << endl;
 	}
+	produces<std::vector<double> >("phi");
+	produces<std::vector<double> >("eta");
+	produces<std::vector<double> >("pt");
+	produces<std::vector<double> >("weight");
+	produces<std::vector<short> >("charge");
 }
 
 QWEventProducer::~QWEventProducer()
