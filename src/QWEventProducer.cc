@@ -12,27 +12,11 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
+#include "TFile.h"
+#include "TH2.h"
+#include "TMath.h"
 
-
-const int NMAX_TRK = 10000;
-typedef struct QWEvent_ {
-	int     Cent;
-	int     Mult;
-	double  vz;
-	int     Noff;
-	double  Pt[NMAX_TRK];
-	double  Eta[NMAX_TRK];
-	double  Phi[NMAX_TRK];
-	int     Charge[NMAX_TRK];
-	double  rEff[NMAX_TRK];
-	double  rFak[NMAX_TRK];
-	double  weight[NMAX_TRK];
-	int     RFP[NMAX_TRK];
-	int     RunId;
-	int     EventId;
-} QWEvent;
-
-
+using namespace std;
 class QWEventProducer : public edm::EDProducer {
 public:
 	explicit QWEventProducer(const edm::ParameterSet&);
@@ -61,6 +45,8 @@ private:
 	double	Etamax_;
 
 	bool	bEff_;
+
+	TH2D*	hEff_cbin[200];
 };
 
 QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
@@ -158,12 +144,13 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
 	VertexCollection recoVertices = *vertexCollection;
-	if ( recoVertices.size() > nvtx_ ) return;
 	sort(recoVertices.begin(), recoVertices.end(), [](const reco::Vertex &a, const reco::Vertex &b){
 			if ( a.tracksSize() == b.tracksSize() ) return a.chi2() < b.chi2();
 			return a.tracksSize() > b.tracksSize();
 			});
 
+	Handle<TrackCollection> tracks;
+	iEvent.getByLabel(trackSrc_,tracks);
 	for(TrackCollection::const_iterator itTrack = tracks->begin();
 			itTrack != tracks->end();
 			++itTrack) {
@@ -191,11 +178,11 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		pweight->push_back(weight);
 		pcharge->push_back(itTrack->charge());
 	}
-	iEvent->put(pphi, std::string("phi"));
-	iEvent->put(peta, std::string("eta"));
-	iEvent->put(ppT, std::string("pt"));
-	iEvent->put(pweight, std::string("weight"));
-	iEvent->put(pcharge, std::string("charge"));
+	iEvent.put(pphi, std::string("phi"));
+	iEvent.put(peta, std::string("eta"));
+	iEvent.put(ppT, std::string("pt"));
+	iEvent.put(pweight, std::string("weight"));
+	iEvent.put(pcharge, std::string("charge"));
 }
 
 
