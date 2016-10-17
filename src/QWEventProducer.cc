@@ -300,7 +300,7 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 			return false;
 		}
 		if (
-			itTrack->pt > 2.4 and
+			itTrack->pt() > 2.4 and
 			itTrack->originalAlgo() != 4 and
 			itTrack->originalAlgo() != 5 and
 			itTrack->originalAlgo() != 6 and
