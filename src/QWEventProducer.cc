@@ -47,7 +47,7 @@ private:
 
 	bool	bEff_;
 
-	TH2D*	hEff_cbin[200];
+	TH2D*	hEff_cbin[2000];
 };
 
 QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
@@ -110,7 +110,23 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			}
 		} else if ( streff == string("Hydjet_eff_mult_v1.root") ) {
 			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_1");
-			for ( int c = 0; c < 200; c++ ) {
+			for ( int c = 0; c < 120; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_2");
+			for ( int c = 120; c < 260; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_3");
+			for ( int c = 260; c < 400; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_4");
+			for ( int c = 400; c < 800; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_5");
+			for ( int c = 800; c < 1000; c++ ) {
 				hEff_cbin[c] = h;
 			}
 		} else if ( streff == std::string("EffCorrectionsPixel_TT_pt_0_10_v2.root") ) {
