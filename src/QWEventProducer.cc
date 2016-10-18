@@ -141,7 +141,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("eta");
 	produces<std::vector<double> >("pt");
 	produces<std::vector<double> >("weight");
-	produces<std::vector<short> >("charge");
+	produces<std::vector<double> >("charge");
 }
 
 QWEventProducer::~QWEventProducer()
@@ -158,7 +158,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > peta( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pweight( new std::vector<double> );
-	std::auto_ptr<std::vector<short> > pcharge( new std::vector<short> );
+	std::auto_ptr<std::vector<double> > pcharge( new std::vector<double> );
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
