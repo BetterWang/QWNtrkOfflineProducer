@@ -126,7 +126,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 				hEff_cbin[c] = h;
 			}
 			h = (TH2D*) fEffFak->Get("rTotalEff3D_5");
-			for ( int c = 800; c < 1000; c++ ) {
+			for ( int c = 800; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
 		} else if ( streff == std::string("EffCorrectionsPixel_TT_pt_0_10_v2.root") ) {
