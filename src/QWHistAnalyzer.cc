@@ -1,7 +1,15 @@
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "TH1D.h"
 
 class QWHistAnalyzer : public edm::EDAnalyzer {
 public:
-	explicit QWPCA(const edm::ParameterSet&);
+	explicit QWHistAnalyzer(const edm::ParameterSet&);
 	~QWHistAnalyzer() {};
 private:
 	virtual void beginJob() {};
@@ -29,7 +37,6 @@ void
 QWHistAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	using namespace reco;
 	Handle<int> t;
 	iEvent.getByLabel(src_, t);
 	int c = *(t.product());
