@@ -109,23 +109,23 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 				hEff_cbin[c] = h;
 			}
 		} else if ( streff == string("Hydjet_eff_mult_v1.root") ) {
-			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_1");
+			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_0");
 			for ( int c = 0; c < 120; c++ ) {
 				hEff_cbin[c] = h;
 			}
-			h = (TH2D*) fEffFak->Get("rTotalEff3D_2");
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_1");
 			for ( int c = 120; c < 260; c++ ) {
 				hEff_cbin[c] = h;
 			}
-			h = (TH2D*) fEffFak->Get("rTotalEff3D_3");
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_2");
 			for ( int c = 260; c < 400; c++ ) {
 				hEff_cbin[c] = h;
 			}
-			h = (TH2D*) fEffFak->Get("rTotalEff3D_4");
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_3");
 			for ( int c = 400; c < 800; c++ ) {
 				hEff_cbin[c] = h;
 			}
-			h = (TH2D*) fEffFak->Get("rTotalEff3D_5");
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_4");
 			for ( int c = 800; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
