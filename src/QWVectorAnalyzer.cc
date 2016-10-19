@@ -6,6 +6,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1D.h"
+#include <iostream>
 
 class QWVectorAnalyzer : public edm::EDAnalyzer {
 public:
@@ -17,14 +18,23 @@ private:
 	virtual void endJob() {};
 
 	edm::InputTag   src_;
+	edm::InputTag   srcW_;
 	TH1D * h;
 	TH1D * hc;
+	bool	bWeight;
 };
 
 QWVectorAnalyzer::QWVectorAnalyzer(const edm::ParameterSet& pset) :
-	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
+	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
+	srcW_(pset.getUntrackedParameter<edm::InputTag>("srcW", std::string("NA")))
 {
 	consumes<std::vector<double> >(src_);
+	bWeight = false;
+
+	if ( srcW_.label() != std::string("NA") ) {
+		consumes<std::vector<double> >(srcW_);
+		bWeight = true;
+	}
 	int hNbins = pset.getUntrackedParameter<int>("hNbins");
 	double hstart = pset.getUntrackedParameter<double>("hstart");
 	double hend = pset.getUntrackedParameter<double>("hend");
@@ -45,11 +55,21 @@ QWVectorAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 {
 	using namespace edm;
 	Handle<std::vector<double> > t;
+	Handle<std::vector<double> > w;
+
 	iEvent.getByLabel(src_, t);
+	if ( bWeight ) {
+		iEvent.getByLabel(srcW_, w);
+	}
+
 	int sz = t->size();
 	h->Fill(sz);
 	for ( int i = 0; i < sz; i++ ) {
-		hc->Fill((*t)[i]);
+		if ( bWeight ) {
+			hc->Fill( (*t)[i], (*w)[i] );
+		} else {
+			hc->Fill((*t)[i]);
+		}
 	}
 	return;
 }

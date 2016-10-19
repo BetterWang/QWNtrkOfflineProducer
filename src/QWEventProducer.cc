@@ -158,6 +158,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("pt");
 	produces<std::vector<double> >("weight");
 	produces<std::vector<double> >("charge");
+	produces<std::vector<double> >("vz");
 }
 
 QWEventProducer::~QWEventProducer()
@@ -175,6 +176,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pweight( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pcharge( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > pvz( new std::vector<double> );
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
@@ -183,6 +185,9 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			if ( a.tracksSize() == b.tracksSize() ) return a.chi2() < b.chi2();
 			return a.tracksSize() > b.tracksSize();
 			});
+	for ( auto it = recoVertices.begin(); it != recoVertices.end(); ++it ) {
+		pvz->push_back(it->z());
+	}
 
 	Handle<TrackCollection> tracks;
 	iEvent.getByLabel(trackSrc_,tracks);
@@ -196,6 +201,8 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		if ( sTrackQuality == HIReco and not TrackQuality_HIReco(itTrack, recoVertices) ) continue;
 		else if ( sTrackQuality == ppReco and not TrackQuality_ppReco(itTrack, recoVertices) ) continue;
 		else if ( sTrackQuality == Pixel  and not TrackQuality_Pixel (itTrack, recoVertices) ) continue;
+
+		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 
 		double eff = 0.;
 
@@ -223,6 +230,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(ppT, std::string("pt"));
 	iEvent.put(pweight, std::string("weight"));
 	iEvent.put(pcharge, std::string("charge"));
+	iEvent.put(pvz, std::string("vz"));
 }
 
 
@@ -231,7 +239,6 @@ bool
 QWEventProducer::TrackQuality_ppReco(const reco::TrackCollection::const_iterator& itTrack, const reco::VertexCollection& recoVertices)
 {
         if ( itTrack->charge() == 0 ) return false;
-	if ( itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) return false;
         if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
         if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) return false;
 	int primaryvtx = 0;
@@ -257,9 +264,7 @@ bool
 QWEventProducer::TrackQuality_HIReco(const reco::TrackCollection::const_iterator& itTrack, const reco::VertexCollection& recoVertices)
 {
 	if ( itTrack->charge() == 0 ) return false;
-	if ( itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) return false;
 	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
-	if ( fabs(itTrack->eta()) > 2.4 ) return false;
 	if ( itTrack->numberOfValidHits() < 11 ) return false;
 	if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > 0.15 ) {
 		return false;
@@ -300,9 +305,7 @@ bool
 QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator& itTrack, const reco::VertexCollection& recoVertices)
 {
 	if ( itTrack->charge() == 0 ) return false;
-	if ( itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) return false;
 	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
-	if ( fabs(itTrack->eta()) > 2.4 ) return false;
 	bool bPix = false;
 	int nHits = itTrack->numberOfValidHits();
 //	std::cout << __LINE__ << "\tnHits = " << nHits << std::endl;
