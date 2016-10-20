@@ -28,11 +28,11 @@ QWVectorAnalyzer::QWVectorAnalyzer(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
 	srcW_(pset.getUntrackedParameter<edm::InputTag>("srcW", std::string("NA")))
 {
-	consumes<std::vector<double> >(src_);
+//	consumes<std::vector<double> >(src_);
 	bWeight = false;
 
 	if ( srcW_.label() != std::string("NA") ) {
-		consumes<std::vector<double> >(srcW_);
+//		consumes<std::vector<double> >(srcW_);
 		bWeight = true;
 	}
 	int hNbins = pset.getUntrackedParameter<int>("hNbins");

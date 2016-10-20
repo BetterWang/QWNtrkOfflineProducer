@@ -36,7 +36,7 @@ private:
 QWGenEventProducer::QWGenEventProducer(const edm::ParameterSet& pset) :
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc"))
 {
-	consumes<reco::GenParticleCollection>(trackSrc_);
+//	consumes<reco::GenParticleCollection>(trackSrc_);
 
 	pTmin_ = pset.getUntrackedParameter<double>("ptMin", 0.3);
 	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 3.0);

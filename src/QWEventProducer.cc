@@ -46,6 +46,7 @@ private:
 	double	Etamax_;
 
 	bool	bEff_;
+	bool	bFlip_;
 
 	TH2D*	hEff_cbin[2000];
 };
@@ -56,9 +57,9 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	fweight_(pset.getUntrackedParameter<edm::InputTag>("fweight")),
 	centralitySrc_(pset.getUntrackedParameter<edm::InputTag>("centralitySrc"))
 {
-	consumes<int>(centralitySrc_);
-	consumes<reco::TrackCollection>(trackSrc_);
-	consumes<reco::VertexCollection>(vertexSrc_);
+//	consumes<int>(centralitySrc_);
+//	consumes<reco::TrackCollection>(trackSrc_);
+//	consumes<reco::VertexCollection>(vertexSrc_);
 	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.);
 	d0d0error_ = pset.getUntrackedParameter<double>("d0d0error", 3.);
 	pterrorpt_ = pset.getUntrackedParameter<double>("pterrorpt", 0.1);
@@ -67,6 +68,8 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 3.0);
 	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
 	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
+
+	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
 
 	bEff_ = true;
 
@@ -150,6 +153,11 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 100; c < 200; c++ ) {
 				hEff_cbin[c] = h;
 			}
+		} else if ( streff == std::string("TrackCorrections_HIJING_538_OFFICIAL_Mar24.root") ) {
+			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D");
+			for ( int c = 0; c < 2000; c++ ) {
+				hEff_cbin[c] = h;
+			}
 		}
 		cout << "!!! eff histo done" << endl;
 	}
@@ -220,10 +228,14 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 
 		pphi->push_back(itTrack->phi());
-		peta->push_back(itTrack->eta());
 		ppT->push_back(itTrack->pt());
 		pweight->push_back(weight);
 		pcharge->push_back(itTrack->charge());
+		if ( bFlip_ ) {
+			peta->push_back(-itTrack->eta());
+		} else {
+			peta->push_back(itTrack->eta());
+		}
 	}
 	iEvent.put(pphi, std::string("phi"));
 	iEvent.put(peta, std::string("eta"));
@@ -263,40 +275,40 @@ QWEventProducer::TrackQuality_ppReco(const reco::TrackCollection::const_iterator
 bool
 QWEventProducer::TrackQuality_HIReco(const reco::TrackCollection::const_iterator& itTrack, const reco::VertexCollection& recoVertices)
 {
-	if ( itTrack->charge() == 0 ) return false;
-	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
-	if ( itTrack->numberOfValidHits() < 11 ) return false;
-	if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > 0.15 ) {
-		return false;
-	}
-	if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) {
-		return false;
-	}
-	if (
-		itTrack->originalAlgo() != 4 and
-		itTrack->originalAlgo() != 5 and
-		itTrack->originalAlgo() != 6 and
-		itTrack->originalAlgo() != 7
-	) {
-		return false;
-	}
-
-	int primaryvtx = 0;
-	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
-	double vxError = recoVertices[primaryvtx].xError();
-	double vyError = recoVertices[primaryvtx].yError();
-	double vzError = recoVertices[primaryvtx].zError();
-	double d0 = -1.* itTrack->dxy(v1);
-	double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
-	if ( fabs( d0/derror ) > d0d0error_ ) {
-		return false;
-	}
-
-	double dz=itTrack->dz(v1);
-	double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
-	if ( fabs( dz/dzerror ) > dzdzerror_ ) {
-		return false;
-	}
+//	if ( itTrack->charge() == 0 ) return false;
+//	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
+//	if ( itTrack->numberOfValidHits() < 11 ) return false;
+//	if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > 0.15 ) {
+//		return false;
+//	}
+//	if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) {
+//		return false;
+//	}
+//	if (
+//		itTrack->originalAlgo() != 4 and
+//		itTrack->originalAlgo() != 5 and
+//		itTrack->originalAlgo() != 6 and
+//		itTrack->originalAlgo() != 7
+//	) {
+//		return false;
+//	}
+//
+//	int primaryvtx = 0;
+//	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
+//	double vxError = recoVertices[primaryvtx].xError();
+//	double vyError = recoVertices[primaryvtx].yError();
+//	double vzError = recoVertices[primaryvtx].zError();
+//	double d0 = -1.* itTrack->dxy(v1);
+//	double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
+//	if ( fabs( d0/derror ) > d0d0error_ ) {
+//		return false;
+//	}
+//
+//	double dz=itTrack->dz(v1);
+//	double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
+//	if ( fabs( dz/dzerror ) > dzdzerror_ ) {
+//		return false;
+//	}
 	return true;
 }
 
@@ -304,47 +316,47 @@ QWEventProducer::TrackQuality_HIReco(const reco::TrackCollection::const_iterator
 bool
 QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator& itTrack, const reco::VertexCollection& recoVertices)
 {
-	if ( itTrack->charge() == 0 ) return false;
-	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
-	bool bPix = false;
-	int nHits = itTrack->numberOfValidHits();
-//	std::cout << __LINE__ << "\tnHits = " << nHits << std::endl;
-	if ( itTrack->pt() < 2.4 and (nHits==3 or nHits==4 or nHits==5 or nHits==6) ) bPix = true;
-	if ( not bPix ) {
-		if ( nHits < 11 ) return false;
-		if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > 0.15 ) {
-			return false;
-		}
-		if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) {
-			return false;
-		}
-		if (
-			itTrack->pt() > 2.4 and
-			itTrack->originalAlgo() != 4 and
-			itTrack->originalAlgo() != 5 and
-			itTrack->originalAlgo() != 6 and
-			itTrack->originalAlgo() != 7
-		) {
-			return false;
-		}
-
-		int primaryvtx = 0;
-		math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
-		double vxError = recoVertices[primaryvtx].xError();
-		double vyError = recoVertices[primaryvtx].yError();
-		double vzError = recoVertices[primaryvtx].zError();
-		double d0 = -1.* itTrack->dxy(v1);
-		double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
-		if ( fabs( d0/derror ) > d0d0error_ ) {
-			return false;
-		}
-
-		double dz=itTrack->dz(v1);
-		double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
-		if ( fabs( dz/dzerror ) > dzdzerror_ ) {
-			return false;
-		}
-	}
+//	if ( itTrack->charge() == 0 ) return false;
+//	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
+//	bool bPix = false;
+//	int nHits = itTrack->numberOfValidHits();
+////	std::cout << __LINE__ << "\tnHits = " << nHits << std::endl;
+//	if ( itTrack->pt() < 2.4 and (nHits==3 or nHits==4 or nHits==5 or nHits==6) ) bPix = true;
+//	if ( not bPix ) {
+//		if ( nHits < 11 ) return false;
+//		if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > 0.15 ) {
+//			return false;
+//		}
+//		if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) {
+//			return false;
+//		}
+//		if (
+//			itTrack->pt() > 2.4 and
+//			itTrack->originalAlgo() != 4 and
+//			itTrack->originalAlgo() != 5 and
+//			itTrack->originalAlgo() != 6 and
+//			itTrack->originalAlgo() != 7
+//		) {
+//			return false;
+//		}
+//
+//		int primaryvtx = 0;
+//		math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
+//		double vxError = recoVertices[primaryvtx].xError();
+//		double vyError = recoVertices[primaryvtx].yError();
+//		double vzError = recoVertices[primaryvtx].zError();
+//		double d0 = -1.* itTrack->dxy(v1);
+//		double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
+//		if ( fabs( d0/derror ) > d0d0error_ ) {
+//			return false;
+//		}
+//
+//		double dz=itTrack->dz(v1);
+//		double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
+//		if ( fabs( dz/dzerror ) > dzdzerror_ ) {
+//			return false;
+//		}
+//	}
 	return true;
 }
 
