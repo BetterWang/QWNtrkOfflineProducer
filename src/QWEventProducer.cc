@@ -46,6 +46,7 @@ private:
 	double	Etamax_;
 
 	bool	bEff_;
+	bool	bFlip_;
 
 	TH2D*	hEff_cbin[2000];
 };
@@ -67,6 +68,8 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 3.0);
 	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
 	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
+
+	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
 
 	bEff_ = true;
 
@@ -220,10 +223,14 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 
 		pphi->push_back(itTrack->phi());
-		peta->push_back(itTrack->eta());
 		ppT->push_back(itTrack->pt());
 		pweight->push_back(weight);
 		pcharge->push_back(itTrack->charge());
+		if ( bFlip_ ) {
+			peta->push_back(-itTrack->eta());
+		} else {
+			peta->push_back(itTrack->eta());
+		}
 	}
 	iEvent.put(pphi, std::string("phi"));
 	iEvent.put(peta, std::string("eta"));
