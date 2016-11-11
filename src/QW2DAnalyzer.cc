@@ -6,8 +6,10 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1D.h"
+#include "TH2D.h"
 #include "TMath.h"
 #include <iostream>
+#include <tuple>
 
 class QW2DAnalyzer : public edm::EDAnalyzer {
 public:
@@ -23,11 +25,15 @@ private:
 	edm::InputTag   srcW_;
 	TH1D * h;
 	TH2D * hc;
+	TH2D * hm;
 	bool	bWeight;
 
+	std::vector<double>	mphi_;
+	std::vector<double>	meta_;
+	std::vector<double>	mw_;
 
-	const double DphiMax = 2*TMath::Pi() - 2.0;
-	const double DphiMin = - 2.0;
+	const double DphiMax = TMath::Pi();
+	const double DphiMin = -TMath::Pi();
 };
 
 QW2DAnalyzer::QW2DAnalyzer(const edm::ParameterSet& pset) :
@@ -35,7 +41,8 @@ QW2DAnalyzer::QW2DAnalyzer(const edm::ParameterSet& pset) :
 	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta")),
 	srcW_(pset.getUntrackedParameter<edm::InputTag>("srcW", std::string("NA")))
 {
-	consumes<std::vector<double> >(src_);
+	consumes<std::vector<double> >(srcPhi_);
+	consumes<std::vector<double> >(srcEta_);
 	bWeight = false;
 
 	if ( srcW_.label() != std::string("NA") ) {
@@ -51,6 +58,8 @@ QW2DAnalyzer::QW2DAnalyzer(const edm::ParameterSet& pset) :
 	h->Sumw2();
 	hc = fs->make<TH2D>("hc", "hc", 24, DphiMin, DphiMax, 48, -4.8, 4.8);
 	hc->Sumw2();
+	hm = fs->make<TH2D>("hm", "hm", 24, DphiMin, DphiMax, 48, -4.8, 4.8);
+	hm->Sumw2();
 }
 
 void
@@ -67,21 +76,40 @@ QW2DAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		iEvent.getByLabel(srcW_, w);
 	}
 
-	int sz = t->size();
+	int sz = phi->size();
 	h->Fill(sz);
 	for ( int i = 0; i < sz; i++ ) {
-		for ( int j = i+1; j < sz; j++ ) {
+		for ( int j = 0; j < sz; j++ ) {
+			if ( i == j ) continue;
 			double Dphi = (*phi)[i] - (*phi)[j];
 			double Deta = (*eta)[i] - (*eta)[j];
 			while (Dphi > DphiMax) Dphi -= TMath::Pi()*2.;
-			while (Dphi < DphiMax) Dphi += TMath::Pi()*2.;
+			while (Dphi < DphiMin) Dphi += TMath::Pi()*2.;
+
 			if ( bWeight ) {
 				hc->Fill(Dphi, Deta, (*w)[i] * (*w)[j]);
 			} else {
 				hc->Fill(Dphi, Deta);
 			}
 		}
+		// do mix
+
+		for ( int j = 0; j < int(mphi_.size()); j++ ) {
+			double Dphi = (*phi)[i] - (mphi_)[j];
+			double Deta = (*eta)[i] - (meta_)[j];
+			while (Dphi > DphiMax) Dphi -= TMath::Pi()*2.;
+			while (Dphi < DphiMin) Dphi += TMath::Pi()*2.;
+
+			if ( bWeight ) {
+				hm->Fill(Dphi, Deta, (*w)[i] * (mw_)[j]);
+			} else {
+				hm->Fill(Dphi, Deta);
+			}
+		}
 	}
+	mphi_ = *phi;
+	meta_ = *eta;
+	mw_ = *w;
 	return;
 }
 

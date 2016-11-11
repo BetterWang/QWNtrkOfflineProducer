@@ -67,9 +67,20 @@ vectEta = cms.EDAnalyzer('QWVectorAnalyzer',
 		cstart = cms.untracked.double(-2.5),
 		cend = cms.untracked.double(2.5),
 		)
+
+corr2D = cms.EDAnalyzer('QW2DAnalyzer',
+		srcPhi = cms.untracked.InputTag("QWEvent", "phi"),
+		srcEta = cms.untracked.InputTag("QWEvent", "eta"),
+                hNbins = cms.untracked.int32(5000),
+                hstart = cms.untracked.double(0),
+                hend = cms.untracked.double(5000),
+		)
+
 vectEtaW = vectEta.clone( srcW = cms.untracked.InputTag("QWEvent", "weight") )
 vectPtW = vectPt.clone( srcW = cms.untracked.InputTag("QWEvent", "weight") )
 vectPhiW = vectPhi.clone( srcW = cms.untracked.InputTag("QWEvent", "weight") )
+
+corr2DW = corr2D.clone( srcW = cms.untracked.InputTag("QWEvent", "weight") )
 
 vectMon = cms.Sequence(histNoff*histCentBin*vectPhi*vectPt*vectEta)
 vectMonW = cms.Sequence(histNoff*histCentBin*vectPhi*vectPt*vectEta*vectPhiW*vectPtW*vectEtaW)
