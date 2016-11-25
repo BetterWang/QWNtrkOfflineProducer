@@ -32,8 +32,8 @@ private:
 	std::vector<double>	meta_;
 	std::vector<double>	mw_;
 
-	const double DphiMax = 2*TMath::Pi() - 2;
-	const double DphiMin = -2;
+	const double DphiMax = TMath::Pi();
+	const double DphiMin = -TMath::Pi();
 };
 
 QW2DAnalyzer::QW2DAnalyzer(const edm::ParameterSet& pset) :

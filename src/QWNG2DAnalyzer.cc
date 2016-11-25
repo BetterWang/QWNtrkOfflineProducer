@@ -39,8 +39,8 @@ private:
 	double assoPtMin_;
 	double assoPtMax_;
 
-	const double DphiMax = 2*TMath::Pi() - 2;
-	const double DphiMin = -2;
+	const double DphiMax = 3*TMath::Pi()/2;
+	const double DphiMin = -TMath::Pi()/2;
 };
 
 QWNG2DAnalyzer::QWNG2DAnalyzer(const edm::ParameterSet& pset) :
