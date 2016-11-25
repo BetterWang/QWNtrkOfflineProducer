@@ -24,7 +24,6 @@ public:
 
 private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
-	///
 
 	edm::InputTag	vectSrc_;
 	int	idx_;
@@ -32,7 +31,7 @@ private:
 
 QWVectorSelector::QWVectorSelector(const edm::ParameterSet& pset) :
 	vectSrc_(pset.getUntrackedParameter<edm::InputTag>("vectSrc")),
-	idx_(pset.getUntrackedParameter<int>("idx", 0),
+	idx_(pset.getUntrackedParameter<int>("idx", 0))
 {
 	consumes< std::vector<double> >(vectSrc_);
 	produces<double>();
@@ -51,8 +50,8 @@ void QWVectorSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	iEvent.getByLabel(vectSrc_, t);
 
 	double ret;
-	if ( t->size() <= idx ) ret = -9999999;
-	else ret = (*t)[idx];
+	if ( t->size() <= (unsigned int)(idx_) ) ret = -9999999;
+	else ret = (*t)[idx_];
 
 	std::auto_ptr<double> pret(new double(ret));
 

@@ -23,16 +23,15 @@ private:
 	edm::InputTag   srcX_;
 	edm::InputTag   srcY_;
 
-	TH2D hc;
+	TH2D * hc;
 };
 
 QWCorrAnalyzer::QWCorrAnalyzer(const edm::ParameterSet& pset) :
-	srcPhi_(pset.getUntrackedParameter<edm::InputTag>("srcPhi")),
-	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta")),
-	srcW_(pset.getUntrackedParameter<edm::InputTag>("srcW", std::string("NA")))
+	srcX_(pset.getUntrackedParameter<edm::InputTag>("srcX")),
+	srcY_(pset.getUntrackedParameter<edm::InputTag>("srcY"))
 {
-	consumes<std::vector<double> >(srcPhi_);
-	consumes<std::vector<double> >(srcEta_);
+	consumes<std::vector<double> >(srcX_);
+	consumes<std::vector<double> >(srcY_);
 
 	int NbinsX = pset.getUntrackedParameter<int>("NbinsX");
 	int NbinsY = pset.getUntrackedParameter<int>("NbinsY");
@@ -50,8 +49,8 @@ void
 QWCorrAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	Handle<std::vector<double> > pX;
-	Handle<std::vector<double> > pY;
+	Handle<double> pX;
+	Handle<double> pY;
 
 	iEvent.getByLabel(srcX_, pX);
 	iEvent.getByLabel(srcY_, pY);
