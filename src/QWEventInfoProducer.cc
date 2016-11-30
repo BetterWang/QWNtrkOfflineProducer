@@ -46,8 +46,8 @@ void QWEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	using namespace edm;
 	using namespace reco;
 
-	double runid = iEvent.getRun();
-	double eventid = iEvent.id();
+	double runid = double(iEvent.run());
+	double eventid = iEvent.id().event();
 	double bx = iEvent.bunchCrossing();
 	double lumi = iEvent.luminosityBlock();
 	double orbit = iEvent.orbitNumber();
