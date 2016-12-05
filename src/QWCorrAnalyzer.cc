@@ -30,8 +30,8 @@ QWCorrAnalyzer::QWCorrAnalyzer(const edm::ParameterSet& pset) :
 	srcX_(pset.getUntrackedParameter<edm::InputTag>("srcX")),
 	srcY_(pset.getUntrackedParameter<edm::InputTag>("srcY"))
 {
-	consumes<std::vector<double> >(srcX_);
-	consumes<std::vector<double> >(srcY_);
+	consumes<double>(srcX_);
+	consumes<double>(srcY_);
 
 	int NbinsX = pset.getUntrackedParameter<int>("NbinsX");
 	int NbinsY = pset.getUntrackedParameter<int>("NbinsY");

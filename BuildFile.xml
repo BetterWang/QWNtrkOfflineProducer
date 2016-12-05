@@ -6,5 +6,6 @@
 <use name="DataFormats/TrackReco"/>
 <use name="DataFormats/ParticleFlowCandidate"/>
 <use name="DataFormats/HepMCCandidate"/>
+<use name="DataFormats/HcalDigi"/>
 <use name="CommonTools/UtilAlgos"/>
-<library   file="src/*.cc" name="QWNtrkOffline">
+<library   file="src/*.cc" name="QWNtrkOffline"/>
