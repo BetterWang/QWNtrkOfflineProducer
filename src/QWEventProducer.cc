@@ -111,7 +111,8 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 100; c < 200; c++ ) {
 				hEff_cbin[c] = h;
 			}
-		} else if ( streff == string("Hijing_8TeV_MB_eff_v2.root") or streff == string("EPOS_8TeV_MB_eff_v2.root") ) {
+		} else if ( streff == string("Hijing_8TeV_MB_eff_v2.root") or streff == string("EPOS_8TeV_MB_eff_v2.root") or streff == string("Hijing_8TeV_MB_eff_v3_loose.root") or streff == string("Hijing_8TeV_MB_eff_v3_tight.root")
+				or streff == string("Hijing_8TeV_MB_eff_v4_narrow.root") or streff == string("Hijing_8TeV_MB_eff_v4_wide.root") ) {
 			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_0");
 			for ( int c = 0; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
