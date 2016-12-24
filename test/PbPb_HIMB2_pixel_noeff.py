@@ -21,14 +21,25 @@ QWEvent = cms.EDProducer("QWEventProducer"
 		, Etamax = cms.untracked.double(2.4)
                 )
 
-makeEvent = cms.Sequence(centralityBin*QWEvent)
+Mult = cms.EDProducer("QWVectCounter"
+		, src = cms.untracked.InputTag('QWEvent', 'phi')
+		)
+
+makeEvent = cms.Sequence(centralityBin*QWEvent*Mult)
 
 # monitoring
-histNoff = cms.EDAnalyzer('QWHistAnalyzer',
+histCent = cms.EDAnalyzer('QWHistAnalyzer',
 		src = cms.untracked.InputTag("centralityBin", "HFtowers"),
 		Nbins = cms.untracked.int32(220),
 		start = cms.untracked.double(0),
 		end = cms.untracked.double(220),
+		)
+
+histMult = cms.EDAnalyzer('QWHistAnalyzer',
+		src = cms.untracked.InputTag("Mult"),
+		Nbins = cms.untracked.int32(5000),
+		start = cms.untracked.double(0),
+		end = cms.untracked.double(5000),
 		)
 
 vectPhi = cms.EDAnalyzer('QWVectorAnalyzer',
@@ -64,5 +75,3 @@ vectEtaW = vectEta.clone( srcW = cms.untracked.InputTag("QWEvent", "weight") )
 vectPtW = vectPt.clone( srcW = cms.untracked.InputTag("QWEvent", "weight") )
 vectPhiW = vectPhi.clone( srcW = cms.untracked.InputTag("QWEvent", "weight") )
 
-vectMon = cms.Sequence(histNoff*vectPhi*vectPt*vectEta)
-vectMonW = cms.Sequence(histNoff*vectPhi*vectPt*vectEta*vectPhiW*vectPtW*vectEtaW)
