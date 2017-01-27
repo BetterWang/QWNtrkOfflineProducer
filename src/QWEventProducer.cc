@@ -190,10 +190,10 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
 	VertexCollection recoVertices = *vertexCollection;
-	sort(recoVertices.begin(), recoVertices.end(), [](const reco::Vertex &a, const reco::Vertex &b){
-			if ( a.tracksSize() == b.tracksSize() ) return a.chi2() < b.chi2();
-			return a.tracksSize() > b.tracksSize();
-			});
+//	sort(recoVertices.begin(), recoVertices.end(), [](const reco::Vertex &a, const reco::Vertex &b){
+//			if ( a.tracksSize() == b.tracksSize() ) return a.chi2() < b.chi2();
+//			return a.tracksSize() > b.tracksSize();
+//			});
 	for ( auto it = recoVertices.begin(); it != recoVertices.end(); ++it ) {
 		pvz->push_back(it->z());
 	}
