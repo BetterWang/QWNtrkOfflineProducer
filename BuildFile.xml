@@ -1,11 +1,17 @@
+<use name="root"/>
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
-<flags EDM_PLUGIN="1"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/Candidate"/>
 <use name="DataFormats/VertexReco"/>
 <use name="DataFormats/TrackReco"/>
 <use name="DataFormats/ParticleFlowCandidate"/>
 <use name="DataFormats/HepMCCandidate"/>
 <use name="DataFormats/HcalDigi"/>
 <use name="CommonTools/UtilAlgos"/>
+<use name="TrackingTools/TransientTrack"/>
+<use name="MagneticField/Records"/>
+<use name="TrackingTools/IPTools"/>
+<flags EDM_PLUGIN="1"/>
 <library   file="src/*.cc" name="QWNtrkOffline"/>

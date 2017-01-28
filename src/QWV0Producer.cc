@@ -4,6 +4,11 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+//#include "MagneticField/Engine/interface/MagneticField.h"
+
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
@@ -19,6 +24,11 @@
 #include "TFile.h"
 #include "TH2.h"
 #include "TMath.h"
+#include <Math/SMatrix.h>
+#include <Math/SVector.h>
+
+typedef ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SMatrixSym3D;
+typedef ROOT::Math::SVector<double, 3> SVector3;
 
 using namespace std;
 class QWV0Producer : public edm::EDProducer {
@@ -39,23 +49,27 @@ private:
 	double	pTmax_;
 	double	Etamin_;
 	double	Etamax_;
+	double	Massmin_;
+	double	Massmax_;
 
 	bool	bFlip_;
 };
 
 QWV0Producer::QWV0Producer(const edm::ParameterSet& pset) :
-	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
-	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc")),
-	V0Src_(pset.getUntrackedParameter<edm::InputTag>("V0Src"))
+	vertexSrc_(pset.getParameter<edm::InputTag>("vertexSrc")),
+	trackSrc_(pset.getParameter<edm::InputTag>("trackSrc")),
+	V0Src_(pset.getParameter<edm::InputTag>("V0Src"))
 {
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
 	consumes<reco::VertexCompositeCandidateCollection>(V0Src_);
 
-	pTmin_ = pset.getUntrackedParameter<double>("ptMin", 0.);
-	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 20.0);
-	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
-	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
+	pTmin_ = pset.getParameter<double>("ptMin");
+	pTmax_ = pset.getParameter<double>("ptMax");
+	Etamin_ = pset.getParameter<double>("Etamin");
+	Etamax_ = pset.getParameter<double>("Etamax");
+	Massmin_ = pset.getParameter<double>("Massmin");
+	Massmax_ = pset.getParameter<double>("Massmax");
 
 	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
 
@@ -111,19 +125,13 @@ void QWV0Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > pDCA( new std::vector<double> );
 
 	edm::ESHandle<TransientTrackBuilder> theB;
-	setup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
-
-	Handle<VertexCompositeCandidateCollection> V0s;
-	iEvent.getByLabel(V0Src_, V0s);
+	iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
 
 //	edm::Handle<reco::TrackCollection> theTrackHandle;
 //	iEvent.getByLabel(trackSrc_, theTrackHandle);
 //	if (!theTrackHandle->size()) return;
 //	const reco::TrackCollection* theTrackCollection = theTrackHandle.product();
 
-	edm::ESHandle<MagneticField> theMagneticFieldHandle;
-	iSetup.get<IdealMagneticFieldRecord>().get(theMagneticFieldHandle);
-	const MagneticField* theMagneticField = theMagneticFieldHandle.product();
 
 	edm::Handle< reco::VertexCollection > pvHandle;
 	iEvent.getByLabel(vertexSrc_, pvHandle);
@@ -144,19 +152,15 @@ void QWV0Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			++nPV;
 		}
 	}
-//	reco::Vertex referenceVtx(vertexCollection->at(0));
-//	math::XYZPoint referencePos(referenceVtx.position());
 
-	for ( auto v0 : v0s ) {
+	Handle<VertexCompositeCandidateCollection> V0s;
+	iEvent.getByLabel(V0Src_, V0s);
+
+	for ( auto & v0 : (*V0s) ) {
 		float mass     = v0.mass();
 		float pt       = v0.pt();
-		float p        = v0.p();
-		float px       = v0.px();
-		float py       = v0.py();
-		float pz       = v0.pz();
 		float eta      = v0.eta();
 		float phi      = v0.phi();
-		int pdgID      = v0.pdgId();
 		float chi2oNDF = v0.vertexNormalizedChi2();
 		GlobalPoint displacementFromPV = ( pv==nullptr ? GlobalPoint(-9.,-9.,-9.) : GlobalPoint( (pv->x() - v0.vx()), (pv->y() - v0.vy()), (pv->z() - v0.vz()) ) );
 //		GlobalPoint momentum = GlobalPoint(v0.px(), v0.py(), v0.pz());
@@ -170,11 +174,11 @@ void QWV0Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		pphi		->push_back( phi	);
 		peta		->push_back( eta	);
-		ppT		->push_back( pT		);
+		ppT		->push_back( pt		);
 		pmass		->push_back( mass	);
 
-		pvtxChi2	->push_back( v0->vertexChi2()	);
-		pvtxNdf		->push_back( v0->vertexNof()	);
+		pvtxChi2	->push_back( v0.vertexChi2()	);
+		pvtxNdf		->push_back( v0.vertexNdof()	);
 		pvtxChi2oNdf	->push_back( chi2oNDF		);
 
 		pLxy		->push_back( lxy	);
@@ -202,13 +206,13 @@ void QWV0Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		double dca = -999.;
 		if ( v0.numberOfDaughters() == 2 ) {
-			auto tt0 = (theB->build(v0.daughter(0).bestTrack())).initialFreeState();
-			auto tt1 = (theB->build(v0.daughter(1).bestTrack())).initialFreeState();
+			auto tt0 = (theB->build(v0.daughter(0)->bestTrack())).initialFreeState();
+			auto tt1 = (theB->build(v0.daughter(1)->bestTrack())).initialFreeState();
 
 			ClosestApproachInRPhi cApp;
 			cApp.calculate(tt0, tt1);
       			if (cApp.status()) {
-				dca = std::abs(cApp.distance);
+				dca = std::abs(cApp.distance());
 			}
 		}
 		pDCA	->push_back( dca	);
