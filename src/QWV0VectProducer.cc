@@ -31,10 +31,10 @@ typedef ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SMa
 typedef ROOT::Math::SVector<double, 3> SVector3;
 
 using namespace std;
-class QWV0Producer : public edm::EDProducer {
+class QWV0VectProducer : public edm::EDProducer {
 public:
-	explicit QWV0Producer(const edm::ParameterSet&);
-	~QWV0Producer();
+	explicit QWV0VectProducer(const edm::ParameterSet&);
+	~QWV0VectProducer();
 
 private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
@@ -55,7 +55,7 @@ private:
 	bool	bFlip_;
 };
 
-QWV0Producer::QWV0Producer(const edm::ParameterSet& pset) :
+QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getParameter<edm::InputTag>("trackSrc")),
 	V0Src_(pset.getParameter<edm::InputTag>("V0Src"))
@@ -94,12 +94,12 @@ QWV0Producer::QWV0Producer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("DCA");
 }
 
-QWV0Producer::~QWV0Producer()
+QWV0VectProducer::~QWV0VectProducer()
 {
 	return;
 }
 
-void QWV0Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 	using namespace reco;
@@ -241,4 +241,4 @@ void QWV0Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 }
 
 
-DEFINE_FWK_MODULE(QWV0Producer);
+DEFINE_FWK_MODULE(QWV0VectProducer);
