@@ -112,6 +112,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 				hEff_cbin[c] = h;
 			}
 		} else if ( streff == string("Hijing_8TeV_MB_eff_v2.root") or streff == string("EPOS_8TeV_MB_eff_v2.root") or streff == string("Hijing_8TeV_MB_eff_v3_loose.root") or streff == string("Hijing_8TeV_MB_eff_v3_tight.root")
+				or streff == string("Hijing_8TeV_dataBS.root")
 				or streff == string("Hijing_8TeV_MB_eff_v4_narrow.root") or streff == string("Hijing_8TeV_MB_eff_v4_wide.root") ) {
 			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_0");
 			for ( int c = 0; c < 2000; c++ ) {
@@ -167,6 +168,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("pt");
 	produces<std::vector<double> >("weight");
 	produces<std::vector<double> >("charge");
+	produces<std::vector<double> >("ref");
 	produces<std::vector<double> >("vz");
 }
 
@@ -184,6 +186,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > peta( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pweight( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > pref( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pcharge( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pvz( new std::vector<double> );
 
@@ -232,6 +235,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		ppT->push_back(itTrack->pt());
 		pweight->push_back(weight);
 		pcharge->push_back(itTrack->charge());
+		pref->push_back(std::distance(tracks->begin(), itTrack));
 		if ( bFlip_ ) {
 			peta->push_back(-itTrack->eta());
 		} else {
@@ -243,6 +247,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(ppT, std::string("pt"));
 	iEvent.put(pweight, std::string("weight"));
 	iEvent.put(pcharge, std::string("charge"));
+	iEvent.put(pref, std::string("ref"));
 	iEvent.put(pvz, std::string("vz"));
 }
 
