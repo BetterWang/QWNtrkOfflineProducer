@@ -47,7 +47,6 @@ void QWNtrkOfflineProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 	VertexCollection recoVertices = *vertexCollection;
 
 	sort(recoVertices.begin(), recoVertices.end(), [](const reco::Vertex &a, const reco::Vertex &b){
-			if ( a.tracksSize() == b.tracksSize() ) return a.chi2() < b.chi2();
 			return a.tracksSize() > b.tracksSize();
 			});
 
