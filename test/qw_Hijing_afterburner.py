@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("Flow")
+process = cms.Process("GEN")
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
@@ -12,10 +12,10 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContentHeavyIons_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load('Configuration.StandardSequences.Generator_cff')
-process.load('QWAna.QWNtrkOfflineProducer.AfterBurnerGenerator_cfi')
+process.load('GeneratorInterface.HiGenCommon.AfterBurnerGenerator_cff')
 
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(200000))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(200))
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 
 from Configuration.AlCa.GlobalTag import GlobalTag
@@ -61,16 +61,36 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
     )
 )
 
-process.AfterBurner = cms.Sequence(cms.SequencePlaceholder("AftBurner"))
+process.AftBurner.modv1 = cms.InputTag("0.0")
+#process.AftBurner.modv2 = cms.InputTag("fEllP_8pct_v2")
+#process.AftBurner.modv2 = cms.InputTag("pBG_4pct_v2")
+process.AftBurner.modv3 = cms.InputTag("pBG_2pct_v3")
+process.AftBurner.modmethod = cms.int32(2)
 
+################ comment this out to run without QWNtrkOfflineProducer
+process.QWGenEvent = cms.EDProducer("QWGenEventProducer",
+		trackSrc  = cms.untracked.InputTag("genParticles")
+		)
+
+process.vectPhi = cms.EDAnalyzer('QWVectorAnalyzer',
+		src = cms.untracked.InputTag("QWGenEvent", "phi"),
+		hNbins = cms.untracked.int32(5000),
+		hstart = cms.untracked.double(0),
+		hend = cms.untracked.double(5000),
+		cNbins = cms.untracked.int32(1000),
+		cstart = cms.untracked.double(-3.14159265358979323846),
+		cend = cms.untracked.double(3.14159265358979323846),
+		)
+
+process.TFileService = cms.Service("TFileService",
+		fileName = cms.string('cumu.root')
+		)
+
+process.pgen = cms.Sequence(cms.SequencePlaceholder("randomEngineStateProducer")+process.AfterBurner+process.GeneInfo + process.QWGenEvent + process.vectPhi)
+################ comment END
 #process.pgen = cms.Sequence(cms.SequencePlaceholder("randomEngineStateProducer")+process.AfterBurner+process.GeneInfo)
-process.pgen = cms.Sequence(cms.SequencePlaceholder("randomEngineStateProducer")+process.GeneInfo)
 
 from IOMC.RandomEngine.RandomServiceHelper import RandomNumberServiceHelper
-process.RandomNumberGeneratorService.AftBurner = cms.PSet(
-		initialSeed = cms.untracked.uint32(7410904),
-		engineName = cms.untracked.string('HepJamesRandom')
-		)
 randSvc = RandomNumberServiceHelper(process.RandomNumberGeneratorService)
 randSvc.populate()
 
@@ -80,6 +100,7 @@ process.RAWSIMoutput_step = cms.EndPath(process.RAWSIMoutput)
 
 process.schedule = cms.Schedule(
 	process.generation_step,
+	process.RAWSIMoutput_step
 )
 
 
