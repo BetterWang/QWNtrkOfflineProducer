@@ -76,7 +76,7 @@ void QWGenEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 	for(GenParticleCollection::const_iterator itTrack = tracks->begin();
 			itTrack != tracks->end();
 			++itTrack) {
-		if ( itTrack->status() != 1 ) continue;
+		if ( not itTrack->isPromptFinalState() ) continue;
 		if ( itTrack->charge() == 0 ) continue;
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 

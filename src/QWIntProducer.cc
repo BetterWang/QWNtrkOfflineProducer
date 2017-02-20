@@ -19,11 +19,11 @@ public:
 
 private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
-	int	input_;
+	int	src_;
 };
 
 QWIntProducer::QWIntProducer(const edm::ParameterSet& pset) :
-	input_(pset.getUntrackedParameter<int>("input"))
+	src_(pset.getUntrackedParameter<int>("src"))
 {
 	produces<int>();
 }
@@ -34,7 +34,7 @@ QWIntProducer::~QWIntProducer() {
 
 void QWIntProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-	std::auto_ptr<int> pint(new int(input_));
+	std::auto_ptr<int> pint(new int(src_));
 	iEvent.put(pint);
 }
 
