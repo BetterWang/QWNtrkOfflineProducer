@@ -26,7 +26,7 @@ QWVectCounter::QWVectCounter(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
 	consumes<std::vector<double> >(src_);
-	produces<int>();
+	produces<double>();
 }
 
 QWVectCounter::~QWVectCounter() {
@@ -41,7 +41,7 @@ void QWVectCounter::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<std::vector<double> > vect;
 	iEvent.getByLabel(src_, vect);
 	int Noff = int(vect->size());
-	std::auto_ptr<int> pNoff(new int(Noff));
+	std::auto_ptr<double> pNoff(new double(Noff));
 	iEvent.put(pNoff);
 }
 
