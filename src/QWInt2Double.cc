@@ -14,20 +14,18 @@
 #include "TMath.h"
 
 using namespace std;
-class QWGenHIProducer : public edm::EDProducer {
+class QWInt2Double : public edm::EDProducer {
 public:
-	explicit QWGenHIProducer(const edm::ParameterSet&);
-	~QWGenHIProducer();
+	explicit QWInt2Double(const edm::ParameterSet&);
+	~QWInt2Double();
 
 private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 	///
-
 	edm::InputTag	src_;
-
 };
 
-QWGenHIProducer::QWGenHIProducer(const edm::ParameterSet& pset) :
+QWInt2Double::QWInt2Double(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
 	consumes<int>(src_);
@@ -35,13 +33,14 @@ QWGenHIProducer::QWGenHIProducer(const edm::ParameterSet& pset) :
 	produces<double>();
 }
 
-QWGenHIProducer::~QWGenHIProducer()
+QWInt2Double::~QWInt2Double()
 {
 	return;
 }
 
-void QWGenHIProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+void QWInt2Double::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+	using namespace edm;
 	Handle<int> pX;
 	iEvent.getByLabel(src_, pX);
 
@@ -51,4 +50,4 @@ void QWGenHIProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 }
 
 
-DEFINE_FWK_MODULE(QWGenHIProducer);
+DEFINE_FWK_MODULE(QWInt2Double);
