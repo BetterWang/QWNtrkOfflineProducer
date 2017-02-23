@@ -48,11 +48,8 @@ void QWGenHIProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 
-	Handle<GenHIEvent> genHI;
-	iEvent.getByLabel( src_ , genHI ) ;
-
-	HepMC::GenEvent * genevt = (HepMC::GenEvent *)HepMCEvt->GetEvent();
-	GenHIEvent * hi = genHI->product();
+	Handle<GenHIEvent> hi;
+	iEvent.getByLabel( src_ , hi ) ;
 
         auto_ptr<double> pb(new double(hi->b()));
         auto_ptr<double> pEP(new double(hi->evtPlane()));
