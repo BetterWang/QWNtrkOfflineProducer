@@ -30,6 +30,7 @@ private:
 	double	pTmax_;
 	double	Etamin_;
 	double	Etamax_;
+	bool	isPrompt_;
 
 };
 
@@ -42,6 +43,7 @@ QWGenEventProducer::QWGenEventProducer(const edm::ParameterSet& pset) :
 	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 3.0);
 	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
 	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
+	isPrompt_ = pset.getUntrackedParameter<bool>("isPrompt", true);
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
@@ -76,7 +78,8 @@ void QWGenEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 	for(GenParticleCollection::const_iterator itTrack = tracks->begin();
 			itTrack != tracks->end();
 			++itTrack) {
-		if ( not itTrack->isPromptFinalState() ) continue;
+		if ( itTrack->status() != 1 ) continue;
+		if ( isPrompt_ and (not itTrack->isPromptFinalState()) ) continue;
 		if ( itTrack->charge() == 0 ) continue;
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 
