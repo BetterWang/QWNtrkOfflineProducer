@@ -118,7 +118,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 0; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
-		} else if ( streff == string("Hydjet_eff_mult_v1.root") ) {
+		} else if ( streff == string("Hydjet_PbPb_eff_v1.root") ) {
 			// PbPb15 pp reco new
 			TH2D * h = (TH2D*) fEffFak->Get("eff_1");
 			for ( int c = 0; c < 120; c++ ) {
@@ -140,7 +140,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 800; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
-		} else if ( streff == string("Hydjet_PbPb_eff_v1.root") ) {
+		} else if ( streff == string("Hydjet_eff_mult_v1.root") ) {
 			// PbPb15 pp reco old
 			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_0");
 			for ( int c = 0; c < 120; c++ ) {
