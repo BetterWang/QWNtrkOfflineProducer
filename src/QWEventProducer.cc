@@ -118,6 +118,11 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 0; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
+		} else if ( streff == string("trkEff_pp_all_74X_origin.root") ) {
+			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D");
+			for ( int c = 0; c < 2000; c++ ) {
+				hEff_cbin[c] = h;
+			}
 		} else if ( streff == string("Hydjet_PbPb_eff_v1.root") ) {
 			// PbPb15 pp reco new
 			TH2D * h = (TH2D*) fEffFak->Get("eff_1");
