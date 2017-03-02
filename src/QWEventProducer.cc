@@ -119,6 +119,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 				hEff_cbin[c] = h;
 			}
 		} else if ( streff == string("trkEff_pp_all_74X_origin.root") ) {
+			// pp 13 TeV HM 2015 TOTEM
 			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D");
 			for ( int c = 0; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
