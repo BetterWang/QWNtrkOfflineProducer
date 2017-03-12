@@ -124,26 +124,53 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 0; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
-		} else if ( streff == string("Hydjet_PbPb_eff_v1.root") ) {
-			// PbPb15 pp reco new
-			TH2D * h = (TH2D*) fEffFak->Get("eff_1");
+		} else if ( streff == string("Hydjet_ppReco_v5_tight.root") or streff == string("Hydjet_ppReco_v5_loose.root")
+				or streff == string("Hydjet_ppReco_v6_wide.root") or streff ==string("Hydjet_ppReco_v6_narrow.root") ) {
+			// PbPb15 pp reco syst
+			TH2D * h = (TH2D*) fEffFak->Get("eff_0");
 			for ( int c = 0; c < 120; c++ ) {
 				hEff_cbin[c] = h;
 			}
+			h = (TH2D*) fEffFak->Get("eff_1");
+			for ( int c = 120; c < 260; c++ ) {
+				hEff_cbin[c] = h;
+			}
 			h = (TH2D*) fEffFak->Get("eff_2");
-			for ( int c = 120; c < 200; c++ ) {
+			for ( int c = 260; c < 400; c++ ) {
 				hEff_cbin[c] = h;
 			}
 			h = (TH2D*) fEffFak->Get("eff_3");
-			for ( int c = 200; c < 400; c++ ) {
-				hEff_cbin[c] = h;
-			}
-			h = (TH2D*) fEffFak->Get("eff_4");
 			for ( int c = 400; c < 800; c++ ) {
 				hEff_cbin[c] = h;
 			}
+			h = (TH2D*) fEffFak->Get("eff_4");
+			for ( int c = 800; c < 1200; c++ ) {
+				hEff_cbin[c] = h;
+			}
 			h = (TH2D*) fEffFak->Get("eff_5");
-			for ( int c = 800; c < 2000; c++ ) {
+			for ( int c = 1200; c < 2000; c++ ) {
+				hEff_cbin[c] = h;
+			}
+		} else if ( streff == string("Hydjet_PbPb_eff_v1.root") ) {
+			// PbPb15 pp reco new
+			TH2D * h = (TH2D*) fEffFak->Get("eff_1");
+			for ( int c = 0; c < 260; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("eff_2");
+			for ( int c = 260; c < 400; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("eff_3");
+			for ( int c = 400; c < 800; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("eff_4");
+			for ( int c = 800; c < 1200; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("eff_5");
+			for ( int c = 1200; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
 		} else if ( streff == string("Hydjet_eff_mult_v1.root") ) {
