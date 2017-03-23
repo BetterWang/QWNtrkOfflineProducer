@@ -3,6 +3,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "iostream"
 
 class QWDoubleFilter : public edm::EDFilter {
 public:
@@ -18,8 +19,8 @@ private:
 
 QWDoubleFilter::QWDoubleFilter(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
-	min_(pset.getUntrackedParameter<double>("min")),
-	max_(pset.getUntrackedParameter<double>("max"))
+	min_(pset.getUntrackedParameter<double>("dmin")),
+	max_(pset.getUntrackedParameter<double>("dmax"))
 {
 	consumes<double>(src_);
 	return;
@@ -27,10 +28,12 @@ QWDoubleFilter::QWDoubleFilter(const edm::ParameterSet& pset) :
 
 bool QWDoubleFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-	Handle<double> psrc;
+	edm::Handle<double> psrc;
 	iEvent.getByLabel( src_, psrc );
 
 	double d = *psrc;
 	if ( d > max_ or d < min_ ) return false;
 	else return true;
 }
+
+DEFINE_FWK_MODULE(QWDoubleFilter);
