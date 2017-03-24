@@ -13,6 +13,7 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
 #include "TFile.h"
+#include "TChain.h"
 #include "TH2.h"
 #include "TMath.h"
 
@@ -30,11 +31,10 @@ private:
 
 	TChain ch_;
 	int idx_;
-	const int NCNT = 2500;
-	double pT_[NCNT];
-	double phi_[NCNT];
-	double eta_[NCNT];
-	int Nmult;
+	double pt_[2500];
+	double phi_[2500];
+	double eta_[2500];
+	int Nmult_;
 };
 
 QWTreeProducer::QWTreeProducer(const edm::ParameterSet& pset) :
@@ -42,10 +42,10 @@ QWTreeProducer::QWTreeProducer(const edm::ParameterSet& pset) :
 	idx_(0)
 {
 	ch_.Add(pathSrc_.label().c_str());
-	ch_.SetBranchAddress("Nmult", &Nmult);
-	ch_.SetBranchAddress("pt", pt);
-	ch_.SetBranchAddress("eta", eta);
-	ch_.SetBranchAddress("phi", phi);
+	ch_.SetBranchAddress("Nmult", &Nmult_);
+	ch_.SetBranchAddress("pt", pt_);
+	ch_.SetBranchAddress("eta", eta_);
+	ch_.SetBranchAddress("phi", phi_);
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
@@ -69,19 +69,19 @@ void QWTreeProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > pvz( new std::vector<double> );
 
 	int sz = ch_.GetEntry(idx_++);
-	if ( sz > 0 and Nmult > 0 ) {
-		pphi->reserve(Nmult);
-		peta->reserve(Nmult);
-		ppt->reserve(Nmult);
-		pweight->reserve(Nmult);
+	if ( sz > 0 and Nmult_ > 0 ) {
+		pphi->reserve(Nmult_);
+		peta->reserve(Nmult_);
+		ppT->reserve(Nmult_);
+		pweight->reserve(Nmult_);
 
 		pvz->reserve(1);
 		pvz->push_back(0);
 
-		for ( int i = 0; i < Nmult; i++ ) {
-			pphi->push_back(phi[i]);
-			peta->push_back(eta[i]);
-			ppt->push_back(pt[i]);
+		for ( int i = 0; i < Nmult_; i++ ) {
+			pphi->push_back(phi_[i]);
+			peta->push_back(eta_[i]);
+			ppT->push_back(pt_[i]);
 			pweight->push_back(1.0);
 		}
 	}
