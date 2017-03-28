@@ -16,6 +16,7 @@
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
 
 #include "DataFormats/Candidate/interface/VertexCompositeCandidate.h"
 #include "DataFormats/Candidate/interface/VertexCompositeCandidateFwd.h"
@@ -56,20 +57,20 @@ private:
 };
 
 QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
-	vertexSrc_(pset.getParameter<edm::InputTag>("vertexSrc")),
-	trackSrc_(pset.getParameter<edm::InputTag>("trackSrc")),
-	V0Src_(pset.getParameter<edm::InputTag>("V0Src"))
+	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
+	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc")),
+	V0Src_(pset.getUntrackedParameter<edm::InputTag>("V0Src"))
 {
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
 	consumes<reco::VertexCompositeCandidateCollection>(V0Src_);
 
-	pTmin_ = pset.getParameter<double>("ptMin");
-	pTmax_ = pset.getParameter<double>("ptMax");
-	Etamin_ = pset.getParameter<double>("Etamin");
-	Etamax_ = pset.getParameter<double>("Etamax");
-	Massmin_ = pset.getParameter<double>("Massmin");
-	Massmax_ = pset.getParameter<double>("Massmax");
+	pTmin_ = pset.getUntrackedParameter<double>("ptMin", 0.);
+	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 100.);
+	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
+	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
+	Massmin_ = pset.getUntrackedParameter<double>("Massmin", 0.);
+	Massmax_ = pset.getUntrackedParameter<double>("Massmax", 1000);
 
 	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
 
@@ -93,7 +94,7 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 
 	produces<std::vector<double> >("DCA");
 
-	produces<std::vector<int> >("Refs");
+	produces<std::vector< std::vector<int> > >("Refs");
 }
 
 QWV0VectProducer::~QWV0VectProducer()
@@ -126,15 +127,15 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	std::auto_ptr<std::vector<double> > pDCA( new std::vector<double> );
 
-	std::auto_ptr<std::vector<int> >    pRefs( new std::vector<std::vector<int> > );
+	std::auto_ptr<std::vector< std::vector<int> > >    pRefs( new std::vector<std::vector<int> > );
 
 	edm::ESHandle<TransientTrackBuilder> theB;
 	iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
 
-	edm::Handle<reco::TrackCollection> theTrackHandle;
-	iEvent.getByLabel(trackSrc_, theTrackHandle);
-	if (!theTrackHandle->size()) return;
-	const reco::TrackCollection* theTrackCollection = theTrackHandle.product();
+//	edm::Handle<reco::TrackCollection> theTrackHandle;
+//	iEvent.getByLabel(trackSrc_, theTrackHandle);
+//	if (!theTrackHandle->size()) return;
+//	const reco::TrackCollection* theTrackCollection = theTrackHandle.product();
 
 
 	edm::Handle< reco::VertexCollection > pvHandle;
@@ -222,11 +223,11 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		pDCA	->push_back( dca	);
 
 		std::vector<int>  vref;
-		for ( int i = 0; i < v0.numberOfDaughters(); i++ ) {
+		for ( unsigned int i = 0; i < v0.numberOfDaughters(); i++ ) {
 			auto dau = (reco::RecoChargedCandidate*) v0.daughter(i);
 			auto trkRef = dau->track();
 
-			vref.push_back( std::distance(theTrackCollection->begin(), trkRef) );
+			vref.push_back( trkRef.index() );
 		}
 		pRefs->push_back( vref );
 	}
@@ -251,7 +252,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	iEvent.put(pvtxDecaySigXYZ, std::string("vtxDecaySigXYZ"));
 
 	iEvent.put(pDCA, std::string("DCA"));
-	iEvent.put(pRefs, std::string("DCA"));
+	iEvent.put(pRefs, std::string("Refs"));
 }
 
 
