@@ -92,6 +92,8 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("vtxDecaySigXYZ");
 
 	produces<std::vector<double> >("DCA");
+
+	produces<std::vector<int> >("Refs");
 }
 
 QWV0VectProducer::~QWV0VectProducer()
@@ -124,13 +126,15 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	std::auto_ptr<std::vector<double> > pDCA( new std::vector<double> );
 
+	std::auto_ptr<std::vector<int> >    pRefs( new std::vector<std::vector<int> > );
+
 	edm::ESHandle<TransientTrackBuilder> theB;
 	iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
 
-//	edm::Handle<reco::TrackCollection> theTrackHandle;
-//	iEvent.getByLabel(trackSrc_, theTrackHandle);
-//	if (!theTrackHandle->size()) return;
-//	const reco::TrackCollection* theTrackCollection = theTrackHandle.product();
+	edm::Handle<reco::TrackCollection> theTrackHandle;
+	iEvent.getByLabel(trackSrc_, theTrackHandle);
+	if (!theTrackHandle->size()) return;
+	const reco::TrackCollection* theTrackCollection = theTrackHandle.product();
 
 
 	edm::Handle< reco::VertexCollection > pvHandle;
@@ -216,6 +220,15 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		}
 		pDCA	->push_back( dca	);
+
+		std::vector<int>  vref;
+		for ( int i = 0; i < v0.numberOfDaughters(); i++ ) {
+			auto dau = (reco::RecoChargedCandidate*) v0.daughter(i);
+			auto trkRef = dau->track();
+
+			vref.push_back( std::distance(theTrackCollection->begin(), trkRef) );
+		}
+		pRefs->push_back( vref );
 	}
 
 
@@ -238,6 +251,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	iEvent.put(pvtxDecaySigXYZ, std::string("vtxDecaySigXYZ"));
 
 	iEvent.put(pDCA, std::string("DCA"));
+	iEvent.put(pRefs, std::string("DCA"));
 }
 
 
