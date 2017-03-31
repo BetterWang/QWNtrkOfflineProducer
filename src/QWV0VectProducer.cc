@@ -94,7 +94,7 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 
 	produces<std::vector<double> >("DCA");
 
-	produces<std::vector< std::vector<int> > >("Refs");
+	produces<std::vector< std::vector<double> > >("Refs");
 }
 
 QWV0VectProducer::~QWV0VectProducer()
@@ -127,7 +127,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	std::auto_ptr<std::vector<double> > pDCA( new std::vector<double> );
 
-	std::auto_ptr<std::vector< std::vector<int> > >    pRefs( new std::vector<std::vector<int> > );
+	std::auto_ptr<std::vector< std::vector<double> > >    pRefs( new std::vector<std::vector<double> > );
 
 	edm::ESHandle<TransientTrackBuilder> theB;
 	iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
@@ -222,12 +222,12 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 		pDCA	->push_back( dca	);
 
-		std::vector<int>  vref;
+		std::vector<double>  vref;
 		for ( unsigned int i = 0; i < v0.numberOfDaughters(); i++ ) {
 			auto dau = (reco::RecoChargedCandidate*) v0.daughter(i);
 			auto trkRef = dau->track();
 
-			vref.push_back( trkRef.index() );
+			vref.push_back( double(trkRef.index()) );
 		}
 		pRefs->push_back( vref );
 	}
