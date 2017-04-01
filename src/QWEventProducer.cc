@@ -44,6 +44,7 @@ private:
 	double	pTmax_;
 	double	Etamin_;
 	double	Etamax_;
+	int	minPxLayers_;
 
 	bool	bEff_;
 	bool	bFlip_;
@@ -68,6 +69,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 3.0);
 	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
 	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
+	minPxLayers_ = pset.getUntrackedParameter<int>("minPxLayers", -1);
 
 	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
 
@@ -259,6 +261,13 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<TrackCollection> tracks;
 	iEvent.getByLabel(trackSrc_,tracks);
 
+	const MagneticField* theMagneticField;
+	if (minPxLayers_>=0) {
+		edm::ESHandle<MagneticField> theMagneticFieldHandle;
+		iSetup.get<IdealMagneticFieldRecord>().get(theMagneticFieldHandle);
+		theMagneticField = theMagneticFieldHandle.product();
+	}
+
 	edm::Handle<int> ch;
 	iEvent.getByLabel(centralitySrc_,ch);
 	int Cent = *(ch.product());
@@ -270,6 +279,11 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		else if ( sTrackQuality == Pixel  and not TrackQuality_Pixel (itTrack, recoVertices) ) continue;
 
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
+
+		if (minPxLayers_>=0) {
+			reco::TransientTrack tTrack(*itTrack, theMagneticField);
+			if (tTrack.hitPattern().pixelLayersWithMeasurement() < minPxLayers_) continue;
+		}
 
 		double eff = 0.;
 
