@@ -100,8 +100,6 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	double vyError = recoVertices[primaryvtx].yError();
 	double vzError = recoVertices[primaryvtx].zError();
 
-        double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
-
 	Handle<TrackCollection> tracks;
 	iEvent.getByLabel(trackSrc_,tracks);
 

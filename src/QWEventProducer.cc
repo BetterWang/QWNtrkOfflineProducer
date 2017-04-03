@@ -3,6 +3,7 @@
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ESHandle.h"
 
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -11,6 +12,12 @@
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+
+#include "TrackingTools/TransientTrack/interface/TransientTrack.h"
+
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "MagneticField/VolumeBasedEngine/interface/VolumeBasedMagneticField.h"
+
 
 #include "TFile.h"
 #include "TH2.h"
@@ -261,7 +268,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<TrackCollection> tracks;
 	iEvent.getByLabel(trackSrc_,tracks);
 
-	const MagneticField* theMagneticField;
+	const MagneticField* theMagneticField = nullptr;
 	if (minPxLayers_>=0) {
 		edm::ESHandle<MagneticField> theMagneticFieldHandle;
 		iSetup.get<IdealMagneticFieldRecord>().get(theMagneticFieldHandle);
@@ -280,7 +287,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 
-		if (minPxLayers_>=0) {
+		if (theMagneticField) {
 			reco::TransientTrack tTrack(*itTrack, theMagneticField);
 			if (tTrack.hitPattern().pixelLayersWithMeasurement() < minPxLayers_) continue;
 		}

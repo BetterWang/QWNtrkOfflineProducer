@@ -31,9 +31,9 @@ private:
 
 	TChain ch_;
 	int idx_;
-	double pt_[2500];
-	double phi_[2500];
-	double eta_[2500];
+	double pt_[8500];
+	double phi_[8500];
+	double eta_[8500];
 	int Nmult_;
 };
 
