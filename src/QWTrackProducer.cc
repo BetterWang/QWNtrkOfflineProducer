@@ -63,6 +63,9 @@ QWTrackProducer::QWTrackProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("pd0err");
 	produces<std::vector<double> >("pdzerr");
 	produces<std::vector<double> >("pterr");
+
+	produces<std::vector<double> >("nhits");
+	produces<std::vector<double> >("algo");
 }
 
 QWTrackProducer::~QWTrackProducer()
@@ -86,6 +89,8 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > pdz( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pd0error( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pdzerror( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > pnhits( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > palgo( new std::vector<double> );
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
@@ -117,6 +122,8 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		pd0error->push_back(sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError));
 		pdz->push_back(itTrack->dz(v1));
 		pdzerror->push_back(sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError));
+		pnhits->push_back(itTrack->numberOfValidHits());
+		palgo->push_back(itTrack->algo());
 	}
 
 	iEvent.put(pphi, std::string("phi"));
@@ -130,6 +137,8 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(pdz, std::string("pdz"));
 	iEvent.put(pd0error, std::string("pd0err"));
 	iEvent.put(pdzerror, std::string("pdzerr"));
+	iEvent.put(pnhits, std::string("nhits"));
+	iEvent.put(palgo, std::string("algo"));
 }
 
 
