@@ -56,7 +56,6 @@ QWTrackProducer::QWTrackProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("eta");
 	produces<std::vector<double> >("pt");
 	produces<std::vector<double> >("charge");
-	produces<std::vector<double> >("quality");
 
 	produces<std::vector<double> >("pd0");
 	produces<std::vector<double> >("pdz");
@@ -66,6 +65,7 @@ QWTrackProducer::QWTrackProducer(const edm::ParameterSet& pset) :
 
 	produces<std::vector<double> >("nhits");
 	produces<std::vector<double> >("algo");
+	produces<std::vector<double> >("nChi2");
 }
 
 QWTrackProducer::~QWTrackProducer()
@@ -84,13 +84,13 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > pcharge( new std::vector<double> );
 
 	std::auto_ptr<std::vector<double> > ppTerror( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pQuality( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pd0( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pdz( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pd0error( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pdzerror( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pnhits( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > palgo( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > pnChi2( new std::vector<double> );
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
@@ -111,8 +111,9 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	for(TrackCollection::const_iterator itTrack = tracks->begin();
 			itTrack != tracks->end();
 			++itTrack) {
+
+		if ( !itTrack->quality(reco::TrackBase::highPurity) ) continue;
 		pphi->push_back(itTrack->phi());
-		pQuality->push_back(itTrack->qualityMask());
 		ppT->push_back(itTrack->pt());
 		peta->push_back(itTrack->eta());
 		pcharge->push_back(itTrack->charge());
@@ -124,13 +125,13 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		pdzerror->push_back(sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError));
 		pnhits->push_back(itTrack->numberOfValidHits());
 		palgo->push_back(itTrack->algo());
+		pnChi2->push_back(itTrack->normalizedChi2());
 	}
 
 	iEvent.put(pphi, std::string("phi"));
 	iEvent.put(peta, std::string("eta"));
 	iEvent.put(ppT, std::string("pt"));
 	iEvent.put(pcharge, std::string("charge"));
-	iEvent.put(pQuality, std::string("quality"));
 
 	iEvent.put(ppTerror, std::string("pterr"));
 	iEvent.put(pd0, std::string("pd0"));
@@ -139,6 +140,7 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(pdzerror, std::string("pdzerr"));
 	iEvent.put(pnhits, std::string("nhits"));
 	iEvent.put(palgo, std::string("algo"));
+	iEvent.put(pnChi2, std::string("nChi2"));
 }
 
 
