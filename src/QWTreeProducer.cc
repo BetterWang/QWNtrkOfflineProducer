@@ -70,10 +70,10 @@ void QWTreeProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	int sz = ch_.GetEntry(idx_++);
 	if ( sz > 0 and Nmult_ > 0 ) {
-		pphi->reserve(Nmult_);
-		peta->reserve(Nmult_);
-		ppT->reserve(Nmult_);
-		pweight->reserve(Nmult_);
+//		pphi->reserve(Nmult_);
+//		peta->reserve(Nmult_);
+//		ppT->reserve(Nmult_);
+//		pweight->reserve(Nmult_);
 
 		pvz->reserve(1);
 		pvz->push_back(0);

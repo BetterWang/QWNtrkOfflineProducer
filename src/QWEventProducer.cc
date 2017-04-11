@@ -133,8 +133,8 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 0; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
-		} else if ( streff == string("Hydjet_ppReco_v5_tight.root") or streff == string("Hydjet_ppReco_v5_loose.root")
-				or streff == string("Hydjet_ppReco_tight3_v2.root") or streff == string("Hydjet_ppReco_tight2_v2.root") or streff == string("Hydjet_ppReco_tighter_v2.root")
+		} else if ( streff == string("Hydjet_ppReco_v5_tight.root") or streff == string("Hydjet_ppReco_v5_loose.root") or streff == string("Hydjet_ppReco_std_v2.root")
+				or streff == string("Hydjet_ppReco_tight3_v2.root") or streff == string("Hydjet_ppReco_tight2_v2.root") or streff == string("Hydjet_ppReco_tighter_v2.root") or streff == string("Hydjet_ppReco_npix0_v2.root")
 				or streff == string("Hydjet_ppReco_v6_wide.root") or streff ==string("Hydjet_ppReco_v6_narrow.root") ) {
 			// PbPb15 pp reco syst
 			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_0");
@@ -269,12 +269,12 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<TrackCollection> tracks;
 	iEvent.getByLabel(trackSrc_,tracks);
 
-	const MagneticField* theMagneticField = nullptr;
-	if (minPxLayers_>=0) {
-		edm::ESHandle<MagneticField> theMagneticFieldHandle;
-		iSetup.get<IdealMagneticFieldRecord>().get(theMagneticFieldHandle);
-		theMagneticField = theMagneticFieldHandle.product();
-	}
+//	const MagneticField* theMagneticField = nullptr;
+//	if (minPxLayers_>=0) {
+//		edm::ESHandle<MagneticField> theMagneticFieldHandle;
+//		iSetup.get<IdealMagneticFieldRecord>().get(theMagneticFieldHandle);
+//		theMagneticField = theMagneticFieldHandle.product();
+//	}
 
 	edm::Handle<int> ch;
 	iEvent.getByLabel(centralitySrc_,ch);
@@ -287,11 +287,12 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		else if ( sTrackQuality == Pixel  and not TrackQuality_Pixel (itTrack, recoVertices) ) continue;
 
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
+		if (itTrack->hitPattern().pixelLayersWithMeasurement() < minPxLayers_) continue;
 
-		if (theMagneticField) {
-			reco::TransientTrack tTrack(*itTrack, theMagneticField);
-			if (tTrack.hitPattern().pixelLayersWithMeasurement() < minPxLayers_) continue;
-		}
+//		if (theMagneticField) {
+//			reco::TransientTrack tTrack(*itTrack, theMagneticField);
+//			if (tTrack.hitPattern().pixelLayersWithMeasurement() < minPxLayers_) continue;
+//		}
 
 		double eff = 0.;
 
