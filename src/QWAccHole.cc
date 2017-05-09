@@ -35,20 +35,22 @@ private:
 QWAccHole::QWAccHole(const edm::ParameterSet& pset) :
 	srcPhi_(pset.getUntrackedParameter<edm::InputTag>("srcPhi")),
 	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta")),
-	PhiMin_(pset.getUntrackedParameter<edm::InputTag>("PhiMin")),
-	PhiMax_(pset.getUntrackedParameter<edm::InputTag>("PhiMax")),
-	EtaMin_(pset.getUntrackedParameter<edm::InputTag>("EtaMin")),
-	EtaMax_(pset.getUntrackedParameter<edm::InputTag>("EtaMax")),
-	srcVtag_(pset.getUntrackedParameter<std::vector<edm::InputTag> >("srcVtag"))
+	PhiMin_(pset.getUntrackedParameter<double>("PhiMin")),
+	PhiMax_(pset.getUntrackedParameter<double>("PhiMax")),
+	EtaMin_(pset.getUntrackedParameter<double>("EtaMin")),
+	EtaMax_(pset.getUntrackedParameter<double>("EtaMax")),
+	srcVtag_(pset.getUntrackedParameter< std::vector< edm::InputTag > > ("srcVtag") )
 {
 	consumes< std::vector<double> >(srcPhi_);
 	consumes< std::vector<double> >(srcEta_);
 
 	for ( auto it = srcVtag_.begin(); it != srcVtag_.end(); it++ ) {
 		consumes< std::vector<double> >( *it );
+		produces<std::vector<double> >(it->instance());
 	}
 
-	produces<double>();
+	produces<std::vector<double> >("phi");
+	produces<std::vector<double> >("eta");
 }
 
 QWAccHole::~QWAccHole()
@@ -73,28 +75,30 @@ void QWAccHole::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::vector< auto_ptr<std::vector<double> > >  vnew;
 
 	std::vector< Handle< std::vector<double> > > pH;
-	for ( int i = 0; i < srcVtag_.size(); i++ ) {
-		vnew->push_back( auto_ptr<std::vector<double> >(new std::vector<double>) );
-		pH->push_back(Handle< std::vector<double> >);
+	for ( unsigned int i = 0; i < srcVtag_.size(); i++ ) {
+		vnew.push_back( auto_ptr<std::vector<double> >(new std::vector<double>) );
+		pH.push_back(Handle< std::vector<double> >() );
 		iEvent.getByLabel(srcVtag_[i], pH[i]);
 	}
 
-	for ( int i = 0; i < phi.size(); i++ ) {
+	for ( unsigned int i = 0; i < phi.size(); i++ ) {
 		if ( phi[i] > PhiMin_ and phi[i] < PhiMax_ and eta[i] > EtaMin_ and eta[i] < EtaMax_ ) {
+//			std::cout << __LINE__ << " " << phi[i] << "\t" << eta[i] << std::endl;
 			continue;
 		}
+//		std::cout << __LINE__ << std::endl;
 
 		pphi_new->push_back(phi[i]);
 		peta_new->push_back(eta[i]);
 
-		for ( int j = 0; j < srcVtag_.size(); j++ ) {
+		for ( unsigned int j = 0; j < srcVtag_.size(); j++ ) {
 			vnew[j]->push_back( (*(pH[j]))[i] );
 		}
 	}
 
 	iEvent.put(pphi_new, std::string("phi"));
 	iEvent.put(peta_new, std::string("eta"));
-	for ( int i = 0; i < srcVtag_.size(); i++ ) {
+	for ( unsigned int i = 0; i < srcVtag_.size(); i++ ) {
 		iEvent.put( vnew[i], srcVtag_[i].instance() );
 	}
 }

@@ -29,9 +29,9 @@ private:
 QWPhiRotation::QWPhiRotation(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
-	consumes<int>(src_);
+	consumes<std::vector<double> >(src_);
 
-	produces<double>();
+	produces<std::vector<double> >("phi");
 }
 
 QWPhiRotation::~QWPhiRotation()
@@ -57,7 +57,7 @@ void QWPhiRotation::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		pphi_new->push_back(phi);
 	}
 
-	iEvent.put(pphi_new);
+	iEvent.put(pphi_new, string("phi"));
 }
 
 
