@@ -28,7 +28,9 @@ private:
 QWInt2Double::QWInt2Double(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
+#if	CMSSW_VERSION > 600
 	consumes<int>(src_);
+#endif
 
 	produces<double>();
 }

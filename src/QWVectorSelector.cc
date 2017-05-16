@@ -33,7 +33,9 @@ QWVectorSelector::QWVectorSelector(const edm::ParameterSet& pset) :
 	vectSrc_(pset.getUntrackedParameter<edm::InputTag>("vectSrc")),
 	idx_(pset.getUntrackedParameter<int>("idx", 0))
 {
+#if	CMSSW_VERSION>600
 	consumes< std::vector<double> >(vectSrc_);
+#endif
 	produces<double>();
 }
 

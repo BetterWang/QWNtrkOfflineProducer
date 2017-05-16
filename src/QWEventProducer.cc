@@ -65,9 +65,11 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	fweight_(pset.getUntrackedParameter<edm::InputTag>("fweight")),
 	centralitySrc_(pset.getUntrackedParameter<edm::InputTag>("centralitySrc"))
 {
+#if	CMSSW_VERSION>600
 	consumes<int>(centralitySrc_);
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
+#endif
 	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.);
 	d0d0error_ = pset.getUntrackedParameter<double>("d0d0error", 3.);
 	pterrorpt_ = pset.getUntrackedParameter<double>("pterrorpt", 0.1);
@@ -370,10 +372,17 @@ QWEventProducer::TrackQuality_HIReco(const reco::TrackCollection::const_iterator
 		return false;
 	}
 	if (
+#if	CMSSW_VERSION>600
 		itTrack->originalAlgo() != 4 and
 		itTrack->originalAlgo() != 5 and
 		itTrack->originalAlgo() != 6 and
 		itTrack->originalAlgo() != 7
+#else
+		itTrack->algo() != 4 and
+		itTrack->algo() != 5 and
+		itTrack->algo() != 6 and
+		itTrack->algo() != 7
+#endif
 	) {
 		return false;
 	}
@@ -417,10 +426,17 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 		}
 		if (
 			itTrack->pt() > 2.4 and
+#if	CMSSW_VERSION>600
 			itTrack->originalAlgo() != 4 and
 			itTrack->originalAlgo() != 5 and
 			itTrack->originalAlgo() != 6 and
 			itTrack->originalAlgo() != 7
+#else
+			itTrack->algo() != 4 and
+			itTrack->algo() != 5 and
+			itTrack->algo() != 6 and
+			itTrack->algo() != 7
+#endif
 		) {
 			return false;
 		}

@@ -30,7 +30,9 @@ private:
 QWGenHIProducer::QWGenHIProducer(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
+#if	CMSSW_VERSION > 600
 	consumes<edm::GenHIEvent>(src_);
+#endif
 
 	produces<double>("b");
 	produces<double>("EP");

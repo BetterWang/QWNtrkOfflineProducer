@@ -14,13 +14,15 @@ public:
 	~QWPPRecoCentBinProducer();
 
 private:
-	virtual void beginRun(edm::Run const& run, const edm::EventSetup& iSetup) override;
+//	virtual void beginRun(edm::Run const& run, const edm::EventSetup& iSetup) override;
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 
 };
 
 QWPPRecoCentBinProducer::QWPPRecoCentBinProducer(const edm::ParameterSet& pset) {
+#if	CMSSW_VERSION > 600
 	consumes<CaloTowerCollection>(edm::InputTag("towerMaker"));
+#endif
 	produces<int>();
 }
 
@@ -29,9 +31,9 @@ QWPPRecoCentBinProducer::~QWPPRecoCentBinProducer()
 	return;
 }
 
-void QWPPRecoCentBinProducer::beginRun(edm::Run const& iRun, const edm::EventSetup& iSetup) {
-	return;
-}
+//void QWPPRecoCentBinProducer::beginRun(edm::Run const& iRun, const edm::EventSetup& iSetup) {
+//	return;
+//}
 
 void QWPPRecoCentBinProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 	using namespace edm;

@@ -37,7 +37,9 @@ private:
 QWGenEventProducer::QWGenEventProducer(const edm::ParameterSet& pset) :
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc"))
 {
+#if	CMSSW_VERSION>600
 	consumes<reco::GenParticleCollection>(trackSrc_);
+#endif
 
 	pTmin_ = pset.getUntrackedParameter<double>("ptMin", 0.3);
 	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 3.0);
@@ -79,7 +81,9 @@ void QWGenEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 			itTrack != tracks->end();
 			++itTrack) {
 		if ( itTrack->status() != 1 ) continue;
+#if	CMSSW_VERSION>750
 		if ( isPrompt_ and (not itTrack->isPromptFinalState()) ) continue;
+#endif
 		if ( itTrack->charge() == 0 ) continue;
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 

@@ -33,9 +33,11 @@ QWTreeMaker::QWTreeMaker(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
 	vTags_(pset.getUntrackedParameter< std::vector<std::string> >("vTag"))
 {
+#if	CMSSW_VERSION > 600
 	for ( auto tag : vTags_ ) {
 		consumes<std::vector<double> >(edm::InputTag(src_.label(), tag));
 	}
+#endif
 
 	edm::Service<TFileService> fs;
 	trV = fs->make<TTree>("trV", "trV");

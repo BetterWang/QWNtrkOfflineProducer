@@ -1,3 +1,4 @@
+#if	CMSSW_VERSION > 600
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 
@@ -257,3 +258,4 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 DEFINE_FWK_MODULE(QWV0VectProducer);
+#endif

@@ -41,12 +41,17 @@ QW2DAnalyzer::QW2DAnalyzer(const edm::ParameterSet& pset) :
 	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta")),
 	srcW_(pset.getUntrackedParameter<edm::InputTag>("srcW", std::string("NA")))
 {
+#if	CMSSW_VERSION > 600
 	consumes<std::vector<double> >(srcPhi_);
 	consumes<std::vector<double> >(srcEta_);
+#endif
 	bWeight = false;
 
 	if ( srcW_.label() != std::string("NA") ) {
+#if	CMSSW_VERSION > 600
 		consumes<std::vector<double> >(srcW_);
+#endif
+	bWeight = false;
 		bWeight = true;
 	}
 	int hNbins = pset.getUntrackedParameter<int>("hNbins");

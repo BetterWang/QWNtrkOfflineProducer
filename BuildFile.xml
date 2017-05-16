@@ -1,4 +1,5 @@
 <use name="root"/>
+<use name="HepMC"/>
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
@@ -12,6 +13,7 @@
 <use name="CommonTools/UtilAlgos"/>
 <use name="TrackingTools/TransientTrack"/>
 <use name="MagneticField/Records"/>
+<use name="SimDataFormats/GeneratorProducts"/>
 <use name="TrackingTools/IPTools"/>
 <flags EDM_PLUGIN="1"/>
 <library   file="src/*.cc" name="QWNtrkOffline"/>

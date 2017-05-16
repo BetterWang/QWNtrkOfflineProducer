@@ -25,7 +25,9 @@ private:
 QWVectCounter::QWVectCounter(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
+#if	CMSSW_VERSION > 600
 	consumes<std::vector<double> >(src_);
+#endif
 	produces<double>();
 }
 

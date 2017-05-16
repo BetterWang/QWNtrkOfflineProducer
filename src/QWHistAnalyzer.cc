@@ -23,7 +23,10 @@ private:
 QWHistAnalyzer::QWHistAnalyzer(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
+#if	CMSSW_VERSION>600
 	consumes<int>(src_);
+#endif
+
 	int Nbins = pset.getUntrackedParameter<int>("Nbins");
 	double start = pset.getUntrackedParameter<double>("start");
 	double end = pset.getUntrackedParameter<double>("end");
