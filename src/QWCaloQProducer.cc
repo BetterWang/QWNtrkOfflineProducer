@@ -37,10 +37,15 @@ QWCaloQProducer::QWCaloQProducer(const edm::ParameterSet& pset) :
 	N_(pset.getUntrackedParameter<int>("N"))
 {
 	consumes<CaloTowerCollection>(caloSrc_);
-	produces<double>("sum");
-	produces<double>("plus");
-	produces<double>("minus");
-	produces<double>("Wsum");
+	produces<double>("arg");
+	produces<double>("argp");
+	produces<double>("argm");
+
+	produces<double>("abs");
+	produces<double>("absp");
+	produces<double>("absm");
+
+	produces<double>("W");
 	produces<double>("Wplus");
 	produces<double>("Wminus");
 }
@@ -86,14 +91,15 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 
 
-	double pHFsum = std::arg(HFsum);
-	double pHFplus = std::arg(HFplus);
-	double pHFminus = std::arg(HFminus);
-	iEvent.put(std::auto_ptr<double>(new double(pHFsum)), "sum");
-	iEvent.put(std::auto_ptr<double>(new double(pHFplus)), "plus");
-	iEvent.put(std::auto_ptr<double>(new double(pHFminus)), "minus");
+	iEvent.put(std::auto_ptr<double>(new double(std::arg(HFsum))),   "arg");
+	iEvent.put(std::auto_ptr<double>(new double(std::arg(HFplus))),  "argp");
+	iEvent.put(std::auto_ptr<double>(new double(std::arg(HFminus))), "argm");
 
-	iEvent.put(std::auto_ptr<double>(new double(Wsum)), "Wsum");
+	iEvent.put(std::auto_ptr<double>(new double(std::abs(HFsum))),   "abs");
+	iEvent.put(std::auto_ptr<double>(new double(std::abs(HFplus))),  "absp");
+	iEvent.put(std::auto_ptr<double>(new double(std::abs(HFminus))), "absm");
+
+	iEvent.put(std::auto_ptr<double>(new double(Wsum)), "W");
 	iEvent.put(std::auto_ptr<double>(new double(Wplus)), "Wplus");
 	iEvent.put(std::auto_ptr<double>(new double(Wminus)), "Wminus");
 
