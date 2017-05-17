@@ -27,9 +27,7 @@ private:
 QWZDCProducer::QWZDCProducer(const edm::ParameterSet& pset) :
 	Src_(pset.getUntrackedParameter<edm::InputTag>("Src"))
 {
-#if	CMSSW_VERSION>600
 	consumes<ZDCDigiCollection>(Src_);
-#endif
 
 	produces<std::vector<double> >("ADC");
 	produces<std::vector<double> >("fC");

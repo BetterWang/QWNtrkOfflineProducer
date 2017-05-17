@@ -41,15 +41,11 @@ QWAccHole::QWAccHole(const edm::ParameterSet& pset) :
 	EtaMax_(pset.getUntrackedParameter<double>("EtaMax")),
 	srcVtag_(pset.getUntrackedParameter< std::vector< edm::InputTag > > ("srcVtag") )
 {
-#if	CMSSW_VERSION>600
 	consumes< std::vector<double> >(srcPhi_);
 	consumes< std::vector<double> >(srcEta_);
-#endif
 
 	for ( auto it = srcVtag_.begin(); it != srcVtag_.end(); it++ ) {
-#if	CMSSW_VERSION>600
 		consumes< std::vector<double> >( *it );
-#endif
 		produces<std::vector<double> >(it->instance());
 	}
 

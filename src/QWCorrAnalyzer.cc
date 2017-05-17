@@ -30,10 +30,8 @@ QWCorrAnalyzer::QWCorrAnalyzer(const edm::ParameterSet& pset) :
 	srcX_(pset.getUntrackedParameter<edm::InputTag>("srcX")),
 	srcY_(pset.getUntrackedParameter<edm::InputTag>("srcY"))
 {
-#if	CMSSW_VERSION>600
 	consumes<double>(srcX_);
 	consumes<double>(srcY_);
-#endif
 
 	int NbinsX = pset.getUntrackedParameter<int>("NbinsX");
 	int NbinsY = pset.getUntrackedParameter<int>("NbinsY");

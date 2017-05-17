@@ -36,15 +36,13 @@ QWCaloQProducer::QWCaloQProducer(const edm::ParameterSet& pset) :
 	etaMax_(pset.getUntrackedParameter<double>("etaMax")),
 	N_(pset.getUntrackedParameter<int>("N"))
 {
-#if	CMSSW_VERSION > 600
-	consumes<reco::VertexCollection>(caloSrc_);
-#endif
-	produces<std::complex<double> >("sum");
-	produces<std::complex<double> >("plus");
-	produces<std::complex<double> >("minus");
-	produces<double >("Wsum");
-	produces<double >("Wplus");
-	produces<double >("Wminus");
+	consumes<CaloTowerCollection>(caloSrc_);
+	produces<double>("sum");
+	produces<double>("plus");
+	produces<double>("minus");
+	produces<double>("Wsum");
+	produces<double>("Wplus");
+	produces<double>("Wminus");
 }
 
 QWCaloQProducer::~QWCaloQProducer() {
@@ -87,26 +85,18 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 
-	if ( Wsum != 0. ) {
-		HFsum /= Wsum;
-	}
-	if ( Wplus != 0. ) {
-		HFplus /= Wplus;
-	}
-	if ( Wsum != 0. ) {
-		HFminus /= Wminus;
-	}
 
-	std::auto_ptr<std::complex<double> > pHFsum(&HFsum);
-	std::auto_ptr<std::complex<double> > pHFplus(&HFplus);
-	std::auto_ptr<std::complex<double> > pHFminus(&HFminus);
-	iEvent.put(pHFsum, "sum");
-	iEvent.put(pHFplus, "plus");
-	iEvent.put(pHFminus, "minus");
+	double pHFsum = std::arg(HFsum);
+	double pHFplus = std::arg(HFplus);
+	double pHFminus = std::arg(HFminus);
+	iEvent.put(std::auto_ptr<double>(new double(pHFsum)), "sum");
+	iEvent.put(std::auto_ptr<double>(new double(pHFplus)), "plus");
+	iEvent.put(std::auto_ptr<double>(new double(pHFminus)), "minus");
 
-	iEvent.put(std::auto_ptr<double>(&Wsum), "Wsum");
-	iEvent.put(std::auto_ptr<double>(&Wplus), "Wplus");
-	iEvent.put(std::auto_ptr<double>(&Wminus), "Wminus");
+	iEvent.put(std::auto_ptr<double>(new double(Wsum)), "Wsum");
+	iEvent.put(std::auto_ptr<double>(new double(Wplus)), "Wplus");
+	iEvent.put(std::auto_ptr<double>(new double(Wminus)), "Wminus");
+
 }
 
 DEFINE_FWK_MODULE(QWCaloQProducer);

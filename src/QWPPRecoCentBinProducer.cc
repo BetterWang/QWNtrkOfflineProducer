@@ -20,9 +20,7 @@ private:
 };
 
 QWPPRecoCentBinProducer::QWPPRecoCentBinProducer(const edm::ParameterSet& pset) {
-#if	CMSSW_VERSION > 600
 	consumes<CaloTowerCollection>(edm::InputTag("towerMaker"));
-#endif
 	produces<int>();
 }
 

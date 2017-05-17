@@ -7,10 +7,10 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1D.h"
 
-class QWHistAnalyzer : public edm::EDAnalyzer {
+class QWHistDAnalyzer : public edm::EDAnalyzer {
 public:
-	explicit QWHistAnalyzer(const edm::ParameterSet&);
-	~QWHistAnalyzer() {};
+	explicit QWHistDAnalyzer(const edm::ParameterSet&);
+	~QWHistDAnalyzer() {};
 private:
 	virtual void beginJob() {};
 	virtual void analyze(const edm::Event&, const edm::EventSetup&);
@@ -20,10 +20,10 @@ private:
 	TH1D * h;
 };
 
-QWHistAnalyzer::QWHistAnalyzer(const edm::ParameterSet& pset) :
+QWHistDAnalyzer::QWHistDAnalyzer(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
-	consumes<int>(src_);
+	consumes<double>(src_);
 
 	int Nbins = pset.getUntrackedParameter<int>("Nbins");
 	double start = pset.getUntrackedParameter<double>("start");
@@ -35,15 +35,15 @@ QWHistAnalyzer::QWHistAnalyzer(const edm::ParameterSet& pset) :
 }
 
 void
-QWHistAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+QWHistDAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	Handle<int> t;
+	Handle<double> t;
 	iEvent.getByLabel(src_, t);
-	int c = *(t.product());
+	double c = *(t.product());
 
 	h->Fill(c);
 	return;
 }
 
-DEFINE_FWK_MODULE(QWHistAnalyzer);
+DEFINE_FWK_MODULE(QWHistDAnalyzer);

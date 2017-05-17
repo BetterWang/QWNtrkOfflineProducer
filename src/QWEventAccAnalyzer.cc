@@ -37,12 +37,10 @@ QWEventAccAnalyzer::QWEventAccAnalyzer(const edm::ParameterSet& pset) :
 	srcPt_(pset.getUntrackedParameter<edm::InputTag>("srcPt")),
 	srcWeight_(pset.getUntrackedParameter<edm::InputTag>("srcWeight"))
 {
-#if	CMSSW_VERSION>600
 	consumes<std::vector<double> >(srcPhi_);
 	consumes<std::vector<double> >(srcEta_);
 	consumes<std::vector<double> >(srcPt_);
 	consumes<std::vector<double> >(srcWeight_);
-#endif
 
 	int NbinsPhi = pset.getUntrackedParameter<int>("NbinsPhi", 24);
 	int NbinsEta = pset.getUntrackedParameter<int>("NbinsEta", 24);

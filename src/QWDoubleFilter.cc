@@ -22,9 +22,7 @@ QWDoubleFilter::QWDoubleFilter(const edm::ParameterSet& pset) :
 	min_(pset.getUntrackedParameter<double>("dmin")),
 	max_(pset.getUntrackedParameter<double>("dmax"))
 {
-#if	CMSSW_VERSION>600
 	consumes<double>(src_);
-#endif
 	return;
 }
 

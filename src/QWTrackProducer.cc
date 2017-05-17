@@ -49,10 +49,8 @@ QWTrackProducer::QWTrackProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc"))
 {
-#if	CMSSW_VERSION > 600
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
-#endif
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");

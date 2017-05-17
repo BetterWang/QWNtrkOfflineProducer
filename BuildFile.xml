@@ -9,6 +9,7 @@
 <use name="DataFormats/TrackReco"/>
 <use name="DataFormats/ParticleFlowCandidate"/>
 <use name="DataFormats/HepMCCandidate"/>
+<use name="DataFormats/CaloTowers"/>
 <use name="DataFormats/HcalDigi"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="TrackingTools/TransientTrack"/>
