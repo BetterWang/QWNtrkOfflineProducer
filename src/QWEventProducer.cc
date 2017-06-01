@@ -51,6 +51,7 @@ private:
 	double	pTmax_;
 	double	Etamin_;
 	double	Etamax_;
+	double	chi2_;
 	int	minPxLayers_;
 
 	bool	bEff_;
@@ -77,6 +78,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
 	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
 	minPxLayers_ = pset.getUntrackedParameter<int>("minPxLayers", -1);
+	chi2_ = pset.getUntrackedParameter<double>("chi2", 99999999.);
 
 	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
 
@@ -410,6 +412,7 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 	int nHits = itTrack->numberOfValidHits();
 //	std::cout << __LINE__ << "\tnHits = " << nHits << std::endl;
 	if ( itTrack->pt() < 2.4 and (nHits==3 or nHits==4 or nHits==5 or nHits==6) ) bPix = true;
+	if ( itTrack->normalizedChi2() > chi2_ ) return false;
 	if ( not bPix ) {
 		if ( nHits < 11 ) return false;
 		if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > 0.15 ) {
