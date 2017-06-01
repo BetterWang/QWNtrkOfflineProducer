@@ -136,6 +136,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 				hEff_cbin[c] = h;
 			}
 		} else if ( streff == string("Hydjet_ppReco_v5_tight.root") or streff == string("Hydjet_ppReco_v5_loose.root") or streff == string("Hydjet_ppReco_std_v2.root")
+				or streff == string("Hydjet_ppReco_tight4_v2.root")
 				or streff == string("Hydjet_ppReco_tight3_v2.root") or streff == string("Hydjet_ppReco_tight2_v2.root") or streff == string("Hydjet_ppReco_tighter_v2.root") or streff == string("Hydjet_ppReco_npix0_v2.root")
 				or streff == string("Hydjet_ppReco_Narrow2_v2.root") or streff == string("Hydjet_ppReco_Wide2_v2.root") or streff == string("Hydjet_ppReco_tight2dz_v2.root") or streff == string("Hydjet_ppReco_tight2dxy_v2.root")
 				or streff == string("Hydjet_ppReco_v6_wide.root") or streff ==string("Hydjet_ppReco_v6_narrow.root") ) {
