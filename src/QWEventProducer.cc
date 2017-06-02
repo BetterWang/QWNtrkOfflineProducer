@@ -412,7 +412,6 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 	int nHits = itTrack->numberOfValidHits();
 //	std::cout << __LINE__ << "\tnHits = " << nHits << std::endl;
 	if ( itTrack->pt() < 2.4 and (nHits==3 or nHits==4 or nHits==5 or nHits==6) ) bPix = true;
-	if ( itTrack->normalizedChi2() > chi2_ ) return false;
 	if ( not bPix ) {
 		if ( nHits < 11 ) return false;
 		if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > 0.15 ) {
@@ -447,6 +446,8 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 		if ( fabs( dz/dzerror ) > dzdzerror_ ) {
 			return false;
 		}
+	} else {
+		if ( itTrack->normalizedChi2() > chi2_ ) return false;
 	}
 	return true;
 }
