@@ -412,6 +412,16 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
 	bool bPix = false;
 	int nHits = itTrack->numberOfValidHits();
+
+	int primaryvtx = 0;
+	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
+	double vxError = recoVertices[primaryvtx].xError();
+	double vyError = recoVertices[primaryvtx].yError();
+	double vzError = recoVertices[primaryvtx].zError();
+	double d0 = -1.* itTrack->dxy(v1);
+
+	double dz=itTrack->dz(v1);
+	double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
 //	std::cout << __LINE__ << "\tnHits = " << nHits << std::endl;
 	if ( itTrack->pt() < 2.4 and (nHits==3 or nHits==4 or nHits==5 or nHits==6) ) bPix = true;
 	if ( not bPix ) {
@@ -432,19 +442,11 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 			return false;
 		}
 
-		int primaryvtx = 0;
-		math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
-		double vxError = recoVertices[primaryvtx].xError();
-		double vyError = recoVertices[primaryvtx].yError();
-		double vzError = recoVertices[primaryvtx].zError();
-		double d0 = -1.* itTrack->dxy(v1);
 		double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
 		if ( fabs( d0/derror ) > d0d0error_ ) {
 			return false;
 		}
 
-		double dz=itTrack->dz(v1);
-		double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
 		if ( fabs( dz/dzerror ) > dzdzerror_ ) {
 			return false;
 		}
