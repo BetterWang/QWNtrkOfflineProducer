@@ -44,6 +44,7 @@ private:
 	enum    TrackCut {trackUndefine = 0, ppReco = 1, HIReco, Pixel};
 	TrackCut sTrackQuality;
 	double  dzdzerror_;
+	double  dzdzerror_pix_;
 	double  d0d0error_;
 	double  pterrorpt_;
 
@@ -69,7 +70,8 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	consumes<int>(centralitySrc_);
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
-	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.); // pixel: nominal 8., tight 6., loose 10
+	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.);         // general nominal 3., tight 2., loose 5
+	dzdzerror_pix_ = pset.getUntrackedParameter<double>("dzdzerror_pix", 8.); // pixel: nominal 8., tight 6., loose 10
 	d0d0error_ = pset.getUntrackedParameter<double>("d0d0error", 3.);
 	pterrorpt_ = pset.getUntrackedParameter<double>("pterrorpt", 0.1);
 
@@ -448,6 +450,9 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 		}
 	} else {
 		if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > chi2_ ) return false;
+		if ( fabs( dz/dzerror ) > dzdzerror_pix_ ) {
+			return false;
+		}
 	}
 	return true;
 }
