@@ -69,7 +69,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	consumes<int>(centralitySrc_);
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
-	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.);
+	dzdzerror_ = pset.getUntrackedParameter<double>("dzdzerror", 3.); // pixel: nominal 8., tight 6., loose 10
 	d0d0error_ = pset.getUntrackedParameter<double>("d0d0error", 3.);
 	pterrorpt_ = pset.getUntrackedParameter<double>("pterrorpt", 0.1);
 
@@ -78,7 +78,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
 	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
 	minPxLayers_ = pset.getUntrackedParameter<int>("minPxLayers", -1);
-	chi2_ = pset.getUntrackedParameter<double>("chi2", 99999999.);
+	chi2_ = pset.getUntrackedParameter<double>("chi2", 12.); // pixel: nominal 12, tight 9, loose 18.,
 
 	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
 
@@ -447,7 +447,7 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 			return false;
 		}
 	} else {
-		if ( itTrack->normalizedChi2() > chi2_ ) return false;
+		if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > chi2_ ) return false;
 	}
 	return true;
 }
