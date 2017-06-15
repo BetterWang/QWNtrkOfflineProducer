@@ -219,17 +219,15 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
       			if (cApp.status()) {
 				dca = std::abs(cApp.distance());
 			}
+
+			for ( unsigned int i = 0; i < 2; i++ ) {
+				auto dau = (reco::RecoChargedCandidate*) v0.daughter(i);
+				auto trkRef = dau->track();
+
+				pRefs.push_back( double(trkRef.index()) );
+			}
 		}
 		pDCA	->push_back( dca	);
-
-		std::vector<double>  vref;
-		for ( unsigned int i = 0; i < v0.numberOfDaughters(); i++ ) {
-			auto dau = (reco::RecoChargedCandidate*) v0.daughter(i);
-			auto trkRef = dau->track();
-
-			vref.push_back( double(trkRef.index()) );
-		}
-		pRefs->push_back( vref );
 	}
 
 
