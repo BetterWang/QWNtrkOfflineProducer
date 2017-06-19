@@ -53,7 +53,36 @@ private:
 	double	Massmin_;
 	double	Massmax_;
 
-	bool	bFlip_;
+	double	Chi2min_;
+	double	Chi2max_;
+
+	double	Ndfmin_;
+	double	Ndfmax_;
+
+	double	Chi2oNdfmin_;
+	double	Chi2oNdfmax_;
+
+	double	Lxymin_;
+	double	Lxymax_;
+
+	double	Lxyzmin_;
+	double	Lxyzmax_;
+
+	double	ThetaXYmin_;
+	double	ThetaXYmax_;
+
+	double	ThetaXYZmin_;
+	double	ThetaXYZmax_;
+
+	double	DecaySigXYmin_;
+	double	DecaySigXYmax_;
+
+	double	DecaySigXYZmin_;
+	double	DecaySigXYZmax_;
+
+	double	DCAmin_;
+	double	DCAmax_;
+
 };
 
 QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
@@ -72,12 +101,41 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	Massmin_ = pset.getUntrackedParameter<double>("Massmin", 0.);
 	Massmax_ = pset.getUntrackedParameter<double>("Massmax", 1000);
 
-	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
+	Chi2min_ = pset.getUntrackedParameter<double>("Chi2Min", -999999.);
+	Chi2max_ = pset.getUntrackedParameter<double>("Chi2Max",  999999.);
+
+	Ndfmin_ = pset.getUntrackedParameter<double>("NdfMin", -999999.);
+	Ndfmax_ = pset.getUntrackedParameter<double>("NdfMax",  999999.);
+
+	Chi2oNdfmin_ = pset.getUntrackedParameter<double>("Chi2oNdfMin", -999999.);
+	Chi2oNdfmax_ = pset.getUntrackedParameter<double>("Chi2oNdfMax",  999999.);
+
+	Lxymin_ = pset.getUntrackedParameter<double>("LxyMin", -999999.);
+	Lxymax_ = pset.getUntrackedParameter<double>("LxyMax",  999999.);
+
+	Lxyzmin_ = pset.getUntrackedParameter<double>("LxyzMin", -999999.);
+	Lxyzmax_ = pset.getUntrackedParameter<double>("LxyzMax",  999999.);
+
+	ThetaXYmin_ = pset.getUntrackedParameter<double>("ThetaXYMin", -999999.);
+	ThetaXYmax_ = pset.getUntrackedParameter<double>("ThetaXYMax",  999999.);
+
+	ThetaXYZmin_ = pset.getUntrackedParameter<double>("ThetaXYZMin", -999999.);
+	ThetaXYZmax_ = pset.getUntrackedParameter<double>("ThetaXYZMax",  999999.);
+
+	DecaySigXYmin_ = pset.getUntrackedParameter<double>("DecayXYMin", -999999.);
+	DecaySigXYmax_ = pset.getUntrackedParameter<double>("DecayXYMax",  999999.);
+
+	DecaySigXYZmin_ = pset.getUntrackedParameter<double>("DecayXYZMin", -999999.);
+	DecaySigXYZmax_ = pset.getUntrackedParameter<double>("DecayXYZMax",  999999.);
+
+	DCAmin_ = pset.getUntrackedParameter<double>("DCAMin", -999999.);
+	DCAmax_ = pset.getUntrackedParameter<double>("DCAMax",  999999.);
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
 	produces<std::vector<double> >("pt");
 	produces<std::vector<double> >("mass");
+	produces<std::vector<double> >("weight");
 
 	produces<std::vector<double> >("vtxChi2");
 	produces<std::vector<double> >("vtxNdf");
@@ -94,7 +152,7 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 
 	produces<std::vector<double> >("DCA");
 
-	produces<std::vector< std::vector<double> > >("Refs");
+	produces<std::vector<double> >("Refs");
 }
 
 QWV0VectProducer::~QWV0VectProducer()
@@ -127,7 +185,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	std::auto_ptr<std::vector<double> > pDCA( new std::vector<double> );
 
-	std::auto_ptr<std::vector< std::vector<double> > >    pRefs( new std::vector<std::vector<double> > );
+	std::auto_ptr<std::vector<double> > pRefs( new std::vector<double> );
 
 	edm::ESHandle<TransientTrackBuilder> theB;
 	iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
@@ -166,34 +224,17 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		float pt       = v0.pt();
 		float eta      = v0.eta();
 		float phi      = v0.phi();
-		float chi2oNDF = v0.vertexNormalizedChi2();
 		GlobalPoint displacementFromPV = ( pv==nullptr ? GlobalPoint(-9.,-9.,-9.) : GlobalPoint( (pv->x() - v0.vx()), (pv->y() - v0.vy()), (pv->z() - v0.vz()) ) );
 //		GlobalPoint momentum = GlobalPoint(v0.px(), v0.py(), v0.pz());
 		float lxy      = ( pv==nullptr ? -9. : displacementFromPV.perp() );
 		float lxyz     = ( pv==nullptr ? -9. : displacementFromPV.mag() );
 
-		if ( pt > pTmax_ or pt < pTmin_ ) continue;
-		if ( eta > Etamax_ or eta < Etamin_ ) continue;
-		if ( mass > Massmax_ or mass < Massmin_ ) continue;
-
-
-		pphi		->push_back( phi	);
-		peta		->push_back( eta	);
-		ppT		->push_back( pt		);
-		pmass		->push_back( mass	);
-
-		pvtxChi2	->push_back( v0.vertexChi2()	);
-		pvtxNdf		->push_back( v0.vertexNdof()	);
-		pvtxChi2oNdf	->push_back( chi2oNDF		);
-
-		pLxy		->push_back( lxy	);
-		pLxyz		->push_back( lxyz	);
+		double Chi2 = v0.vertexChi2();
+		double Ndf  = v0.vertexNdof();
+		double chi2oNDF = v0.vertexNormalizedChi2();
 
 		double	cosThetaXY  = (displacementFromPV.x()*v0.px() + displacementFromPV.y()*v0.py()) / ( displacementFromPV.mag2()*sqrt(v0.px()*v0.px() + v0.py()*v0.py()) );
 		double	cosThetaXYZ = (displacementFromPV.x()*v0.px() + displacementFromPV.y()*v0.py() + displacementFromPV.z()*v0.pz()) / ( displacementFromPV.mag()*sqrt(v0.px()*v0.px() + v0.py()*v0.py() + v0.pz()*v0.pz()) );
-
-		pcosThetaXY	->push_back( cosThetaXY		);
-		pcosThetaXYZ	->push_back( cosThetaXYZ	);
 
 		SMatrixSym3D totalCov = pv->covariance() + v0.vertexCovariance();
 		SVector3 distVecXY(displacementFromPV.x(), displacementFromPV.y(), 0.);
@@ -206,9 +247,6 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		double sigmaDistMagXYZ = sqrt(ROOT::Math::Similarity(totalCov, distVecXYZ)) / distMagXYZ;
 		double vtxDecaySigXYZ = distMagXYZ/sigmaDistMagXYZ;
 
-		pvtxDecaySigXY	->push_back( vtxDecaySigXY	);
-		pvtxDecaySigXYZ	->push_back( vtxDecaySigXYZ	);
-
 		double dca = -999.;
 		if ( v0.numberOfDaughters() == 2 ) {
 			auto tt0 = (theB->build(v0.daughter(0)->bestTrack())).initialFreeState();
@@ -219,15 +257,59 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
       			if (cApp.status()) {
 				dca = std::abs(cApp.distance());
 			}
+		}
 
+
+		if ( pt > pTmax_ or pt < pTmin_ ) continue;
+		if ( eta > Etamax_ or eta < Etamin_ ) continue;
+		if ( mass > Massmax_ or mass < Massmin_ ) continue;
+
+		if ( Chi2 > Chi2max_ or Chi2 < Chi2min_ ) continue;
+		if ( Ndf  > Ndfmax_  or Ndf  < Ndfmin_  ) continue;
+
+		if ( chi2oNDF > Chi2oNdfmax_ or chi2oNDF < Chi2oNdfmin_ ) continue;
+
+		if ( lxy > Lxymax_  or lxy < Lxymin_ ) continue;
+		if ( lxyz> Lxyzmax_ or lxyz< Lxyzmin_) continue;
+
+		if ( cosThetaXY > ThetaXYmax_  or cosThetaXY < ThetaXYmin_ ) continue;
+		if ( cosThetaXYZ> ThetaXYZmax_ or cosThetaXYZ< ThetaXYZmin_) continue;
+
+		if ( vtxDecaySigXY > DecaySigXYmax_  or vtxDecaySigXY < DecaySigXYmin_ ) continue;
+		if ( vtxDecaySigXYZ> DecaySigXYZmax_ or vtxDecaySigXYZ< DecaySigXYZmin_ ) continue;
+
+		if ( dca > DCAmax_ or dca < DCAmin_ ) continue;
+
+		pphi		->push_back( phi	);
+		peta		->push_back( eta	);
+		ppT		->push_back( pt		);
+		pmass		->push_back( mass	);
+
+
+		pvtxChi2	->push_back( Chi2	);
+		pvtxNdf		->push_back( Ndf	);
+		pvtxChi2oNdf	->push_back( chi2oNDF		);
+
+		pLxy		->push_back( lxy	);
+		pLxyz		->push_back( lxyz	);
+
+
+		pcosThetaXY	->push_back( cosThetaXY		);
+		pcosThetaXYZ	->push_back( cosThetaXYZ	);
+
+
+		pvtxDecaySigXY	->push_back( vtxDecaySigXY	);
+		pvtxDecaySigXYZ	->push_back( vtxDecaySigXYZ	);
+
+		pDCA	->push_back( dca	);
+
+		if ( v0.numberOfDaughters() == 2 ) {
 			for ( unsigned int i = 0; i < 2; i++ ) {
 				auto dau = (reco::RecoChargedCandidate*) v0.daughter(i);
 				auto trkRef = dau->track();
-
-				pRefs.push_back( double(trkRef.index()) );
+				pRefs->push_back( double(trkRef.index()) );
 			}
 		}
-		pDCA	->push_back( dca	);
 	}
 
 
