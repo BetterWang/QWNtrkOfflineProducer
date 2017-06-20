@@ -169,6 +169,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	std::auto_ptr<std::vector<double> > peta( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pmass( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > pweight( new std::vector<double> );
 
 	std::auto_ptr<std::vector<double> > pvtxChi2( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pvtxNdf( new std::vector<double> );
@@ -184,7 +185,6 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	std::auto_ptr<std::vector<double> > pvtxDecaySigXYZ( new std::vector<double> );
 
 	std::auto_ptr<std::vector<double> > pDCA( new std::vector<double> );
-
 	std::auto_ptr<std::vector<double> > pRefs( new std::vector<double> );
 
 	edm::ESHandle<TransientTrackBuilder> theB;
@@ -284,6 +284,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		peta		->push_back( eta	);
 		ppT		->push_back( pt		);
 		pmass		->push_back( mass	);
+		pweight		->push_back( 1.0	);
 
 
 		pvtxChi2	->push_back( Chi2	);
@@ -317,6 +318,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	iEvent.put(peta, std::string("eta"));
 	iEvent.put(ppT, std::string("pt"));
 	iEvent.put(pmass, std::string("mass"));
+	iEvent.put(pweight, std::string("weight"));
 
 	iEvent.put(pvtxChi2, std::string("vtxChi2"));
 	iEvent.put(pvtxNdf, std::string("vtxNdf"));
