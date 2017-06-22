@@ -202,19 +202,23 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	size_t nPV = 0;
 	int const pvNDOF_ = 4; // hardcoded
 	if (pvHandle.isValid()) {
-		pv = &pvHandle->front();
-		//--- pv fake (the pv collection should have size==1 and the pv==beam spot)
-		if (   pv->isFake() || pv->tracksSize()==0
-			// definition of goodOfflinePrimaryVertex
-			|| pv->ndof() < pvNDOF_ || pv->z() > 24.)  pv = nullptr;
+//		pv = &pvHandle->front();
+//		//--- pv fake (the pv collection should have size==1 and the pv==beam spot)
+//		if (   pv->isFake() || pv->tracksSize()==0
+//			// definition of goodOfflinePrimaryVertex
+//			|| pv->ndof() < pvNDOF_ || pv->z() > 24.)  pv = nullptr;
 
-		for (auto v : *pvHandle) {
-			if (v.isFake()        ) continue;
-			if (v.ndof() < pvNDOF_) continue;
-			if (v.z() > 24.       ) continue; 
+
+		for (auto& v : *pvHandle) {
+			//--- pv fake (the pv collection should have size==1 and the pv==beam spot)
+			if (  v.isFake() || v.tracksSize()==0 ) continue;
+			// definition of goodOfflinePrimaryVertex
+			if (  v.ndof() < pvNDOF_ || v.z() > 24.) continue;
 			++nPV;
+			if ( pv == nullptr ) pv = &v;
 		}
 	}
+	if ( pv == nullptr ) return;
 
 	Handle<VertexCompositeCandidateCollection> V0s;
 	iEvent.getByLabel(V0Src_, V0s);
@@ -224,17 +228,17 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		float pt       = v0.pt();
 		float eta      = v0.eta();
 		float phi      = v0.phi();
-		GlobalPoint displacementFromPV = ( pv==nullptr ? GlobalPoint(-9.,-9.,-9.) : GlobalPoint( (pv->x() - v0.vx()), (pv->y() - v0.vy()), (pv->z() - v0.vz()) ) );
+		GlobalPoint displacementFromPV ( (pv->x() - v0.vx()), (pv->y() - v0.vy()), (pv->z() - v0.vz()) ) ;
 //		GlobalPoint momentum = GlobalPoint(v0.px(), v0.py(), v0.pz());
-		float lxy      = ( pv==nullptr ? -9. : displacementFromPV.perp() );
-		float lxyz     = ( pv==nullptr ? -9. : displacementFromPV.mag() );
+		float lxy      = ( displacementFromPV.perp() );
+		float lxyz     = ( displacementFromPV.mag() );
 
 		double Chi2 = v0.vertexChi2();
 		double Ndf  = v0.vertexNdof();
 		double chi2oNDF = v0.vertexNormalizedChi2();
 
-		double	cosThetaXY  = (displacementFromPV.x()*v0.px() + displacementFromPV.y()*v0.py()) / ( displacementFromPV.mag2()*sqrt(v0.px()*v0.px() + v0.py()*v0.py()) );
-		double	cosThetaXYZ = (displacementFromPV.x()*v0.px() + displacementFromPV.y()*v0.py() + displacementFromPV.z()*v0.pz()) / ( displacementFromPV.mag()*sqrt(v0.px()*v0.px() + v0.py()*v0.py() + v0.pz()*v0.pz()) );
+		double	cosThetaXY  = -(displacementFromPV.x()*v0.px() + displacementFromPV.y()*v0.py()) / ( displacementFromPV.transverse()*sqrt(v0.px()*v0.px() + v0.py()*v0.py()) );
+		double	cosThetaXYZ = -(displacementFromPV.x()*v0.px() + displacementFromPV.y()*v0.py() + displacementFromPV.z()*v0.pz()) / ( displacementFromPV.mag()*sqrt(v0.px()*v0.px() + v0.py()*v0.py() + v0.pz()*v0.pz()) );
 
 		SMatrixSym3D totalCov = pv->covariance() + v0.vertexCovariance();
 		SVector3 distVecXY(displacementFromPV.x(), displacementFromPV.y(), 0.);
