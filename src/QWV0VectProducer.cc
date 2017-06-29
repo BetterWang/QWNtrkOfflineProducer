@@ -250,18 +250,18 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		double distMagXYZ = ROOT::Math::Mag(distVecXYZ);
 		double sigmaDistMagXYZ = sqrt(ROOT::Math::Similarity(totalCov, distVecXYZ)) / distMagXYZ;
 		double vtxDecaySigXYZ = distMagXYZ/sigmaDistMagXYZ;
-
 		double dca = -999.;
 		if ( v0.numberOfDaughters() == 2 ) {
 			auto bT0 = v0.daughter(0)->bestTrack();
 			auto bT1 = v0.daughter(1)->bestTrack();
+
 			if ( bT0 and bT1 ) {
 				auto tt0 = theB->build(bT0).initialFreeState();
 				auto tt1 = theB->build(bT1).initialFreeState();
 
 				ClosestApproachInRPhi cApp;
 				cApp.calculate(tt0, tt1);
-      				if (cApp.status()) {
+				if (cApp.status()) {
 					dca = std::abs(cApp.distance());
 				}
 			}
@@ -314,9 +314,10 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		if ( v0.numberOfDaughters() == 2 ) {
 			for ( unsigned int i = 0; i < 2; i++ ) {
-				auto dau = (reco::RecoChargedCandidate*) v0.daughter(i);
-				auto trkRef = dau->track();
-				pRefs->push_back( double(trkRef.index()) );
+				auto dau = dynamic_cast<const RecoChargedCandidate*>(v0.daughter(i));
+				double idx = -1.;
+				if ( dau ) idx = dau->track().index();
+				pRefs->push_back( idx );
 			}
 		}
 	}
