@@ -253,13 +253,17 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		double dca = -999.;
 		if ( v0.numberOfDaughters() == 2 ) {
-			auto tt0 = (theB->build(v0.daughter(0)->bestTrack())).initialFreeState();
-			auto tt1 = (theB->build(v0.daughter(1)->bestTrack())).initialFreeState();
+			auto bT0 = v0.daughter(0)->bestTrack();
+			auto bT1 = v0.daughter(1)->bestTrack();
+			if ( bT0 and bT1 ) {
+				auto tt0 = theB->build(bT0).initialFreeState();
+				auto tt1 = theB->build(bT1).initialFreeState();
 
-			ClosestApproachInRPhi cApp;
-			cApp.calculate(tt0, tt1);
-      			if (cApp.status()) {
-				dca = std::abs(cApp.distance());
+				ClosestApproachInRPhi cApp;
+				cApp.calculate(tt0, tt1);
+      				if (cApp.status()) {
+					dca = std::abs(cApp.distance());
+				}
 			}
 		}
 
