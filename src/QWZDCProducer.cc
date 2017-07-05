@@ -36,8 +36,8 @@ QWZDCProducer::QWZDCProducer(const edm::ParameterSet& pset) :
 	consumes<ZDCDigiCollection>(Src_);
 
 	produces<std::vector<double> >("ADC");
-	produces<std::vector<double> >("nominal_fC");
-	produces<std::vector<double> >("regular_fC");
+	produces<std::vector<double> >("nominalfC");
+	produces<std::vector<double> >("regularfC");
 }
 
 QWZDCProducer::~QWZDCProducer()
@@ -81,8 +81,8 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 
 	iEvent.put(pADC, std::string("ADC"));
-	iEvent.put(pfC, std::string("nominal_fC"));
-	iEvent.put(pregfC, std::string("regular_fC"));
+	iEvent.put(pfC, std::string("nominalfC"));
+	iEvent.put(pregfC, std::string("regularfC"));
 }
 
 
