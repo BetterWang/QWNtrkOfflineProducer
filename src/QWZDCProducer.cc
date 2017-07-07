@@ -30,6 +30,7 @@ private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 	virtual void beginRun(const edm::Run&, const edm::EventSetup&) override;
 	///
+	void Fix2016PA(double& input[18][10]);
 
 	edm::InputTag	Src_;
 	array<double, 9> hilo_ratio_;
@@ -82,7 +83,7 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if ( rhprod->size() == 0 ) return;
 
 	double adc[18][10] = {};
-//	double nom_fC[18][10] = {};
+	double nom_fC[18][10] = {};
 	double reg_fC[18][10] = {};
 	double signal[18] = {};
 	// order-> -Side, EM1-5, HAD1-4, +side, EM1-5, HAD1-4
@@ -100,15 +101,21 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		for ( int j = 0; j < 10; j++ ) {
 			// hardcode 10 TS
-			pADC->push_back(rh[j].adc());
-			pfC->push_back(rh[j].nominal_fC());
-			pregfC->push_back(caldigi[j]);
-
 			adc[i][j] = rh[j].adc();
-//			nom_fC[i][j] = rh[j].nominal_fC();
+			nom_fC[i][j] = rh[j].nominal_fC();
 			reg_fC[i][j] = caldigi[j];
 		}
-	//	std::cout << "i->id().zside() = " << i->id().zside() << " i->id().section() = " << i->id().section() << " i->id().channel() = " << i->id().channel() << std::endl;
+	}
+	Fix2016PA(adc);
+	Fix2016PA(nom_fC);
+	Fix2016PA(reg_fC);
+
+	for ( int i = 0; i < 18; i++ ) {
+		for ( int j = 0; j < 10; j++ ) {
+			pADC->push_back(adc[i][j]);
+			pfC->push_back(nom_fC[i][j]);
+			pregfC->push_back(reg_fC[i][j]);
+		}
 		double ped = 1.5 * ( reg_fC[i][2] + reg_fC[i][6]);
 		if ( adc[i][3] > 126 ) {
 			signal[i] = (reg_fC[i][4] + reg_fC[i][5] - 0.666 * ped) * hilo_ratio_[i%9];
@@ -227,5 +234,42 @@ void QWZDCProducer::beginRun(edm::Run const &r, edm::EventSetup const& iSetup)
 	return;
 }
 
+
+void QWZDCProducer::Fix2016PA(double& input[18][10])
+{
+	double t[18][10];
+	for ( int i = 0; i < 18; i++ ) {
+		for ( int j = 0; j < 10; j++ ) {
+			t[i][j] = input[i][j];
+		}
+	}
+
+	int fix[18] = {
+		0,	// NZDC_EM1
+		1,	// NZDC_EM2
+		2,	// NZDC_EM3
+		5,	// NZDC_EM4
+		3,	// NZDC_EM5
+		4,	// NZDC_HAD1
+		6,	// NZDC_HAD2
+		7,	// NZDC_HAD3
+		8,	// NZDC_HAD4
+		9,	// PZDC_EM1
+		10,	// PZDC_EM2
+		11,	// PZDC_EM3
+		13,	// PZDC_EM4
+		14,	// PZDC_EM5
+		12,	// PZDC_HAD1
+		15,	// PZDC_HAD2
+		16,	// PZDC_HAD3
+		17,	// PZDC_HAD4
+	};
+
+	for ( int i = 0; i < 18; i++ ) {
+		for ( int j = 0; j < 10; j++ ) {
+			input[i][j] = t[ fix[i] ][j];
+		}
+	}
+}
 
 DEFINE_FWK_MODULE(QWZDCProducer);
