@@ -72,42 +72,31 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > pfC( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pregfC( new std::vector<double> );
 
-	cout << __LINE__ << endl;
 	Handle<ZDCDigiCollection> digi;
 	iEvent.getByLabel(Src_, digi);
 
 	edm::ESHandle<HcalDbService> conditions;
 	iSetup.get<HcalDbRecord>().get(conditions);
 
+	auto rhprod = digi.product();
+	if ( rhprod->size() == 0 ) return;
+
 	double adc[18][10] = {};
 //	double nom_fC[18][10] = {};
 	double reg_fC[18][10] = {};
 	double signal[18] = {};
 	// order-> -Side, EM1-5, HAD1-4, +side, EM1-5, HAD1-4
-	cout << __LINE__ << "\t" << digi.isValid() << "\t" << digi.failedToGet() << endl;
 	for ( int i = 0; i < 18; i++ ) {
 
-	cout << __LINE__ << endl;
-		auto rhprod = digi.product();
-	cout << __LINE__ << "\t" << rhprod->size() << endl;
 		auto rh = (*rhprod)[i];
 		//const ZDCDataFrame & rh = (*digi)[i];
-	cout << __LINE__ << endl;
-	cout << rh << endl;
-	cout << __LINE__ << endl;
 		HcalZDCDetId zdcid = rh.id();
 
-	cout << __LINE__ << endl;
 		const HcalQIECoder* qiecoder = conditions->getHcalCoder(zdcid);
-	cout << __LINE__ << endl;
 		const HcalQIEShape* qieshape = conditions->getHcalShape(qiecoder);
-	cout << __LINE__ << endl;
 		HcalCoderDb coder(*qiecoder, *qieshape);
-	cout << __LINE__ << endl;
 		CaloSamples caldigi;
-	cout << __LINE__ << endl;
 		coder.adc2fC(rh, caldigi);
-	cout << __LINE__ << endl;
 
 		for ( int j = 0; j < 10; j++ ) {
 			// hardcode 10 TS
@@ -121,14 +110,21 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	//	std::cout << "i->id().zside() = " << i->id().zside() << " i->id().section() = " << i->id().section() << " i->id().channel() = " << i->id().channel() << std::endl;
 		double ped = 1.5 * ( reg_fC[i][2] + reg_fC[i][6]);
-	cout << __LINE__ << endl;
 		if ( adc[i][3] > 126 ) {
 			signal[i] = (reg_fC[i][4] + reg_fC[i][5] - 0.666 * ped) * hilo_ratio_[i%9];
 		} else {
 			signal[i] = reg_fC[i][3] + reg_fC[i][4] + reg_fC[i][5] - ped;
 		}
+		cout << " weights_[" << i << "] = " << weights_[i] << "\tsignal[" << i << "] = " << signal[i] << "\tadc[" << i << "][3] = " << adc[i][3];
 		signal[i] *= weights_[i];
-	cout << __LINE__ << endl;
+		cout << "\tsignal[i] = " << signal[i] << endl;
+	}
+
+	for ( int i = 0; i < 9; i++ ) {
+		for ( int t = 0; t < 10; t++ ) {
+			cout << "rawadc[" << i << "][" << t << "] = " << adc[i][t] << "\t";
+		}
+		cout << endl;
 	}
 
 	double emEn = signal[0] + signal[1] + signal[2] + signal[3] + signal[4];
@@ -140,26 +136,26 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	double sump = emEp + hadEp;
 	double sumn = emEn + hadEn;
 
-	cout << __LINE__ << endl;
+	cout << " emEn = " << emEn << "\thadEn = " << hadEn << "\temEp = " << emEp << "\thadEp = " << hadEp << endl;
+
 	iEvent.put(pADC, std::string("ADC"));
 	iEvent.put(pfC, std::string("nominalfC"));
 	iEvent.put(pregfC, std::string("regularfC"));
 
-	iEvent.put(auto_ptr<double>(&sum), std::string("Sum"));
-	iEvent.put(auto_ptr<double>(&sump), std::string("SumP"));
-	iEvent.put(auto_ptr<double>(&sumn), std::string("SumN"));
+	iEvent.put(auto_ptr<double>(new double(sum)), std::string("Sum"));
+	iEvent.put(auto_ptr<double>(new double(sump)), std::string("SumP"));
+	iEvent.put(auto_ptr<double>(new double(sumn)), std::string("SumN"));
 
-	iEvent.put(auto_ptr<double>(&emEp), std::string("emSumP"));
-	iEvent.put(auto_ptr<double>(&emEn), std::string("emSumN"));
+	iEvent.put(auto_ptr<double>(new double(emEp)), std::string("emSumP"));
+	iEvent.put(auto_ptr<double>(new double(emEn)), std::string("emSumN"));
 
-	iEvent.put(auto_ptr<double>(&hadEp), std::string("hadSumP"));
-	iEvent.put(auto_ptr<double>(&hadEn), std::string("hadSumN"));
+	iEvent.put(auto_ptr<double>(new double(hadEp)), std::string("hadSumP"));
+	iEvent.put(auto_ptr<double>(new double(hadEn)), std::string("hadSumN"));
 }
 
 
 void QWZDCProducer::beginRun(edm::Run const &r, edm::EventSetup const& iSetup)
 {
-	cout << __LINE__ << endl;
 	unordered_map<int, array<double, 9> >  hilo = {
 		{286178, {{9.856489512695157, 10.854145252342596, 13.565189553176221, 15.395486966950507, 13.154277310581694, 10.462177137213546, 10.187345279693565, 12.696381277408312, 10.512571984836665}}},
 		{286200, {{10.04517314362689, 11.262973537643672, 13.986326966757296, 17.70237353424347, 13.643867763633635, 10.895323182523901, 10.609212828235783, 12.88553521359063, 10.654426861088648}}},
@@ -190,7 +186,6 @@ void QWZDCProducer::beginRun(edm::Run const &r, edm::EventSetup const& iSetup)
 //		{286519, {0.0, 0.0, 12.232415902140673, 0.0, 0.0, 10.3264180753622, 11.995571235100002, 10.586738204785629, 0.0}},
 //		{286520, {0.0, 0.0, 12.211652358680652, 0.0, 0.0, 10.325458450355196, 11.988021568848408, 10.576683067576544, 0.0}}
 
-	cout << __LINE__ << endl;
 	if ( hilo.find( r.run() ) == hilo.end() ) {
 		hilo_ratio_ = array<double, 9>{};
 
@@ -222,7 +217,6 @@ void QWZDCProducer::beginRun(edm::Run const &r, edm::EventSetup const& iSetup)
 		{286496,  0.93422},
 	};
 
-	cout << __LINE__ << endl;
 	if ( gain.find( r.run() ) == gain.end() ) {
 		weights_ = array<double, 18>{};
 	} else {
