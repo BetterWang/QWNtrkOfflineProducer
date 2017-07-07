@@ -25,7 +25,8 @@ process.options = cms.untracked.PSet(
 
 process.source = cms.Source("PoolSource",
 #        fileNames = cms.untracked.vstring("file:/afs/cern.ch/user/q/qwang/work/cleanroomRun2/Ana/CMSSW_7_5_8_patch2/src/QWAna/QWCumuV3/test/HIMinBias_28.root")
-	fileNames = cms.untracked.vstring("file:/afs/cern.ch/user/q/qwang/work/cleanroomRun2/Ana/data/pPb_8_FEVT.root")
+#	fileNames = cms.untracked.vstring("file:/afs/cern.ch/user/q/qwang/work/cleanroomRun2/Ana/data/pPb_8_FEVT.root")
+	fileNames = cms.untracked.vstring("file:/eos/cms/store/hidata/PARun2016C/PAHighMultiplicity0/AOD/PromptReco-v1/000/286/201/00000/0695AC66-FFB9-E611-A015-02163E01478E.root")
 )
 
 import HLTrigger.HLTfilters.hltHighLevel_cfi
@@ -52,7 +53,8 @@ process.hltMB.throw = cms.bool(False)
 
 process.load('QWAna.QWNtrkOfflineProducer.QWZDC_cfi')
 
-process.path = cms.Path(process.hltMB * process.QWZDC)
+
+process.path = cms.Path(process.QWZDC)
 
 process.RECO = cms.OutputModule("PoolOutputModule",
                 outputCommands = cms.untracked.vstring('keep *_QWZDC_*_*'),
@@ -67,5 +69,5 @@ process.out = cms.EndPath(process.RECO)
 
 process.schedule = cms.Schedule(
 	process.path,
-	process.out
+#	process.out
 )

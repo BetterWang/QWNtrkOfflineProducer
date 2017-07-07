@@ -43,7 +43,7 @@ void QWDouble2VectorProducer::produce(edm::Event& iEvent, const edm::EventSetup&
 
 	std::vector<double> p;
 	p.push_back(*db);
-	std::auto_ptr<std::vector<double> > pp(new std::vector<double>(&p));
+	std::auto_ptr<std::vector<double> > pp(&p);
 	iEvent.put(pp);
 }
 
