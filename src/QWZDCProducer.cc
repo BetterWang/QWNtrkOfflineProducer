@@ -30,7 +30,7 @@ private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 	virtual void beginRun(const edm::Run&, const edm::EventSetup&) override;
 	///
-	void Fix2016PA(double& input[18][10]);
+	void Fix2016PA(double input[][10]);
 
 	edm::InputTag	Src_;
 	array<double, 9> hilo_ratio_;
@@ -80,7 +80,23 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iSetup.get<HcalDbRecord>().get(conditions);
 
 	auto rhprod = digi.product();
-	if ( rhprod->size() == 0 ) return;
+	if ( rhprod->size() == 0 ) {
+		iEvent.put(pADC, std::string("ADC"));
+		iEvent.put(pfC, std::string("nominalfC"));
+		iEvent.put(pregfC, std::string("regularfC"));
+
+		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("Sum"));
+		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumP"));
+		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumN"));
+
+		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumP"));
+		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumN"));
+
+		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumP"));
+		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumN"));
+
+		return;
+	}
 
 	double adc[18][10] = {};
 	double nom_fC[18][10] = {};
@@ -122,17 +138,17 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		} else {
 			signal[i] = reg_fC[i][3] + reg_fC[i][4] + reg_fC[i][5] - ped;
 		}
-		cout << " weights_[" << i << "] = " << weights_[i] << "\tsignal[" << i << "] = " << signal[i] << "\tadc[" << i << "][3] = " << adc[i][3];
+//		cout << " weights_[" << i << "] = " << weights_[i] << "\tsignal[" << i << "] = " << signal[i] << "\tadc[" << i << "][3] = " << adc[i][3];
 		signal[i] *= weights_[i];
-		cout << "\tsignal[i] = " << signal[i] << endl;
+//		cout << "\tsignal[i] = " << signal[i] << endl;
 	}
 
-	for ( int i = 0; i < 9; i++ ) {
-		for ( int t = 0; t < 10; t++ ) {
-			cout << "rawadc[" << i << "][" << t << "] = " << adc[i][t] << "\t";
-		}
-		cout << endl;
-	}
+//	for ( int i = 0; i < 9; i++ ) {
+//		for ( int t = 0; t < 1; t++ ) {
+//			cout << "rawadc[" << i << "][" << t << "] = " << adc[i][t] << "\t";
+//		}
+//		cout << endl;
+//	}
 
 	double emEn = signal[0] + signal[1] + signal[2] + signal[3] + signal[4];
 	double hadEn= signal[5] + signal[6] + signal[7] + signal[8];
@@ -143,7 +159,7 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	double sump = emEp + hadEp;
 	double sumn = emEn + hadEn;
 
-	cout << " emEn = " << emEn << "\thadEn = " << hadEn << "\temEp = " << emEp << "\thadEp = " << hadEp << endl;
+//	cout << " emEn = " << emEn << "\thadEn = " << hadEn << "\temEp = " << emEp << "\thadEp = " << hadEp << endl;
 
 	iEvent.put(pADC, std::string("ADC"));
 	iEvent.put(pfC, std::string("nominalfC"));
@@ -235,7 +251,7 @@ void QWZDCProducer::beginRun(edm::Run const &r, edm::EventSetup const& iSetup)
 }
 
 
-void QWZDCProducer::Fix2016PA(double& input[18][10])
+void QWZDCProducer::Fix2016PA(double input[][10])
 {
 	double t[18][10];
 	for ( int i = 0; i < 18; i++ ) {
@@ -267,7 +283,7 @@ void QWZDCProducer::Fix2016PA(double& input[18][10])
 
 	for ( int i = 0; i < 18; i++ ) {
 		for ( int j = 0; j < 10; j++ ) {
-			input[i][j] = t[ fix[i] ][j];
+			input[fix[i]][j] = t[i][j];
 		}
 	}
 }
