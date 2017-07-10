@@ -108,9 +108,57 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		auto rh = (*rhprod)[i];
 		//const ZDCDataFrame & rh = (*digi)[i];
 		HcalZDCDetId zdcid = rh.id();
+		int zside   = zdcid.zside();
+		int section = zdcid.section();
+		int channel = zdcid.channel();
+		if( (zside   != -1 && zside   != 1) 
+			or (section !=  1 && section != 2) 
+			or (section == 1 && (channel < 1 || channel > 5)) 
+			or (section == 2 && (channel < 1 || channel > 4)) ) {
 
-		const HcalQIECoder* qiecoder = conditions->getHcalCoder(zdcid);
-		const HcalQIEShape* qieshape = conditions->getHcalShape(qiecoder);
+			iEvent.put(pADC, std::string("ADC"));
+			iEvent.put(pfC, std::string("nominalfC"));
+			iEvent.put(pregfC, std::string("regularfC"));
+
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("Sum"));
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumP"));
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumN"));
+
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumP"));
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumN"));
+
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumP"));
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumN"));
+
+			return;
+		}
+
+		const HcalQIECoder* qiecoder = nullptr;
+		const HcalQIEShape* qieshape = nullptr;
+		try {
+			qiecoder = conditions->getHcalCoder(zdcid);
+		}
+		catch (cms::Exception& e) {
+			cout << __LINE__ << "\t" << e.what() << endl;
+			cout << __LINE__ << "\t" << zdcid << endl;
+
+			iEvent.put(pADC, std::string("ADC"));
+			iEvent.put(pfC, std::string("nominalfC"));
+			iEvent.put(pregfC, std::string("regularfC"));
+
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("Sum"));
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumP"));
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumN"));
+
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumP"));
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumN"));
+
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumP"));
+			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumN"));
+
+			return;
+		}
+		qieshape = conditions->getHcalShape(qiecoder);
 		HcalCoderDb coder(*qiecoder, *qieshape);
 		CaloSamples caldigi;
 		coder.adc2fC(rh, caldigi);
@@ -122,6 +170,7 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			reg_fC[i][j] = caldigi[j];
 		}
 	}
+
 	Fix2016PA(adc);
 	Fix2016PA(nom_fC);
 	Fix2016PA(reg_fC);
