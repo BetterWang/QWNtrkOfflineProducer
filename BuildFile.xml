@@ -11,6 +11,7 @@
 <use name="DataFormats/HepMCCandidate"/>
 <use name="DataFormats/CaloTowers"/>
 <use name="DataFormats/HcalDigi"/>
+<use name="DataFormats/HeavyIonEvent"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="TrackingTools/TransientTrack"/>
 <use name="MagneticField/Records"/>

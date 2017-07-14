@@ -81,6 +81,7 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	auto rhprod = digi.product();
 	if ( rhprod->size() == 0 ) {
+//		cout << __LINE__ << "\tmissing production"<< endl;
 		iEvent.put(pADC, std::string("ADC"));
 		iEvent.put(pfC, std::string("nominalfC"));
 		iEvent.put(pregfC, std::string("regularfC"));
@@ -116,6 +117,7 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			or (section == 1 && (channel < 1 || channel > 5)) 
 			or (section == 2 && (channel < 1 || channel > 4)) ) {
 
+			cout << __LINE__ << "\t" << zdcid << endl;
 			iEvent.put(pADC, std::string("ADC"));
 			iEvent.put(pfC, std::string("nominalfC"));
 			iEvent.put(pregfC, std::string("regularfC"));

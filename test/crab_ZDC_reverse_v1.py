@@ -5,7 +5,7 @@ from httplib import HTTPException
 
 config = config()
 
-config.General.requestName = 'PAMB1_ZDC_286178_v4'
+config.General.requestName = 'PAMB1_ZDC_286178_v5'
 config.General.workArea = 'CrabArea'
 config.General.transferOutputs = True
 config.General.transferLogs = True
@@ -31,7 +31,7 @@ except ClientException as cle:
         print "Failed submitting task: %s" % (cle)
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286200_v4'
+config.General.requestName = 'PAMB1_ZDC_286200_v5'
 config.Data.runRange = '286200'
 try:
         crabCommand('submit', config = config)
@@ -42,7 +42,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286201_v4'
+config.General.requestName = 'PAMB1_ZDC_286201_v5'
 config.Data.runRange = '286201'
 try:
         crabCommand('submit', config = config)
@@ -53,7 +53,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286288_v4'
+config.General.requestName = 'PAMB1_ZDC_286288_v5'
 config.Data.runRange = '286288'
 try:
         crabCommand('submit', config = config)
@@ -65,7 +65,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286301_v4'
+config.General.requestName = 'PAMB1_ZDC_286301_v5'
 config.Data.runRange = '286301'
 try:
         crabCommand('submit', config = config)
@@ -77,7 +77,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286302_v4'
+config.General.requestName = 'PAMB1_ZDC_286302_v5'
 config.Data.runRange = '286302'
 try:
         crabCommand('submit', config = config)
@@ -88,7 +88,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286309_v4'
+config.General.requestName = 'PAMB1_ZDC_286309_v5'
 config.Data.runRange = '286309'
 try:
         crabCommand('submit', config = config)
@@ -100,7 +100,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286314_v4'
+config.General.requestName = 'PAMB1_ZDC_286314_v5'
 config.Data.runRange = '286314'
 try:
         crabCommand('submit', config = config)
@@ -112,7 +112,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286327_v4'
+config.General.requestName = 'PAMB1_ZDC_286327_v5'
 config.Data.runRange = '286327'
 try:
         crabCommand('submit', config = config)
@@ -125,7 +125,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286329_v4'
+config.General.requestName = 'PAMB1_ZDC_286329_v5'
 config.Data.runRange = '286329'
 try:
         crabCommand('submit', config = config)
@@ -137,7 +137,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286365_v4'
+config.General.requestName = 'PAMB1_ZDC_286365_v5'
 config.Data.runRange = '286365'
 try:
         crabCommand('submit', config = config)
@@ -149,7 +149,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286420_v4'
+config.General.requestName = 'PAMB1_ZDC_286420_v5'
 config.Data.runRange = '286420'
 try:
         crabCommand('submit', config = config)
@@ -161,7 +161,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286422_v4'
+config.General.requestName = 'PAMB1_ZDC_286422_v5'
 config.Data.runRange = '286422'
 try:
         crabCommand('submit', config = config)
@@ -173,7 +173,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286425_v4'
+config.General.requestName = 'PAMB1_ZDC_286425_v5'
 config.Data.runRange = '286425'
 try:
         crabCommand('submit', config = config)
@@ -185,7 +185,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286441_v4'
+config.General.requestName = 'PAMB1_ZDC_286441_v5'
 config.Data.runRange = '286441'
 try:
         crabCommand('submit', config = config)
@@ -198,7 +198,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286442_v4'
+config.General.requestName = 'PAMB1_ZDC_286442_v5'
 config.Data.runRange = '286442'
 try:
         crabCommand('submit', config = config)
@@ -210,7 +210,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286450_v4'
+config.General.requestName = 'PAMB1_ZDC_286450_v5'
 config.Data.runRange = '286450'
 try:
         crabCommand('submit', config = config)
@@ -222,7 +222,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286471_v4'
+config.General.requestName = 'PAMB1_ZDC_286471_v5'
 config.Data.runRange = '286471'
 try:
         crabCommand('submit', config = config)
@@ -234,7 +234,7 @@ except ClientException as cle:
 
 
 #####
-config.General.requestName = 'PAMB1_ZDC_286496_v4'
+config.General.requestName = 'PAMB1_ZDC_286496_v5'
 config.Data.runRange = '286496'
 try:
         crabCommand('submit', config = config)
