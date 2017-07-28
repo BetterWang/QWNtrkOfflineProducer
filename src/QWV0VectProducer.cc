@@ -83,6 +83,9 @@ private:
 
 		double	DCAmin_;
 		double	DCAmax_;
+
+		double	VtxProbmin_;
+		double	VtxProbmax_;
 	} V0_cut;
 	std::vector<QWV0VectProducer::V0_cut> cuts_;
 };
@@ -133,6 +136,10 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 
 		cut.DCAmin_ = pset.getUntrackedParameter<double>("DCAMin", -999999.);
 		cut.DCAmax_ = pset.getUntrackedParameter<double>("DCAMax",  999999.);
+
+
+		cut.VtxProbmin_ = pset.getUntrackedParameter<double>("VtxProbmin", -1.);
+		cut.VtxProbmax_ = pset.getUntrackedParameter<double>("VtxProbmax", 10.);
 
 		cuts_.push_back(cut);
 	}
@@ -249,6 +256,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		double Chi2 = v0.vertexChi2();
 		double Ndf  = v0.vertexNdof();
 		double chi2oNDF = v0.vertexNormalizedChi2();
+		double VtxProb = TMath::Prob(Chi2, Ndf);
 
 		double	cosThetaXY  = -(displacementFromPV.x()*v0.px() + displacementFromPV.y()*v0.py()) / ( displacementFromPV.transverse()*sqrt(v0.px()*v0.px() + v0.py()*v0.py()) );
 		double	cosThetaXYZ = -(displacementFromPV.x()*v0.px() + displacementFromPV.y()*v0.py() + displacementFromPV.z()*v0.pz()) / ( displacementFromPV.mag()*sqrt(v0.px()*v0.px() + v0.py()*v0.py() + v0.pz()*v0.pz()) );
@@ -301,6 +309,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			if ( vtxDecaySigXYZ> cut.DecaySigXYZmax_ or vtxDecaySigXYZ< cut.DecaySigXYZmin_ ) continue;
 
 			if ( dca > cut.DCAmax_ or dca < cut.DCAmin_ ) continue;
+
+			if ( VtxProb > cut.VtxProbmax_ or VtxProb < cut.VtxProbmin_ ) continue;
 
 			pphi		->push_back( phi	);
 			peta		->push_back( eta	);
