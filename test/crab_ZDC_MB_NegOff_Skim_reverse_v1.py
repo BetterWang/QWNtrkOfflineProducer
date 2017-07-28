@@ -27,9 +27,226 @@ config.Site.storageSite = 'T2_CH_CERN'
 #config.Site.storageSite = 'T2_US_MIT'
 config.Site.ignoreGlobalBlacklist = True
 config.Data.allowNonValidInputDataset = True
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+
+
+
+
+# 2
+config.General.requestName = 'PAMB2_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias2/PARun2016C-PromptReco-v1/AOD'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
         print "Failed submitting task: %s" % (hte.headers)
 except ClientException as cle:
         print "Failed submitting task: %s" % (cle)
+
+
+# 3
+config.General.requestName = 'PAMB3_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias3/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+
+
+
+
+
+
+# 4
+config.General.requestName = 'PAMB4_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias4/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 5
+config.General.requestName = 'PAMB5_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias5/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 6
+config.General.requestName = 'PAMB6_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias6/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 7
+config.General.requestName = 'PAMB7_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias7/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 8
+config.General.requestName = 'PAMB8_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias8/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 9
+config.General.requestName = 'PAMB9_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias9/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 10
+config.General.requestName = 'PAMB10_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias10/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 11
+config.General.requestName = 'PAMB11_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias11/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+# 12
+config.General.requestName = 'PAMB12_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias12/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 13
+config.General.requestName = 'PAMB13_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias13/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 14
+config.General.requestName = 'PAMB14_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias14/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 15
+config.General.requestName = 'PAMB15_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias15/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 16
+config.General.requestName = 'PAMB16_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias16/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 17
+config.General.requestName = 'PAMB17_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias17/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 18
+config.General.requestName = 'PAMB18_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias18/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 19
+config.General.requestName = 'PAMB19_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias19/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
+
+# 20
+config.General.requestName = 'PAMB20_ZDC_NegOff_Skim_v1'
+config.Data.inputDataset = '/PAMinimumBias20/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+
