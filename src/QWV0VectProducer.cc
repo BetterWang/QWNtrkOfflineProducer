@@ -46,43 +46,45 @@ private:
 
 	edm::InputTag	V0Src_;
 
-	double	pTmin_;
-	double	pTmax_;
-	double	Etamin_;
-	double	Etamax_;
-	double	Massmin_;
-	double	Massmax_;
+	typedef struct {
+		double	pTmin_;
+		double	pTmax_;
+		double	Etamin_;
+		double	Etamax_;
+		double	Massmin_;
+		double	Massmax_;
 
-	double	Chi2min_;
-	double	Chi2max_;
+		double	Chi2min_;
+		double	Chi2max_;
 
-	double	Ndfmin_;
-	double	Ndfmax_;
+		double	Ndfmin_;
+		double	Ndfmax_;
 
-	double	Chi2oNdfmin_;
-	double	Chi2oNdfmax_;
+		double	Chi2oNdfmin_;
+		double	Chi2oNdfmax_;
 
-	double	Lxymin_;
-	double	Lxymax_;
+		double	Lxymin_;
+		double	Lxymax_;
 
-	double	Lxyzmin_;
-	double	Lxyzmax_;
+		double	Lxyzmin_;
+		double	Lxyzmax_;
 
-	double	ThetaXYmin_;
-	double	ThetaXYmax_;
+		double	ThetaXYmin_;
+		double	ThetaXYmax_;
 
-	double	ThetaXYZmin_;
-	double	ThetaXYZmax_;
+		double	ThetaXYZmin_;
+		double	ThetaXYZmax_;
 
-	double	DecaySigXYmin_;
-	double	DecaySigXYmax_;
+		double	DecaySigXYmin_;
+		double	DecaySigXYmax_;
 
-	double	DecaySigXYZmin_;
-	double	DecaySigXYZmax_;
+		double	DecaySigXYZmin_;
+		double	DecaySigXYZmax_;
 
-	double	DCAmin_;
-	double	DCAmax_;
-
+		double	DCAmin_;
+		double	DCAmax_;
+	} V0_cut;
+	std::vector<QWV0VectProducer::V0_cut> cuts_;
 };
 
 QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
@@ -90,46 +92,57 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc")),
 	V0Src_(pset.getUntrackedParameter<edm::InputTag>("V0Src"))
 {
+
+	auto pcuts = pset.getUntrackedParameter< std::vector< edm::ParameterSet > >("cuts");
+	for ( auto pcut : pcuts ) {
+		QWV0VectProducer::V0_cut cut;
+
+		cut.pTmin_ = pset.getUntrackedParameter<double>("ptMin", 0.);
+		cut.pTmax_ = pset.getUntrackedParameter<double>("ptMax", 100.);
+		cut.Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
+		cut.Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
+		cut.Massmin_ = pset.getUntrackedParameter<double>("Massmin", 0.);
+		cut.Massmax_ = pset.getUntrackedParameter<double>("Massmax", 1000);
+
+		cut.Chi2min_ = pset.getUntrackedParameter<double>("Chi2Min", -999999.);
+		cut.Chi2max_ = pset.getUntrackedParameter<double>("Chi2Max",  999999.);
+
+		cut.Ndfmin_ = pset.getUntrackedParameter<double>("NdfMin", -999999.);
+		cut.Ndfmax_ = pset.getUntrackedParameter<double>("NdfMax",  999999.);
+
+		cut.Chi2oNdfmin_ = pset.getUntrackedParameter<double>("Chi2oNdfMin", -999999.);
+		cut.Chi2oNdfmax_ = pset.getUntrackedParameter<double>("Chi2oNdfMax",  999999.);
+
+		cut.Lxymin_ = pset.getUntrackedParameter<double>("LxyMin", -999999.);
+		cut.Lxymax_ = pset.getUntrackedParameter<double>("LxyMax",  999999.);
+
+		cut.Lxyzmin_ = pset.getUntrackedParameter<double>("LxyzMin", -999999.);
+		cut.Lxyzmax_ = pset.getUntrackedParameter<double>("LxyzMax",  999999.);
+
+		cut.ThetaXYmin_ = pset.getUntrackedParameter<double>("ThetaXYMin", -999999.);
+		cut.ThetaXYmax_ = pset.getUntrackedParameter<double>("ThetaXYMax",  999999.);
+
+		cut.ThetaXYZmin_ = pset.getUntrackedParameter<double>("ThetaXYZMin", -999999.);
+		cut.ThetaXYZmax_ = pset.getUntrackedParameter<double>("ThetaXYZMax",  999999.);
+
+		cut.DecaySigXYmin_ = pset.getUntrackedParameter<double>("DecayXYMin", -999999.);
+		cut.DecaySigXYmax_ = pset.getUntrackedParameter<double>("DecayXYMax",  999999.);
+
+		cut.DecaySigXYZmin_ = pset.getUntrackedParameter<double>("DecayXYZMin", -999999.);
+		cut.DecaySigXYZmax_ = pset.getUntrackedParameter<double>("DecayXYZMax",  999999.);
+
+		cut.DCAmin_ = pset.getUntrackedParameter<double>("DCAMin", -999999.);
+		cut.DCAmax_ = pset.getUntrackedParameter<double>("DCAMax",  999999.);
+
+		cuts_.push_back(cut);
+	}
+
+
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
 	consumes<reco::VertexCompositeCandidateCollection>(V0Src_);
 
-	pTmin_ = pset.getUntrackedParameter<double>("ptMin", 0.);
-	pTmax_ = pset.getUntrackedParameter<double>("ptMax", 100.);
-	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
-	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
-	Massmin_ = pset.getUntrackedParameter<double>("Massmin", 0.);
-	Massmax_ = pset.getUntrackedParameter<double>("Massmax", 1000);
 
-	Chi2min_ = pset.getUntrackedParameter<double>("Chi2Min", -999999.);
-	Chi2max_ = pset.getUntrackedParameter<double>("Chi2Max",  999999.);
-
-	Ndfmin_ = pset.getUntrackedParameter<double>("NdfMin", -999999.);
-	Ndfmax_ = pset.getUntrackedParameter<double>("NdfMax",  999999.);
-
-	Chi2oNdfmin_ = pset.getUntrackedParameter<double>("Chi2oNdfMin", -999999.);
-	Chi2oNdfmax_ = pset.getUntrackedParameter<double>("Chi2oNdfMax",  999999.);
-
-	Lxymin_ = pset.getUntrackedParameter<double>("LxyMin", -999999.);
-	Lxymax_ = pset.getUntrackedParameter<double>("LxyMax",  999999.);
-
-	Lxyzmin_ = pset.getUntrackedParameter<double>("LxyzMin", -999999.);
-	Lxyzmax_ = pset.getUntrackedParameter<double>("LxyzMax",  999999.);
-
-	ThetaXYmin_ = pset.getUntrackedParameter<double>("ThetaXYMin", -999999.);
-	ThetaXYmax_ = pset.getUntrackedParameter<double>("ThetaXYMax",  999999.);
-
-	ThetaXYZmin_ = pset.getUntrackedParameter<double>("ThetaXYZMin", -999999.);
-	ThetaXYZmax_ = pset.getUntrackedParameter<double>("ThetaXYZMax",  999999.);
-
-	DecaySigXYmin_ = pset.getUntrackedParameter<double>("DecayXYMin", -999999.);
-	DecaySigXYmax_ = pset.getUntrackedParameter<double>("DecayXYMax",  999999.);
-
-	DecaySigXYZmin_ = pset.getUntrackedParameter<double>("DecayXYZMin", -999999.);
-	DecaySigXYZmax_ = pset.getUntrackedParameter<double>("DecayXYZMax",  999999.);
-
-	DCAmin_ = pset.getUntrackedParameter<double>("DCAMin", -999999.);
-	DCAmax_ = pset.getUntrackedParameter<double>("DCAMax",  999999.);
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
@@ -268,56 +281,57 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 
 
-		if ( pt > pTmax_ or pt < pTmin_ ) continue;
-		if ( eta > Etamax_ or eta < Etamin_ ) continue;
-		if ( mass > Massmax_ or mass < Massmin_ ) continue;
+		for ( auto const cut : cuts_ ) {
+			if ( pt > cut.pTmax_ or pt < cut.pTmin_ ) continue;
+			if ( eta > cut.Etamax_ or eta < cut.Etamin_ ) continue;
+			if ( mass > cut.Massmax_ or mass < cut.Massmin_ ) continue;
 
-		if ( Chi2 > Chi2max_ or Chi2 < Chi2min_ ) continue;
-		if ( Ndf  > Ndfmax_  or Ndf  < Ndfmin_  ) continue;
+			if ( Chi2 > cut.Chi2max_ or Chi2 < cut.Chi2min_ ) continue;
+			if ( Ndf  > cut.Ndfmax_  or Ndf  < cut.Ndfmin_  ) continue;
 
-		if ( chi2oNDF > Chi2oNdfmax_ or chi2oNDF < Chi2oNdfmin_ ) continue;
+			if ( chi2oNDF > cut.Chi2oNdfmax_ or chi2oNDF < cut.Chi2oNdfmin_ ) continue;
 
-		if ( lxy > Lxymax_  or lxy < Lxymin_ ) continue;
-		if ( lxyz> Lxyzmax_ or lxyz< Lxyzmin_) continue;
+			if ( lxy > cut.Lxymax_  or lxy < cut.Lxymin_ ) continue;
+			if ( lxyz> cut.Lxyzmax_ or lxyz< cut.Lxyzmin_) continue;
 
-		if ( cosThetaXY > ThetaXYmax_  or cosThetaXY < ThetaXYmin_ ) continue;
-		if ( cosThetaXYZ> ThetaXYZmax_ or cosThetaXYZ< ThetaXYZmin_) continue;
+			if ( cosThetaXY > cut.ThetaXYmax_  or cosThetaXY < cut.ThetaXYmin_ ) continue;
+			if ( cosThetaXYZ> cut.ThetaXYZmax_ or cosThetaXYZ< cut.ThetaXYZmin_) continue;
 
-		if ( vtxDecaySigXY > DecaySigXYmax_  or vtxDecaySigXY < DecaySigXYmin_ ) continue;
-		if ( vtxDecaySigXYZ> DecaySigXYZmax_ or vtxDecaySigXYZ< DecaySigXYZmin_ ) continue;
+			if ( vtxDecaySigXY > cut.DecaySigXYmax_  or vtxDecaySigXY < cut.DecaySigXYmin_ ) continue;
+			if ( vtxDecaySigXYZ> cut.DecaySigXYZmax_ or vtxDecaySigXYZ< cut.DecaySigXYZmin_ ) continue;
 
-		if ( dca > DCAmax_ or dca < DCAmin_ ) continue;
+			if ( dca > cut.DCAmax_ or dca < cut.DCAmin_ ) continue;
 
-		pphi		->push_back( phi	);
-		peta		->push_back( eta	);
-		ppT		->push_back( pt		);
-		pmass		->push_back( mass	);
-		pweight		->push_back( 1.0	);
+			pphi		->push_back( phi	);
+			peta		->push_back( eta	);
+			ppT		->push_back( pt		);
+			pmass		->push_back( mass	);
+			pweight		->push_back( 1.0	);
 
+			pvtxChi2	->push_back( Chi2	);
+			pvtxNdf		->push_back( Ndf	);
+			pvtxChi2oNdf	->push_back( chi2oNDF		);
 
-		pvtxChi2	->push_back( Chi2	);
-		pvtxNdf		->push_back( Ndf	);
-		pvtxChi2oNdf	->push_back( chi2oNDF		);
-
-		pLxy		->push_back( lxy	);
-		pLxyz		->push_back( lxyz	);
-
-
-		pcosThetaXY	->push_back( cosThetaXY		);
-		pcosThetaXYZ	->push_back( cosThetaXYZ	);
+			pLxy		->push_back( lxy	);
+			pLxyz		->push_back( lxyz	);
 
 
-		pvtxDecaySigXY	->push_back( vtxDecaySigXY	);
-		pvtxDecaySigXYZ	->push_back( vtxDecaySigXYZ	);
+			pcosThetaXY	->push_back( cosThetaXY		);
+			pcosThetaXYZ	->push_back( cosThetaXYZ	);
 
-		pDCA	->push_back( dca	);
 
-		if ( v0.numberOfDaughters() == 2 ) {
-			for ( unsigned int i = 0; i < 2; i++ ) {
-				auto dau = dynamic_cast<const RecoChargedCandidate*>(v0.daughter(i));
-				double idx = -1.;
-				if ( dau ) idx = dau->track().index();
-				pRefs->push_back( idx );
+			pvtxDecaySigXY	->push_back( vtxDecaySigXY	);
+			pvtxDecaySigXYZ	->push_back( vtxDecaySigXYZ	);
+
+			pDCA	->push_back( dca	);
+
+			if ( v0.numberOfDaughters() == 2 ) {
+				for ( unsigned int i = 0; i < 2; i++ ) {
+					auto dau = dynamic_cast<const RecoChargedCandidate*>(v0.daughter(i));
+					double idx = -1.;
+					if ( dau ) idx = dau->track().index();
+					pRefs->push_back( idx );
+				}
 			}
 		}
 	}
