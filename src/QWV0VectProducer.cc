@@ -97,42 +97,42 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	for ( auto pcut : pcuts ) {
 		QWV0VectProducer::V0_cut cut;
 
-		cut.pTmin_ = pset.getUntrackedParameter<double>("ptMin", 0.);
-		cut.pTmax_ = pset.getUntrackedParameter<double>("ptMax", 100.);
-		cut.Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
-		cut.Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
-		cut.Massmin_ = pset.getUntrackedParameter<double>("Massmin", 0.);
-		cut.Massmax_ = pset.getUntrackedParameter<double>("Massmax", 1000);
+		cut.pTmin_ = pcut.getUntrackedParameter<double>("ptMin", 0.);
+		cut.pTmax_ = pcut.getUntrackedParameter<double>("ptMax", 100.);
+		cut.Etamin_ = pcut.getUntrackedParameter<double>("Etamin", -2.4);
+		cut.Etamax_ = pcut.getUntrackedParameter<double>("Etamax", 2.4);
+		cut.Massmin_ = pcut.getUntrackedParameter<double>("Massmin", 0.);
+		cut.Massmax_ = pcut.getUntrackedParameter<double>("Massmax", 1000);
 
-		cut.Chi2min_ = pset.getUntrackedParameter<double>("Chi2Min", -999999.);
-		cut.Chi2max_ = pset.getUntrackedParameter<double>("Chi2Max",  999999.);
+		cut.Chi2min_ = pcut.getUntrackedParameter<double>("Chi2Min", -999999.);
+		cut.Chi2max_ = pcut.getUntrackedParameter<double>("Chi2Max",  999999.);
 
-		cut.Ndfmin_ = pset.getUntrackedParameter<double>("NdfMin", -999999.);
-		cut.Ndfmax_ = pset.getUntrackedParameter<double>("NdfMax",  999999.);
+		cut.Ndfmin_ = pcut.getUntrackedParameter<double>("NdfMin", -999999.);
+		cut.Ndfmax_ = pcut.getUntrackedParameter<double>("NdfMax",  999999.);
 
-		cut.Chi2oNdfmin_ = pset.getUntrackedParameter<double>("Chi2oNdfMin", -999999.);
-		cut.Chi2oNdfmax_ = pset.getUntrackedParameter<double>("Chi2oNdfMax",  999999.);
+		cut.Chi2oNdfmin_ = pcut.getUntrackedParameter<double>("Chi2oNdfMin", -999999.);
+		cut.Chi2oNdfmax_ = pcut.getUntrackedParameter<double>("Chi2oNdfMax",  999999.);
 
-		cut.Lxymin_ = pset.getUntrackedParameter<double>("LxyMin", -999999.);
-		cut.Lxymax_ = pset.getUntrackedParameter<double>("LxyMax",  999999.);
+		cut.Lxymin_ = pcut.getUntrackedParameter<double>("LxyMin", -999999.);
+		cut.Lxymax_ = pcut.getUntrackedParameter<double>("LxyMax",  999999.);
 
-		cut.Lxyzmin_ = pset.getUntrackedParameter<double>("LxyzMin", -999999.);
-		cut.Lxyzmax_ = pset.getUntrackedParameter<double>("LxyzMax",  999999.);
+		cut.Lxyzmin_ = pcut.getUntrackedParameter<double>("LxyzMin", -999999.);
+		cut.Lxyzmax_ = pcut.getUntrackedParameter<double>("LxyzMax",  999999.);
 
-		cut.ThetaXYmin_ = pset.getUntrackedParameter<double>("ThetaXYMin", -999999.);
-		cut.ThetaXYmax_ = pset.getUntrackedParameter<double>("ThetaXYMax",  999999.);
+		cut.ThetaXYmin_ = pcut.getUntrackedParameter<double>("ThetaXYMin", -999999.);
+		cut.ThetaXYmax_ = pcut.getUntrackedParameter<double>("ThetaXYMax",  999999.);
 
-		cut.ThetaXYZmin_ = pset.getUntrackedParameter<double>("ThetaXYZMin", -999999.);
-		cut.ThetaXYZmax_ = pset.getUntrackedParameter<double>("ThetaXYZMax",  999999.);
+		cut.ThetaXYZmin_ = pcut.getUntrackedParameter<double>("ThetaXYZMin", -999999.);
+		cut.ThetaXYZmax_ = pcut.getUntrackedParameter<double>("ThetaXYZMax",  999999.);
 
-		cut.DecaySigXYmin_ = pset.getUntrackedParameter<double>("DecayXYMin", -999999.);
-		cut.DecaySigXYmax_ = pset.getUntrackedParameter<double>("DecayXYMax",  999999.);
+		cut.DecaySigXYmin_ = pcut.getUntrackedParameter<double>("DecayXYMin", -999999.);
+		cut.DecaySigXYmax_ = pcut.getUntrackedParameter<double>("DecayXYMax",  999999.);
 
-		cut.DecaySigXYZmin_ = pset.getUntrackedParameter<double>("DecayXYZMin", -999999.);
-		cut.DecaySigXYZmax_ = pset.getUntrackedParameter<double>("DecayXYZMax",  999999.);
+		cut.DecaySigXYZmin_ = pcut.getUntrackedParameter<double>("DecayXYZMin", -999999.);
+		cut.DecaySigXYZmax_ = pcut.getUntrackedParameter<double>("DecayXYZMax",  999999.);
 
-		cut.DCAmin_ = pset.getUntrackedParameter<double>("DCAMin", -999999.);
-		cut.DCAmax_ = pset.getUntrackedParameter<double>("DCAMax",  999999.);
+		cut.DCAmin_ = pcut.getUntrackedParameter<double>("DCAMin", -999999.);
+		cut.DCAmax_ = pcut.getUntrackedParameter<double>("DCAMax",  999999.);
 
 		cuts_.push_back(cut);
 	}
