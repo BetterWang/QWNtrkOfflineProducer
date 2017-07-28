@@ -138,8 +138,8 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 		cut.DCAmax_ = pcut.getUntrackedParameter<double>("DCAMax",  999999.);
 
 
-		cut.VtxProbmin_ = pset.getUntrackedParameter<double>("VtxProbmin", -1.);
-		cut.VtxProbmax_ = pset.getUntrackedParameter<double>("VtxProbmax", 10.);
+		cut.VtxProbmin_ = pcut.getUntrackedParameter<double>("VtxProbmin", -1.);
+		cut.VtxProbmax_ = pcut.getUntrackedParameter<double>("VtxProbmax", 10.);
 
 		cuts_.push_back(cut);
 	}
