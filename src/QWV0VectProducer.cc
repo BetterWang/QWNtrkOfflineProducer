@@ -25,6 +25,7 @@
 #include "TFile.h"
 #include "TH2.h"
 #include "TMath.h"
+#include "TVector3.h"
 #include <Math/SMatrix.h>
 #include <Math/SVector.h>
 
@@ -86,6 +87,9 @@ private:
 
 		double	VtxProbmin_;
 		double	VtxProbmax_;
+
+		double	AngleMin_;
+		double	AngleMax_;
 	} V0_cut;
 	std::vector<QWV0VectProducer::V0_cut> cuts_;
 };
@@ -140,6 +144,9 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 
 		cut.VtxProbmin_ = pcut.getUntrackedParameter<double>("VtxProbmin", -1.);
 		cut.VtxProbmax_ = pcut.getUntrackedParameter<double>("VtxProbmax", 10.);
+
+		cut.AngleMin_ = pcut.getUntrackedParameter<double>("AngleMin", -100.);
+		cut.AngleMax_ = pcut.getUntrackedParameter<double>("AngleMax", 100.);
 
 		cuts_.push_back(cut);
 	}
@@ -249,7 +256,6 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		float eta      = v0.eta();
 		float phi      = v0.phi();
 		GlobalPoint displacementFromPV ( (pv->x() - v0.vx()), (pv->y() - v0.vy()), (pv->z() - v0.vz()) ) ;
-//		GlobalPoint momentum = GlobalPoint(v0.px(), v0.py(), v0.pz());
 		float lxy      = ( displacementFromPV.perp() );
 		float lxyz     = ( displacementFromPV.mag() );
 
@@ -288,6 +294,9 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		}
 
+		TVector3 secvec(v0.px(), v0.py(), v0.pz());
+		TVector3 ptosvec( -displacementFromPV.x(), -displacementFromPV.y(), -displacementFromPV.z() );
+		double ang = secvec.Angle(ptosvec);
 
 		for ( auto const cut : cuts_ ) {
 			if ( pt > cut.pTmax_ or pt < cut.pTmin_ ) continue;
@@ -311,6 +320,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			if ( dca > cut.DCAmax_ or dca < cut.DCAmin_ ) continue;
 
 			if ( VtxProb > cut.VtxProbmax_ or VtxProb < cut.VtxProbmin_ ) continue;
+
+			if ( ang > cut.AngleMax_ or ang < cut.AngleMin_ ) continue;
 
 			pphi		->push_back( phi	);
 			peta		->push_back( eta	);
