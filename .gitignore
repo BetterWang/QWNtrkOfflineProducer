@@ -1,5 +1,6 @@
 test/*
 !test/*.py
+test/test*.py
 *.pyc
 bin/*
 Tracking

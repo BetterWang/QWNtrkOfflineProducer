@@ -86,15 +86,15 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		iEvent.put(pfC, std::string("nominalfC"));
 		iEvent.put(pregfC, std::string("regularfC"));
 
-		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("Sum"));
-		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumP"));
-		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumN"));
+		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("Sum"));
+		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("SumP"));
+		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("SumN"));
 
-		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumP"));
-		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumN"));
+		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("emSumP"));
+		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("emSumN"));
 
-		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumP"));
-		iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumN"));
+		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("hadSumP"));
+		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("hadSumN"));
 
 		return;
 	}

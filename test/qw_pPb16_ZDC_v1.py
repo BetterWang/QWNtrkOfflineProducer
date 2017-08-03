@@ -10,7 +10,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10000))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 #from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
@@ -20,7 +20,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v16', '')
 
 process.options = cms.untracked.PSet(
-		SkipEvent = cms.untracked.vstring('ProductNotFound')
+#		SkipEvent = cms.untracked.vstring('ProductNotFound')
+	Rethrow = cms.untracked.vstring('ProductNotFound')
 )
 
 process.source = cms.Source("PoolSource",
