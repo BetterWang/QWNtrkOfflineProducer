@@ -92,6 +92,15 @@ private:
 		double	AngleMax_;
 	} V0_cut;
 	std::vector<QWV0VectProducer::V0_cut> cuts_;
+
+	double dauEtaMin_;
+	double dauEtaMax_;
+	double dauNhitsMin_;
+	double dauNhitsMax_;
+	double dauPtMin_;
+	double dauPtMax_;
+	double dauPterrorMin_;
+	double dauPterrorMax_;
 };
 
 QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
@@ -150,13 +159,19 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 
 		cuts_.push_back(cut);
 	}
-
+	auto dcuts = pset.getUntrackedParameter< edm::ParameterSet >("daughter_cuts");
+	dauEtaMin_ = dcuts.getUntrackedParameter<double>("dauEtaMin", -std::numeric_limits<double>::max());
+	dauEtaMax_ = dcuts.getUntrackedParameter<double>("dauEtaMax",  std::numeric_limits<double>::max());
+	dauNhitsMin_ = dcuts.getUntrackedParameter<double>("dauNhitsMin", -std::numeric_limits<double>::max());
+	dauNhitsMax_ = dcuts.getUntrackedParameter<double>("dauNhitsMax",  std::numeric_limits<double>::max());
+	dauPtMin_ = dcuts.getUntrackedParameter<double>("dauPtMin", -std::numeric_limits<double>::max());
+	dauPtMax_ = dcuts.getUntrackedParameter<double>("dauPtMax",  std::numeric_limits<double>::max());
+	dauPterrorMin_ = dcuts.getUntrackedParameter<double>("dauPterrorMin", -std::numeric_limits<double>::max());
+	dauPterrorMax_ = dcuts.getUntrackedParameter<double>("dauPterrorMax",  std::numeric_limits<double>::max());
 
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
 	consumes<reco::VertexCompositeCandidateCollection>(V0Src_);
-
-
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
@@ -292,6 +307,18 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 					dca = std::abs(cApp.distance());
 				}
 			}
+			auto d1 = v0.daughter(0)->get<reco::TrackRef>();
+			auto d2 = v0.daughter(1)->get<reco::TrackRef>();
+			if ( d1->eta() < dauEtaMin_ or d1->eta() > dauEtaMax_
+				or d2->eta() < dauEtaMin_ or d2->eta() > dauEtaMax_ ) continue;
+			if ( d1->numberOfValidHits() < dauNhitsMin_ or d1->numberOfValidHits() > dauNhitsMax_
+				or d2->numberOfValidHits() < dauNhitsMin_ or d2->numberOfValidHits() > dauNhitsMax_ ) continue;
+			if ( d1->pt() < dauPtMin_ or d1->pt() > dauPtMax_
+				or d2->pt() < dauPtMin_ or d2->pt() > dauPtMax_ ) continue;
+			if ( d1->ptError() / d1->pt() < dauPterrorMin_ or d1->ptError() / d1->pt() > dauPterrorMax_
+				or d2->ptError() / d2->pt() < dauPterrorMin_ or d2->ptError() / d2->pt() > dauPterrorMax_ ) continue;
+		} else {
+			continue;
 		}
 
 		TVector3 secvec(v0.px(), v0.py(), v0.pz());
