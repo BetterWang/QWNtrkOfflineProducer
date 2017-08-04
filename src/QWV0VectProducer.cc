@@ -111,42 +111,42 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 		cut.Massmin_ = pcut.getUntrackedParameter<double>("Massmin", 0.);
 		cut.Massmax_ = pcut.getUntrackedParameter<double>("Massmax", 1000);
 
-		cut.Chi2min_ = pcut.getUntrackedParameter<double>("Chi2Min", -999999.);
-		cut.Chi2max_ = pcut.getUntrackedParameter<double>("Chi2Max",  999999.);
+		cut.Chi2min_ = pcut.getUntrackedParameter<double>("Chi2Min", -std::numeric_limits<double>::max());
+		cut.Chi2max_ = pcut.getUntrackedParameter<double>("Chi2Max",  std::numeric_limits<double>::max());
 
-		cut.Ndfmin_ = pcut.getUntrackedParameter<double>("NdfMin", -999999.);
-		cut.Ndfmax_ = pcut.getUntrackedParameter<double>("NdfMax",  999999.);
+		cut.Ndfmin_ = pcut.getUntrackedParameter<double>("NdfMin", -std::numeric_limits<double>::max());
+		cut.Ndfmax_ = pcut.getUntrackedParameter<double>("NdfMax",  std::numeric_limits<double>::max());
 
-		cut.Chi2oNdfmin_ = pcut.getUntrackedParameter<double>("Chi2oNdfMin", -999999.);
-		cut.Chi2oNdfmax_ = pcut.getUntrackedParameter<double>("Chi2oNdfMax",  999999.);
+		cut.Chi2oNdfmin_ = pcut.getUntrackedParameter<double>("Chi2oNdfMin", -std::numeric_limits<double>::max());
+		cut.Chi2oNdfmax_ = pcut.getUntrackedParameter<double>("Chi2oNdfMax",  std::numeric_limits<double>::max());
 
-		cut.Lxymin_ = pcut.getUntrackedParameter<double>("LxyMin", -999999.);
-		cut.Lxymax_ = pcut.getUntrackedParameter<double>("LxyMax",  999999.);
+		cut.Lxymin_ = pcut.getUntrackedParameter<double>("LxyMin", -std::numeric_limits<double>::max());
+		cut.Lxymax_ = pcut.getUntrackedParameter<double>("LxyMax",  std::numeric_limits<double>::max());
 
-		cut.Lxyzmin_ = pcut.getUntrackedParameter<double>("LxyzMin", -999999.);
-		cut.Lxyzmax_ = pcut.getUntrackedParameter<double>("LxyzMax",  999999.);
+		cut.Lxyzmin_ = pcut.getUntrackedParameter<double>("LxyzMin", -std::numeric_limits<double>::max());
+		cut.Lxyzmax_ = pcut.getUntrackedParameter<double>("LxyzMax",  std::numeric_limits<double>::max());
 
-		cut.ThetaXYmin_ = pcut.getUntrackedParameter<double>("ThetaXYMin", -999999.);
-		cut.ThetaXYmax_ = pcut.getUntrackedParameter<double>("ThetaXYMax",  999999.);
+		cut.ThetaXYmin_ = pcut.getUntrackedParameter<double>("ThetaXYMin", -std::numeric_limits<double>::max());
+		cut.ThetaXYmax_ = pcut.getUntrackedParameter<double>("ThetaXYMax",  std::numeric_limits<double>::max());
 
-		cut.ThetaXYZmin_ = pcut.getUntrackedParameter<double>("ThetaXYZMin", -999999.);
-		cut.ThetaXYZmax_ = pcut.getUntrackedParameter<double>("ThetaXYZMax",  999999.);
+		cut.ThetaXYZmin_ = pcut.getUntrackedParameter<double>("ThetaXYZMin", -std::numeric_limits<double>::max());
+		cut.ThetaXYZmax_ = pcut.getUntrackedParameter<double>("ThetaXYZMax",  std::numeric_limits<double>::max());
 
-		cut.DecaySigXYmin_ = pcut.getUntrackedParameter<double>("DecayXYMin", -999999.);
-		cut.DecaySigXYmax_ = pcut.getUntrackedParameter<double>("DecayXYMax",  999999.);
+		cut.DecaySigXYmin_ = pcut.getUntrackedParameter<double>("DecayXYMin", -std::numeric_limits<double>::max());
+		cut.DecaySigXYmax_ = pcut.getUntrackedParameter<double>("DecayXYMax",  std::numeric_limits<double>::max());
 
-		cut.DecaySigXYZmin_ = pcut.getUntrackedParameter<double>("DecayXYZMin", -999999.);
-		cut.DecaySigXYZmax_ = pcut.getUntrackedParameter<double>("DecayXYZMax",  999999.);
+		cut.DecaySigXYZmin_ = pcut.getUntrackedParameter<double>("DecayXYZMin", -std::numeric_limits<double>::max());
+		cut.DecaySigXYZmax_ = pcut.getUntrackedParameter<double>("DecayXYZMax",  std::numeric_limits<double>::max());
 
-		cut.DCAmin_ = pcut.getUntrackedParameter<double>("DCAMin", -999999.);
-		cut.DCAmax_ = pcut.getUntrackedParameter<double>("DCAMax",  999999.);
+		cut.DCAmin_ = pcut.getUntrackedParameter<double>("DCAMin", -std::numeric_limits<double>::max());
+		cut.DCAmax_ = pcut.getUntrackedParameter<double>("DCAMax",  std::numeric_limits<double>::max());
 
 
-		cut.VtxProbmin_ = pcut.getUntrackedParameter<double>("VtxProbmin", -1.);
-		cut.VtxProbmax_ = pcut.getUntrackedParameter<double>("VtxProbmax", 10.);
+		cut.VtxProbmin_ = pcut.getUntrackedParameter<double>("VtxProbmin", -std::numeric_limits<double>::max());
+		cut.VtxProbmax_ = pcut.getUntrackedParameter<double>("VtxProbmax",  std::numeric_limits<double>::max());
 
-		cut.AngleMin_ = pcut.getUntrackedParameter<double>("AngleMin", -100.);
-		cut.AngleMax_ = pcut.getUntrackedParameter<double>("AngleMax", 100.);
+		cut.AngleMin_ = pcut.getUntrackedParameter<double>("AngleMin", -std::numeric_limits<double>::max());
+		cut.AngleMax_ = pcut.getUntrackedParameter<double>("AngleMax",  std::numeric_limits<double>::max());
 
 		cuts_.push_back(cut);
 	}
