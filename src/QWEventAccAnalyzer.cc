@@ -49,8 +49,8 @@ QWEventAccAnalyzer::QWEventAccAnalyzer(const edm::ParameterSet& pset) :
 	double hstartEta = pset.getUntrackedParameter<double>("hstartEta", -2.4);
 	double hendEta = pset.getUntrackedParameter<double>("hendEta", 2.4);
 
-	minPt_ = pset.getUntrackedParameter<double>("minPt", 0.3);
-	maxPt_ = pset.getUntrackedParameter<double>("maxPt", 0.4);
+	minPt_ = pset.getUntrackedParameter<double>("minPt", std::numeric_limits<double>::min());
+	maxPt_ = pset.getUntrackedParameter<double>("maxPt", std::numeric_limits<double>::max());
 
 	edm::Service<TFileService> fs;
 	hc = fs->make<TH2D>("hc", "hc", NbinsPhi, hstartPhi, hendPhi, NbinsEta, hstartEta, hendEta);

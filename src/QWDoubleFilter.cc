@@ -19,8 +19,8 @@ private:
 
 QWDoubleFilter::QWDoubleFilter(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
-	min_(pset.getUntrackedParameter<double>("dmin")),
-	max_(pset.getUntrackedParameter<double>("dmax"))
+	min_(pset.getUntrackedParameter<double>("dmin", std::numeric_limits<double>::min())),
+	max_(pset.getUntrackedParameter<double>("dmax", std::numeric_limits<double>::max()))
 {
 	consumes<double>(src_);
 	return;

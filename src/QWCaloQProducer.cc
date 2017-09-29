@@ -48,6 +48,12 @@ QWCaloQProducer::QWCaloQProducer(const edm::ParameterSet& pset) :
 	produces<double>("W");
 	produces<double>("Wplus");
 	produces<double>("Wminus");
+
+	produces<std::vector<double> >("CaloTowerEmE");
+	produces<std::vector<double> >("CaloTowerHadE");
+	produces<std::vector<double> >("CaloTowerE");
+	produces<std::vector<double> >("CaloTowerPhi");
+	produces<std::vector<double> >("CaloTowerEta");
 }
 
 QWCaloQProducer::~QWCaloQProducer() {
@@ -66,6 +72,12 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	double Wplus = 0.;
 	double Wminus = 0.;
 
+	std::auto_ptr<std::vector<double> > caloEmE(new std::vector<double>);
+	std::auto_ptr<std::vector<double> > caloHadE(new std::vector<double>);
+	std::auto_ptr<std::vector<double> > caloE(new std::vector<double>);
+	std::auto_ptr<std::vector<double> > caloPhi(new std::vector<double>);
+	std::auto_ptr<std::vector<double> > caloEta(new std::vector<double>);
+
 	Handle<CaloTowerCollection> caloCollection;
 	iEvent.getByLabel(caloSrc_, caloCollection);
 
@@ -74,6 +86,11 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			double eta = j->eta();
 			double phi = j->phi();
 			double et = j->emEt() + j->hadEt();
+			caloEmE->push_back( j->emEnergy() );
+			caloHadE->push_back( j->hadEnergy() );
+			caloE  ->push_back( j->emEnergy() + j->hadEnergy() );
+			caloPhi->push_back( phi );
+			caloEta->push_back( eta );
 
 			std::complex<double> Q(TMath::Cos(N_*phi), TMath::Sin(N_*phi));
 			if ( fabs(eta) > etaMin_ and fabs(eta) < etaMax_ ) {
@@ -102,6 +119,12 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(std::auto_ptr<double>(new double(Wsum)), "W");
 	iEvent.put(std::auto_ptr<double>(new double(Wplus)), "Wplus");
 	iEvent.put(std::auto_ptr<double>(new double(Wminus)), "Wminus");
+
+	iEvent.put(caloEmE, "CaloTowerEmE");
+	iEvent.put(caloHadE,"CaloTowerHadE");
+	iEvent.put(caloE,   "CaloTowerE");
+	iEvent.put(caloPhi, "CaloTowerPhi");
+	iEvent.put(caloEta, "CaloTowerEta");
 
 }
 
