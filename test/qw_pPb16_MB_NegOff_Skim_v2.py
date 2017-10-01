@@ -58,16 +58,79 @@ process.NoScraping = cms.EDFilter("FilterOutScraping",
  thresh = cms.untracked.double(0.25)
 )
 
-process.load("HeavyIonsAnalysis.Configuration.hfCoincFilter_cff")
+#process.load("HeavyIonsAnalysis.Configuration.hfCoincFilter_cff")
 #process.load("HeavyIonsAnalysis.EventAnalysis.pileUpFilter_cff")
 
+# make calotowers into candidates
+process.towersAboveThreshold3 = cms.EDProducer("CaloTowerCandidateCreator",
+    src = cms.InputTag("towerMaker"),
+    verbose = cms.untracked.int32(0),
+    minimumE = cms.double(3.0),
+    minimumEt = cms.double(0.0),
+)
+
+process.towersAboveThreshold8 = process.towersAboveThreshold3.clone(
+    minimumE = cms.double(8.0),
+)
+
+# select HF+ towers above threshold 3
+process.hfPosTowers3 = cms.EDFilter("EtaPtMinCandSelector",
+    src = cms.InputTag("towersAboveThreshold3"),
+    ptMin   = cms.double(0),
+    etaMin = cms.double(3.0),
+    etaMax = cms.double(6.0)
+)
+
+# select HF+ towers above threshold 8
+process.hfPosTowers8 = cms.hfPosTowers3.clone(
+    src = cms.InputTag("towersAboveThreshold8")
+)
+
+# select HF- towers above threshold 3
+process.hfNegTowers3 = cms.EDFilter("EtaPtMinCandSelector",
+    src = cms.InputTag("towersAboveThreshold3"),
+    ptMin   = cms.double(0),
+    etaMin = cms.double(-6.0),
+    etaMax = cms.double(-3.0)
+)
+
+# select HF- towers above threshold 8
+process.hfNegTowers8 = cms.hfNegTowers3.clone(
+    src = cms.InputTag("towersAboveThreshold8")
+)
+
+# require at least one HF+ tower above threshold 3
+process.hfPosFilter3 = cms.EDFilter("CandCountFilter",
+    src = cms.InputTag("hfPosTowers3"),
+    minNumber = cms.uint32(1)
+)
+
+# require at least one HF+ tower above threshold 8
+process.hfPosFilter8 = cms.hfPosFilter3.clone(
+    src = cms.InputTag("hfPosTowers8")
+)
+
+# require at least one HF- tower above threshold 3
+process.hfNegFilter3 = cms.EDFilter("CandCountFilter",
+    src = cms.InputTag("hfNegTowers3"),
+    minNumber = cms.uint32(1)
+)
+
+# require at least one HF- tower above threshold 8
+process.hfNegFilter8 = cms.hfNegFilter3(
+    src = cms.InputTag("hfNegTowers8")
+)
+
 process.hfPosOnNegOff = cms.Sequence(
-        process.towersAboveThreshold *
-        process.hfPosTowers *
-        process.hfNegTowers *
-        process.hfPosFilter *
-        ~process.hfNegFilter
+        process.towersAboveThreshold3 *
+        process.towersAboveThreshold8 *
+        process.hfPosTowers3 *
+        process.hfNegTowers8 *
+        process.hfPosFilter3 *
+        ~process.hfNegFilter8
         )
+
+
 
 process.QWZDC = cms.EDProducer("QWZDCProducer",
 	Src = cms.untracked.InputTag("castorDigis"),
@@ -94,6 +157,41 @@ process.selection1N = cms.Sequence(
         process.QWZDC *
         process.QWZDCFilter1N
         )
+
+# calo
+process.QWCalo = cms.EDProducer("QWCaloQProducer",
+	caloSrc = cms.untracked.InputTag("towerMaker"),
+	etaMin = cms.untracked.double(-6),
+	etaMax = cms.untracked.double(6),
+	N = cms.untracked.int32(2)
+)
+
+# calo eta gap
+process.QWCaloEtaGap3 = cms.EDProducer("QWEtaGapProducer",
+	srcE = cms.untracked.InputTag("QWCalo", "CaloTowerE"),
+	srcEta = cms.untracked.InputTag("QWCalo", "CaloTowerEta"),
+	minE = cms.untracked.double(3.0)
+)
+
+process.QWCaloEtaGap4 = cms.QWCaloEtaGap3.clone(
+	minE = cms.untracked.double(4.0)
+)
+
+process.QWCaloEtaGap5 = cms.QWCaloEtaGap3.clone(
+	minE = cms.untracked.double(5.0)
+)
+
+process.QWCaloEtaGap6 = cms.QWCaloEtaGap3.clone(
+	minE = cms.untracked.double(6.0)
+)
+
+process.QWCaloEtaGap7 = cms.QWCaloEtaGap3.clone(
+	minE = cms.untracked.double(7.0)
+)
+
+process.QWCaloEtaGap8 = cms.QWCaloEtaGap3.clone(
+	minE = cms.untracked.double(8.0)
+)
 
 #process.eventSelection = cms.Sequence(process.hfCoincFilter * process.PAprimaryVertexFilter * process.NoScraping * process.olvFilter_pPb8TeV_dz1p0)
 process.eventSelection = cms.Sequence(process.hfPosOnNegOff * process.PAprimaryVertexFilter * process.NoScraping )
