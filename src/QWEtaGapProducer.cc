@@ -56,16 +56,16 @@ void QWEtaGapProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			vectEta2.push_back( (*vectEta)[i] );
 		}
 	}
-	auto edge = std::minmax_element( vectE2.begin(), vectE2.end() );
+	auto edge = std::minmax_element( vectEta2.begin(), vectEta2.end() );
 
 	std::auto_ptr<double> pneg (new double(-99999.) ) ;
 	std::auto_ptr<double> ppos (new double( 99999.) ) ;
 
-	if ( edge.first != vectE2.end() ) {
-		*pneg = vectEta2[edge.first - vectE2.begin()];
+	if ( edge.first != vectEta2.end() ) {
+		*pneg = vectEta2[edge.first - vectEta2.begin()];
 	}
-	if ( edge.second != vectE2.end() ) {
-		*ppos = vectEta2[edge.second - vectE2.begin()];
+	if ( edge.second != vectEta2.end() ) {
+		*ppos = vectEta2[edge.second - vectEta2.begin()];
 	}
 
 	iEvent.put( pneg, "negEta" );

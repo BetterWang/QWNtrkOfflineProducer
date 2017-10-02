@@ -82,7 +82,7 @@ process.hfPosTowers3 = cms.EDFilter("EtaPtMinCandSelector",
 )
 
 # select HF+ towers above threshold 8
-process.hfPosTowers8 = cms.hfPosTowers3.clone(
+process.hfPosTowers8 = process.hfPosTowers3.clone(
     src = cms.InputTag("towersAboveThreshold8")
 )
 
@@ -95,7 +95,7 @@ process.hfNegTowers3 = cms.EDFilter("EtaPtMinCandSelector",
 )
 
 # select HF- towers above threshold 8
-process.hfNegTowers8 = cms.hfNegTowers3.clone(
+process.hfNegTowers8 = process.hfNegTowers3.clone(
     src = cms.InputTag("towersAboveThreshold8")
 )
 
@@ -106,7 +106,7 @@ process.hfPosFilter3 = cms.EDFilter("CandCountFilter",
 )
 
 # require at least one HF+ tower above threshold 8
-process.hfPosFilter8 = cms.hfPosFilter3.clone(
+process.hfPosFilter8 = process.hfPosFilter3.clone(
     src = cms.InputTag("hfPosTowers8")
 )
 
@@ -117,7 +117,7 @@ process.hfNegFilter3 = cms.EDFilter("CandCountFilter",
 )
 
 # require at least one HF- tower above threshold 8
-process.hfNegFilter8 = cms.hfNegFilter3(
+process.hfNegFilter8 = process.hfNegFilter3.clone(
     src = cms.InputTag("hfNegTowers8")
 )
 
@@ -173,23 +173,23 @@ process.QWCaloEtaGap3 = cms.EDProducer("QWEtaGapProducer",
 	minE = cms.untracked.double(3.0)
 )
 
-process.QWCaloEtaGap4 = cms.QWCaloEtaGap3.clone(
+process.QWCaloEtaGap4 = process.QWCaloEtaGap3.clone(
 	minE = cms.untracked.double(4.0)
 )
 
-process.QWCaloEtaGap5 = cms.QWCaloEtaGap3.clone(
+process.QWCaloEtaGap5 = process.QWCaloEtaGap3.clone(
 	minE = cms.untracked.double(5.0)
 )
 
-process.QWCaloEtaGap6 = cms.QWCaloEtaGap3.clone(
+process.QWCaloEtaGap6 = process.QWCaloEtaGap3.clone(
 	minE = cms.untracked.double(6.0)
 )
 
-process.QWCaloEtaGap7 = cms.QWCaloEtaGap3.clone(
+process.QWCaloEtaGap7 = process.QWCaloEtaGap3.clone(
 	minE = cms.untracked.double(7.0)
 )
 
-process.QWCaloEtaGap8 = cms.QWCaloEtaGap3.clone(
+process.QWCaloEtaGap8 = process.QWCaloEtaGap3.clone(
 	minE = cms.untracked.double(8.0)
 )
 
@@ -225,10 +225,18 @@ process.monSumN1N = process.monSumN0N.clone()
 process.mon0N = cms.Sequence( process.histNoff0N + process.vectPhi0N + process.vectEta0N + process.vectPt0N + process.monSumN0N)
 process.mon1N = cms.Sequence( process.histNoff1N + process.vectPhi1N + process.vectEta1N + process.vectPt1N + process.monSumN1N)
 
-process.ana0N = cms.Path( process.hltMB * process.eventSelection * process.selection0N * process.Noff )
+process.ana0N = cms.Path( process.hltMB * process.eventSelection * process.selection0N * process.Noff * process.QWCalo * process.QWCaloEtaGap3 * process.QWCaloEtaGap4 * process.QWCaloEtaGap5 * process.QWCaloEtaGap6 * process.QWCaloEtaGap7 *process.QWCaloEtaGap8 )
 
 process.RECO = cms.OutputModule("PoolOutputModule",
-                outputCommands = cms.untracked.vstring('keep *_QWZDC_SumN_*', 'keep *_Noff_*_*'),
+                outputCommands = cms.untracked.vstring('keep *_QWZDC_SumN_*', 
+			'keep *_QWCaloEtaGap3_*_*',
+			'keep *_QWCaloEtaGap4_*_*',
+			'keep *_QWCaloEtaGap5_*_*',
+			'keep *_QWCaloEtaGap6_*_*',
+			'keep *_QWCaloEtaGap7_*_*',
+			'keep *_QWCaloEtaGap8_*_*',
+			#'keep *_QWCalo_*_*',
+			'keep *_Noff_*_*'),
                 SelectEvents = cms.untracked.PSet(
                         SelectEvents = cms.vstring('ana0N')
                         ),
