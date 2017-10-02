@@ -38,9 +38,9 @@ process.hltMB.andOr = cms.bool(True)
 process.hltMB.throw = cms.bool(False)
 
 
-#process.TFileService = cms.Service("TFileService",
-#    fileName = cms.string('cumu.root')
-#)
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string('upc.root')
+)
 
 
 process.load("HeavyIonsAnalysis.VertexAnalysis.PAPileUpVertexFilter_cff")
@@ -193,6 +193,13 @@ process.QWCaloEtaGap8 = process.QWCaloEtaGap3.clone(
 	minE = cms.untracked.double(8.0)
 )
 
+# track eta gap
+process.QWTrackEtaGap = cms.EDProducer("QWEtaGapProducer",
+	srcE = cms.untracked.InputTag("QWEvent", "pt"),
+	srcEta = cms.untracked.InputTag("QWEvent", "eta"),
+	minE = cms.untracked.double(0.3)
+)
+
 #process.eventSelection = cms.Sequence(process.hfCoincFilter * process.PAprimaryVertexFilter * process.NoScraping * process.olvFilter_pPb8TeV_dz1p0)
 process.eventSelection = cms.Sequence(process.hfPosOnNegOff * process.PAprimaryVertexFilter * process.NoScraping )
 
@@ -219,13 +226,40 @@ process.monSumN0N = cms.EDAnalyzer('QWHistDAnalyzer',
 		end = cms.untracked.double(600.),
 		)
 
+process.monEtaGapPos3 = cms.EDAnalyzer('QWHistDAnalyzer',
+		src = cms.untracked.InputTag('QWCaloEtaGap3', 'posEta'),
+		Nbins = cms.untracked.int32(120),
+		start = cms.untracked.double(-6.),
+		end = cms.untracked.double(6.),
+		)
+
+process.monEtaGapPos4 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap4', 'posEta') )
+process.monEtaGapPos5 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap5', 'posEta') )
+process.monEtaGapPos6 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap6', 'posEta') )
+process.monEtaGapPos7 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap7', 'posEta') )
+process.monEtaGapPos8 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap8', 'posEta') )
+
+process.monEtaGapNeg3 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap4', 'negEta') )
+process.monEtaGapNeg4 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap4', 'negEta') )
+process.monEtaGapNeg5 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap5', 'negEta') )
+process.monEtaGapNeg6 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap6', 'negEta') )
+process.monEtaGapNeg7 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap7', 'negEta') )
+process.monEtaGapNeg8 = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWCaloEtaGap8', 'negEta') )
+
+process.monTrackEtaGapPos = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWTrackEtaGap', 'posEta') )
+process.monTrackEtaGapNeg = process.monEtaGapPos3.clone( src = cms.untracked.InputTag('QWTrackEtaGap', 'negEta') )
+
+process.monCaloGap = cms.Sequence( process.monEtaGapPos3 + process.monEtaGapPos4 + process.monEtaGapPos5 + process.monEtaGapPos6 + process.monEtaGapPos7 + process.monEtaGapPos8 + process.monEtaGapNeg3 + process.monEtaGapNeg4 + process.monEtaGapNeg5 + process.monEtaGapNeg6 + process.monEtaGapNeg7 + process.monEtaGapNeg8 + process.monTrackEtaGapPos + process.monTrackEtaGapNeg)
+
+
+
 process.monSumN1N = process.monSumN0N.clone()
 
 
-process.mon0N = cms.Sequence( process.histNoff0N + process.vectPhi0N + process.vectEta0N + process.vectPt0N + process.monSumN0N)
+process.mon0N = cms.Sequence( process.histNoff0N + process.vectPhi0N + process.vectEta0N + process.vectPt0N + process.monSumN0N + process.monCaloGap)
 process.mon1N = cms.Sequence( process.histNoff1N + process.vectPhi1N + process.vectEta1N + process.vectPt1N + process.monSumN1N)
 
-process.ana0N = cms.Path( process.hltMB * process.eventSelection * process.selection0N * process.Noff * process.QWCalo * process.QWCaloEtaGap3 * process.QWCaloEtaGap4 * process.QWCaloEtaGap5 * process.QWCaloEtaGap6 * process.QWCaloEtaGap7 *process.QWCaloEtaGap8 )
+process.ana0N = cms.Path( process.hltMB * process.eventSelection * process.selection0N * process.makeEvent * process.QWCalo * process.QWCaloEtaGap3 * process.QWCaloEtaGap4 * process.QWCaloEtaGap5 * process.QWCaloEtaGap6 * process.QWCaloEtaGap7 *process.QWCaloEtaGap8 * process.mon0N)
 
 process.RECO = cms.OutputModule("PoolOutputModule",
                 outputCommands = cms.untracked.vstring('keep *_QWZDC_SumN_*', 
