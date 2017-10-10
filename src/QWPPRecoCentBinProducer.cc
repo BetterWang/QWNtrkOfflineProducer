@@ -22,6 +22,7 @@ private:
 QWPPRecoCentBinProducer::QWPPRecoCentBinProducer(const edm::ParameterSet& pset) {
 	consumes<CaloTowerCollection>(edm::InputTag("towerMaker"));
 	produces<int>();
+	produces<double>("etHFtowerSum");
 }
 
 QWPPRecoCentBinProducer::~QWPPRecoCentBinProducer()
@@ -63,7 +64,9 @@ void QWPPRecoCentBinProducer::produce(edm::Event& iEvent, const edm::EventSetup&
 	}
 
 	std::auto_ptr<int> binp(new int(bin));
+	std::auto_ptr<double> et(new double(etHFtowerSum));
 	iEvent.put(binp);
+	iEvent.put(et);
 }
 
 DEFINE_FWK_MODULE(QWPPRecoCentBinProducer);
