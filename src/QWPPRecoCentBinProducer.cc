@@ -63,10 +63,10 @@ void QWPPRecoCentBinProducer::produce(edm::Event& iEvent, const edm::EventSetup&
 		}
 	}
 
-	std::auto_ptr<int> binp(new int(bin));
-	std::auto_ptr<double> et(new double(etHFtowerSum));
-	iEvent.put(binp);
-	iEvent.put(et, "etHFtowerSum");
+	//std::auto_ptr<int> binp(new int(bin));
+	//std::auto_ptr<double> et(new double(etHFtowerSum));
+	iEvent.put(std::make_unique<int>(bin));
+	iEvent.put(std::make_unique<double>(etHFtowerSum), "etHFtowerSum");
 }
 
 DEFINE_FWK_MODULE(QWPPRecoCentBinProducer);
