@@ -258,15 +258,15 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	using namespace reco;
 
-	std::auto_ptr<std::vector<double> > pphi( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > peta( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pweight( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pref( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pcharge( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pvz( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pNchi2( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pNchi2oNLayers( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pphi;
+	std::unique_ptr<std::vector<double> > peta;
+	std::unique_ptr<std::vector<double> > ppT;
+	std::unique_ptr<std::vector<double> > pweight;
+	std::unique_ptr<std::vector<double> > pref;
+	std::unique_ptr<std::vector<double> > pcharge;
+	std::unique_ptr<std::vector<double> > pvz;
+	std::unique_ptr<std::vector<double> > pNchi2;
+	std::unique_ptr<std::vector<double> > pNchi2oNLayers;
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
@@ -352,15 +352,15 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 
-	iEvent.put(pphi, std::string("phi"));
-	iEvent.put(peta, std::string("eta"));
-	iEvent.put(ppT, std::string("pt"));
-	iEvent.put(pweight, std::string("weight"));
-	iEvent.put(pcharge, std::string("charge"));
-	iEvent.put(pNchi2, std::string("Nchi2"));
-	iEvent.put(pNchi2oNLayers, std::string("Nchi2oNLayers"));
-	iEvent.put(pref, std::string("ref"));
-	iEvent.put(pvz, std::string("vz"));
+	iEvent.put(std::move(pphi), std::string("phi"));
+	iEvent.put(std::move(peta), std::string("eta"));
+	iEvent.put(std::move(ppT), std::string("pt"));
+	iEvent.put(std::move(pweight), std::string("weight"));
+	iEvent.put(std::move(pcharge), std::string("charge"));
+	iEvent.put(std::move(pNchi2), std::string("Nchi2"));
+	iEvent.put(std::move(pNchi2oNLayers), std::string("Nchi2oNLayers"));
+	iEvent.put(std::move(pref), std::string("ref"));
+	iEvent.put(std::move(pvz), std::string("vz"));
 }
 
 
