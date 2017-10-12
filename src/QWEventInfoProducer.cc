@@ -52,17 +52,17 @@ void QWEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	double lumi = iEvent.luminosityBlock();
 	double orbit = iEvent.orbitNumber();
 
-	std::auto_ptr<double> prunid(new double(runid));
-	std::auto_ptr<double> peventid(new double(eventid));
-	std::auto_ptr<double> pbx(new double(bx));
-	std::auto_ptr<double> plumi(new double(lumi));
-	std::auto_ptr<double> porbit(new double(orbit));
+	(double(runid));
+	(double(eventid));
+	(double(bx));
+	(double(lumi));
+	(double(orbit));
 
-	iEvent.put(prunid, std::string("RunId"));
-	iEvent.put(peventid, std::string("EventId"));
-	iEvent.put(pbx, std::string("BX"));
-	iEvent.put(plumi, std::string("Lumi"));
-	iEvent.put(porbit, std::string("Orbit"));
+	iEvent.put(make_unique<double>(double(runid))  , std::string("RunId"));
+	iEvent.put(make_unique<double>(double(eventid)), std::string("EventId"));
+	iEvent.put(make_unique<double>(double(bx))     , std::string("BX"));
+	iEvent.put(make_unique<double>(double(lumi))   , std::string("Lumi"));
+	iEvent.put(make_unique<double>(double(orbit))  , std::string("Orbit"));
 }
 
 
