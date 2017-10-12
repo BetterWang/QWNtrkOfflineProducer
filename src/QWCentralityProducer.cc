@@ -51,13 +51,9 @@ void QWCentralityProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 	double EtHFtowerSumPlus = cent->EtHFtowerSumPlus();
 	double EtHFtowerSumMinus = cent->EtHFtowerSumMinus();
 
-	std::auto_ptr<double> pEtHFtowerSum(new double(EtHFtowerSum));
-	std::auto_ptr<double> pEtHFtowerSumPlus(new double(EtHFtowerSumPlus));
-	std::auto_ptr<double> pEtHFtowerSumMinus(new double(EtHFtowerSumMinus));
-
-	iEvent.put(pEtHFtowerSum, std::string("EtHFtowerSum"));
-	iEvent.put(pEtHFtowerSumPlus, std::string("EtHFtowerSumPlus"));
-	iEvent.put(pEtHFtowerSumMinus, std::string("EtHFtowerSumMinus"));
+	iEvent.put(std::make_unique<double> (EtHFtowerSum), std::string("EtHFtowerSum"));
+	iEvent.put(std::make_unique<double> (EtHFtowerSumPlus), std::string("EtHFtowerSumPlus"));
+	iEvent.put(std::make_unique<double> (EtHFtowerSumMinus), std::string("EtHFtowerSumMinus"));
 }
 
 

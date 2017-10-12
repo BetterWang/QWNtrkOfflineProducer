@@ -44,9 +44,7 @@ void QWInt2Double::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<int> pX;
 	iEvent.getByLabel(src_, pX);
 
-        auto_ptr<double> p(new double(*pX));
-
-	iEvent.put(p);
+	iEvent.put(make_unique<double>(*pX));
 }
 
 
