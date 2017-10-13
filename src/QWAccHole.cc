@@ -69,10 +69,10 @@ void QWAccHole::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::vector<double> phi = *pphi;
 	std::vector<double> eta = *peta;
 
-	auto_ptr<std::vector<double> > pphi_new( new std::vector<double> );
-	auto_ptr<std::vector<double> > peta_new( new std::vector<double> );
+	unique_ptr<std::vector<double> > pphi_new( new std::vector<double> );
+	unique_ptr<std::vector<double> > peta_new( new std::vector<double> );
 
-	std::vector< auto_ptr<std::vector<double> > >  vnew;
+	std::vector< unique_ptr<std::vector<double> > >  vnew;
 
 	std::vector< Handle< std::vector<double> > > pH;
 	for ( unsigned int i = 0; i < srcVtag_.size(); i++ ) {
@@ -96,10 +96,10 @@ void QWAccHole::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 
-	iEvent.put(pphi_new, std::string("phi"));
-	iEvent.put(peta_new, std::string("eta"));
+	iEvent.put(move(pphi_new), std::string("phi"));
+	iEvent.put(move(peta_new), std::string("eta"));
 	for ( unsigned int i = 0; i < srcVtag_.size(); i++ ) {
-		iEvent.put( vnew[i], srcVtag_[i].instance() );
+		iEvent.put( move(vnew[i]), srcVtag_[i].instance() );
 	}
 }
 

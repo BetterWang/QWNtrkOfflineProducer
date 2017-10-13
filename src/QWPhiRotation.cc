@@ -45,7 +45,7 @@ void QWPhiRotation::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle< std::vector<double> > pphi;
 	iEvent.getByLabel(src_, pphi);
 	std::vector<double> phi = *pphi;
-	auto_ptr<std::vector<double> > pphi_new(new std::vector<double>);
+	unique_ptr<std::vector<double> > pphi_new(new std::vector<double>);
 	pphi_new->reserve(phi.size());
 	const double pi2 = TMath::Pi()*2;
 
@@ -57,7 +57,7 @@ void QWPhiRotation::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		pphi_new->push_back(phi);
 	}
 
-	iEvent.put(pphi_new, string("phi"));
+	iEvent.put(move(pphi_new), string("phi"));
 }
 
 
