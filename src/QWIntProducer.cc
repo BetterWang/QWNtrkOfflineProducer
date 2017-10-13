@@ -34,8 +34,8 @@ QWIntProducer::~QWIntProducer() {
 
 void QWIntProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-	std::auto_ptr<int> pint(new int(src_));
-	iEvent.put(pint);
+	std::unique_ptr<int> pint(new int(src_));
+	iEvent.put(move(pint));
 }
 
 DEFINE_FWK_MODULE(QWIntProducer);

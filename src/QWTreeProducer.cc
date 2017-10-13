@@ -62,11 +62,11 @@ QWTreeProducer::~QWTreeProducer()
 void QWTreeProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
-	std::auto_ptr<std::vector<double> > pphi( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > peta( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pweight( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pvz( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pphi;
+	std::unique_ptr<std::vector<double> > peta;
+	std::unique_ptr<std::vector<double> > ppT;
+	std::unique_ptr<std::vector<double> > pweight;
+	std::unique_ptr<std::vector<double> > pvz;
 
 	int sz = ch_.GetEntry(idx_++);
 	if ( sz > 0 and Nmult_ > 0 ) {
@@ -86,11 +86,11 @@ void QWTreeProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 
-	iEvent.put(pphi, std::string("phi"));
-	iEvent.put(peta, std::string("eta"));
-	iEvent.put(ppT, std::string("pt"));
-	iEvent.put(pweight, std::string("weight"));
-	iEvent.put(pvz, std::string("vz"));
+	iEvent.put(move(pphi), std::string("phi"));
+	iEvent.put(move(peta), std::string("eta"));
+	iEvent.put(move(ppT), std::string("pt"));
+	iEvent.put(move(pweight), std::string("weight"));
+	iEvent.put(move(pvz), std::string("vz"));
 }
 
 DEFINE_FWK_MODULE(QWTreeProducer);

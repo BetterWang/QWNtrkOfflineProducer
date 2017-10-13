@@ -88,8 +88,8 @@ void QWNtrkOfflineProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
 		Noff++;
 	}
-	std::auto_ptr<int> pNoff(new int(Noff));
-	iEvent.put(pNoff);
+	std::unique_ptr<int> pNoff(new int(Noff));
+	iEvent.put(move(pNoff));
 }
 
 DEFINE_FWK_MODULE(QWNtrkOfflineProducer);

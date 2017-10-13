@@ -221,28 +221,28 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	using namespace edm;
 	using namespace reco;
 
-	std::auto_ptr<std::vector<double> > pphi( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > peta( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > prapidity( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pmass( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pweight( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pphi( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > peta( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > prapidity( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppT( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pmass( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pweight( new std::vector<double> );
 
-	std::auto_ptr<std::vector<double> > pvtxChi2( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pvtxNdf( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pvtxChi2oNdf( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pvtxChi2( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pvtxNdf( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pvtxChi2oNdf( new std::vector<double> );
 
-	std::auto_ptr<std::vector<double> > pLxy( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pLxyz( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pLxy( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pLxyz( new std::vector<double> );
 
-	std::auto_ptr<std::vector<double> > pcosThetaXY( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pcosThetaXYZ( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pcosThetaXY( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pcosThetaXYZ( new std::vector<double> );
 
-	std::auto_ptr<std::vector<double> > pvtxDecaySigXY( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pvtxDecaySigXYZ( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pvtxDecaySigXY( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pvtxDecaySigXYZ( new std::vector<double> );
 
-	std::auto_ptr<std::vector<double> > pDCA( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pRefs( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pDCA( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pRefs( new std::vector<double> );
 
 	edm::ESHandle<TransientTrackBuilder> theB;
 	iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
@@ -456,28 +456,28 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	}
 
 
-	iEvent.put(pphi, std::string("phi"));
-	iEvent.put(peta, std::string("eta"));
-	iEvent.put(prapidity, std::string("rapidity"));
-	iEvent.put(ppT, std::string("pt"));
-	iEvent.put(pmass, std::string("mass"));
-	iEvent.put(pweight, std::string("weight"));
+	iEvent.put(move(pphi), std::string("phi"));
+	iEvent.put(move(peta), std::string("eta"));
+	iEvent.put(move(prapidity), std::string("rapidity"));
+	iEvent.put(move(ppT), std::string("pt"));
+	iEvent.put(move(pmass), std::string("mass"));
+	iEvent.put(move(pweight), std::string("weight"));
 
-	iEvent.put(pvtxChi2, std::string("vtxChi2"));
-	iEvent.put(pvtxNdf, std::string("vtxNdf"));
-	iEvent.put(pvtxChi2oNdf, std::string("vtxChi2oNdf"));
+	iEvent.put(move(pvtxChi2), std::string("vtxChi2"));
+	iEvent.put(move(pvtxNdf), std::string("vtxNdf"));
+	iEvent.put(move(pvtxChi2oNdf), std::string("vtxChi2oNdf"));
 
-	iEvent.put(pLxy, std::string("Lxy"));
-	iEvent.put(pLxyz, std::string("Lxyz"));
+	iEvent.put(move(pLxy), std::string("Lxy"));
+	iEvent.put(move(pLxyz), std::string("Lxyz"));
 
-	iEvent.put(pcosThetaXY, std::string("cosThetaXY"));
-	iEvent.put(pcosThetaXYZ, std::string("cosThetaXYZ"));
+	iEvent.put(move(pcosThetaXY), std::string("cosThetaXY"));
+	iEvent.put(move(pcosThetaXYZ), std::string("cosThetaXYZ"));
 
-	iEvent.put(pvtxDecaySigXY, std::string("vtxDecaySigXY"));
-	iEvent.put(pvtxDecaySigXYZ, std::string("vtxDecaySigXYZ"));
+	iEvent.put(move(pvtxDecaySigXY), std::string("vtxDecaySigXY"));
+	iEvent.put(move(pvtxDecaySigXYZ), std::string("vtxDecaySigXYZ"));
 
-	iEvent.put(pDCA, std::string("DCA"));
-	iEvent.put(pRefs, std::string("Refs"));
+	iEvent.put(move(pDCA), std::string("DCA"));
+	iEvent.put(move(pRefs), std::string("Refs"));
 }
 
 

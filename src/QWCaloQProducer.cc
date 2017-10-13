@@ -72,11 +72,11 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	double Wplus = 0.;
 	double Wminus = 0.;
 
-	std::auto_ptr<std::vector<double> > caloEmE(new std::vector<double>);
-	std::auto_ptr<std::vector<double> > caloHadE(new std::vector<double>);
-	std::auto_ptr<std::vector<double> > caloE(new std::vector<double>);
-	std::auto_ptr<std::vector<double> > caloPhi(new std::vector<double>);
-	std::auto_ptr<std::vector<double> > caloEta(new std::vector<double>);
+	std::unique_ptr<std::vector<double> > caloEmE;
+	std::unique_ptr<std::vector<double> > caloHadE;
+	std::unique_ptr<std::vector<double> > caloE;
+	std::unique_ptr<std::vector<double> > caloPhi;
+	std::unique_ptr<std::vector<double> > caloEta;
 
 	Handle<CaloTowerCollection> caloCollection;
 	iEvent.getByLabel(caloSrc_, caloCollection);
@@ -121,11 +121,11 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(std::auto_ptr<double>(new double(Wplus)), "Wplus");
 	iEvent.put(std::auto_ptr<double>(new double(Wminus)), "Wminus");
 
-	iEvent.put(caloEmE, "CaloTowerEmE");
-	iEvent.put(caloHadE,"CaloTowerHadE");
-	iEvent.put(caloE,   "CaloTowerE");
-	iEvent.put(caloPhi, "CaloTowerPhi");
-	iEvent.put(caloEta, "CaloTowerEta");
+	iEvent.put(move(caloEmE), "CaloTowerEmE");
+	iEvent.put(move(caloHadE),"CaloTowerHadE");
+	iEvent.put(move(caloE),   "CaloTowerE");
+	iEvent.put(move(caloPhi), "CaloTowerPhi");
+	iEvent.put(move(caloEta), "CaloTowerEta");
 
 }
 

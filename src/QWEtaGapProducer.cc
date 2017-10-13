@@ -58,8 +58,8 @@ void QWEtaGapProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	}
 	auto edge = std::minmax_element( vectEta2.begin(), vectEta2.end() );
 
-	std::auto_ptr<double> pneg (new double(-99999.) ) ;
-	std::auto_ptr<double> ppos (new double( 99999.) ) ;
+	std::unique_ptr<double> pneg (new double(-99999.) ) ;
+	std::unique_ptr<double> ppos (new double( 99999.) ) ;
 
 	if ( edge.first != vectEta2.end() ) {
 		*pneg = vectEta2[edge.first - vectEta2.begin()];
@@ -68,8 +68,8 @@ void QWEtaGapProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		*ppos = vectEta2[edge.second - vectEta2.begin()];
 	}
 
-	iEvent.put( pneg, "negEta" );
-	iEvent.put( ppos, "posEta" );
+	iEvent.put( move(pneg), "negEta" );
+	iEvent.put( move(ppos), "posEta" );
 }
 
 DEFINE_FWK_MODULE(QWEtaGapProducer);
