@@ -43,8 +43,8 @@ void QWDouble2VectorProducer::produce(edm::Event& iEvent, const edm::EventSetup&
 
 	std::vector<double> p;
 	p.push_back(*db);
-	std::auto_ptr<std::vector<double> > pp(&p);
-	iEvent.put(pp);
+	//std::auto_ptr<std::vector<double> > pp(&p);
+	iEvent.put(std::make_unique<std::vector<double> >(p));
 }
 
 DEFINE_FWK_MODULE(QWDouble2VectorProducer);

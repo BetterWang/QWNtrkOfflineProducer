@@ -78,19 +78,19 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	using namespace reco;
 
-	std::auto_ptr<std::vector<double> > pphi( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > peta( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pcharge( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pphi( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > peta( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppT( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pcharge( new std::vector<double> );
 
-	std::auto_ptr<std::vector<double> > ppTerror( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pd0( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pdz( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pd0error( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pdzerror( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pnhits( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > palgo( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pnChi2( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppTerror( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pd0( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pdz( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pd0error( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pdzerror( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnhits( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > palgo( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnChi2( new std::vector<double> );
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
@@ -128,19 +128,19 @@ void QWTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		pnChi2->push_back(itTrack->normalizedChi2());
 	}
 
-	iEvent.put(pphi, std::string("phi"));
-	iEvent.put(peta, std::string("eta"));
-	iEvent.put(ppT, std::string("pt"));
-	iEvent.put(pcharge, std::string("charge"));
+	iEvent.put(move(pphi), std::string("phi"));
+	iEvent.put(move(peta), std::string("eta"));
+	iEvent.put(move(ppT), std::string("pt"));
+	iEvent.put(move(pcharge), std::string("charge"));
 
-	iEvent.put(ppTerror, std::string("pterr"));
-	iEvent.put(pd0, std::string("pd0"));
-	iEvent.put(pdz, std::string("pdz"));
-	iEvent.put(pd0error, std::string("pd0err"));
-	iEvent.put(pdzerror, std::string("pdzerr"));
-	iEvent.put(pnhits, std::string("nhits"));
-	iEvent.put(palgo, std::string("algo"));
-	iEvent.put(pnChi2, std::string("nChi2"));
+	iEvent.put(move(ppTerror), std::string("pterr"));
+	iEvent.put(move(pd0), std::string("pd0"));
+	iEvent.put(move(pdz), std::string("pdz"));
+	iEvent.put(move(pd0error), std::string("pd0err"));
+	iEvent.put(move(pdzerror), std::string("pdzerr"));
+	iEvent.put(move(pnhits), std::string("nhits"));
+	iEvent.put(move(palgo), std::string("algo"));
+	iEvent.put(move(pnChi2), std::string("nChi2"));
 }
 
 

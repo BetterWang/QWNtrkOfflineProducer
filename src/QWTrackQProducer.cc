@@ -98,9 +98,9 @@ void QWTrackQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 	}
 
-	iEvent.put(std::auto_ptr<double>(new double(std::arg(sum))), "arg");
-	iEvent.put(std::auto_ptr<double>(new double(std::abs(sum))), "abs");
-	iEvent.put(std::auto_ptr<double>(new double(Wsum)), "W");
+	iEvent.put(std::make_unique<double>(double(std::arg(sum))), "arg");
+	iEvent.put(std::make_unique<double>(double(std::abs(sum))), "abs");
+	iEvent.put(std::make_unique<double>(double(Wsum)), "W");
 
 }
 

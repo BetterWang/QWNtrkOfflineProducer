@@ -51,17 +51,17 @@ void QWGenHIProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<GenHIEvent> hi;
 	iEvent.getByLabel( src_ , hi ) ;
 
-        auto_ptr<double> pb(new double(hi->b()));
-        auto_ptr<double> pEP(new double(hi->evtPlane()));
-        auto_ptr<double> pNpart(new double(hi->Npart()));
-        auto_ptr<double> pNcoll(new double(hi->Ncoll()));
-        auto_ptr<double> pecc(new double(hi->eccentricity()));
+        unique_ptr<double> pb(new double(hi->b()));
+        unique_ptr<double> pEP(new double(hi->evtPlane()));
+        unique_ptr<double> pNpart(new double(hi->Npart()));
+        unique_ptr<double> pNcoll(new double(hi->Ncoll()));
+        unique_ptr<double> pecc(new double(hi->eccentricity()));
 
-	iEvent.put(pb, std::string("b"));
-	iEvent.put(pEP, std::string("EP"));
-	iEvent.put(pNpart, std::string("Npart"));
-	iEvent.put(pNcoll, std::string("Ncoll"));
-	iEvent.put(pecc, std::string("ecc"));
+	iEvent.put(move(pb), std::string("b"));
+	iEvent.put(move(pEP), std::string("EP"));
+	iEvent.put(move(pNpart), std::string("Npart"));
+	iEvent.put(move(pNcoll), std::string("Ncoll"));
+	iEvent.put(move(pecc), std::string("ecc"));
 
 }
 

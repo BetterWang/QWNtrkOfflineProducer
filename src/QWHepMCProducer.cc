@@ -53,15 +53,15 @@ void QWHepMCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	HepMC::GenEvent * genevt = (HepMC::GenEvent *)HepMCEvt->GetEvent();
 	HepMC::HeavyIon * hi = genevt->heavy_ion();
 
-        auto_ptr<double> pb(new double(hi->impact_parameter()));
-        auto_ptr<double> pEP(new double(hi->event_plane_angle()));
-        auto_ptr<double> pNpart(new double(hi->Npart_proj() + hi->Npart_targ()));
-        auto_ptr<double> pNcoll(new double(hi->Ncoll()));
+        unique_ptr<double> pb(new double(hi->impact_parameter()));
+        unique_ptr<double> pEP(new double(hi->event_plane_angle()));
+        unique_ptr<double> pNpart(new double(hi->Npart_proj() + hi->Npart_targ()));
+        unique_ptr<double> pNcoll(new double(hi->Ncoll()));
 
-	iEvent.put(pb, std::string("b"));
-	iEvent.put(pEP, std::string("EP"));
-	iEvent.put(pNpart, std::string("Npart"));
-	iEvent.put(pNcoll, std::string("Ncoll"));
+	iEvent.put(move(pb), std::string("b"));
+	iEvent.put(move(pEP), std::string("EP"));
+	iEvent.put(move(pNpart), std::string("Npart"));
+	iEvent.put(move(pNcoll), std::string("Ncoll"));
 
 }
 

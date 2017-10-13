@@ -79,8 +79,8 @@ void QWMultProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		Noff++;
 	}
-	std::auto_ptr<int> pNoff(new int(Noff));
-	iEvent.put(pNoff);
+	std::unique_ptr<int> pNoff(new int(Noff));
+	iEvent.put(move(pNoff));
 }
 
 DEFINE_FWK_MODULE(QWMultProducer);
