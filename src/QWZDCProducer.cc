@@ -2,6 +2,7 @@
 #include "FWCore/Framework/interface/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -69,9 +70,9 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 
-	std::auto_ptr<std::vector<double> > pADC( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pfC( new std::vector<double> );
-	std::auto_ptr<std::vector<double> > pregfC( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pADC( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pfC( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pregfC( new std::vector<double> );
 
 	Handle<ZDCDigiCollection> digi;
 	iEvent.getByLabel(Src_, digi);
@@ -82,19 +83,19 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	auto rhprod = digi.product();
 	if ( rhprod->size() == 0 ) {
 //		cout << __LINE__ << "\tmissing production"<< endl;
-		iEvent.put(pADC, std::string("ADC"));
-		iEvent.put(pfC, std::string("nominalfC"));
-		iEvent.put(pregfC, std::string("regularfC"));
+		iEvent.put(move(pADC), std::string("ADC"));
+		iEvent.put(move(pfC), std::string("nominalfC"));
+		iEvent.put(move(pregfC), std::string("regularfC"));
 
-		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("Sum"));
-		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("SumP"));
-		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("SumN"));
+		iEvent.put(make_unique<double>(double(-9999.)), std::string("Sum"));
+		iEvent.put(make_unique<double>(double(-9999.)), std::string("SumP"));
+		iEvent.put(make_unique<double>(double(-9999.)), std::string("SumN"));
 
-		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("emSumP"));
-		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("emSumN"));
+		iEvent.put(make_unique<double>(double(-9999.)), std::string("emSumP"));
+		iEvent.put(make_unique<double>(double(-9999.)), std::string("emSumN"));
 
-		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("hadSumP"));
-		iEvent.put(auto_ptr<double>(new double(-9999.)), std::string("hadSumN"));
+		iEvent.put(make_unique<double>(double(-9999.)), std::string("hadSumP"));
+		iEvent.put(make_unique<double>(double(-9999.)), std::string("hadSumN"));
 
 		return;
 	}
@@ -118,19 +119,19 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			or (section == 2 && (channel < 1 || channel > 4)) ) {
 
 			cout << __LINE__ << "\t" << zdcid << endl;
-			iEvent.put(pADC, std::string("ADC"));
-			iEvent.put(pfC, std::string("nominalfC"));
-			iEvent.put(pregfC, std::string("regularfC"));
+			iEvent.put(move(pADC), std::string("ADC"));
+			iEvent.put(move(pfC), std::string("nominalfC"));
+			iEvent.put(move(pregfC), std::string("regularfC"));
 
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("Sum"));
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumP"));
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumN"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("Sum"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("SumP"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("SumN"));
 
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumP"));
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumN"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("emSumP"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("emSumN"));
 
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumP"));
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumN"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("hadSumP"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("hadSumN"));
 
 			return;
 		}
@@ -144,19 +145,19 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			cout << __LINE__ << "\t" << e.what() << endl;
 			cout << __LINE__ << "\t" << zdcid << endl;
 
-			iEvent.put(pADC, std::string("ADC"));
-			iEvent.put(pfC, std::string("nominalfC"));
-			iEvent.put(pregfC, std::string("regularfC"));
+			iEvent.put(move(pADC), std::string("ADC"));
+			iEvent.put(move(pfC), std::string("nominalfC"));
+			iEvent.put(move(pregfC), std::string("regularfC"));
 
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("Sum"));
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumP"));
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("SumN"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("Sum"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("SumP"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("SumN"));
 
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumP"));
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("emSumN"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("emSumP"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("emSumN"));
 
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumP"));
-			iEvent.put(auto_ptr<double>(new double(-999.)), std::string("hadSumN"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("hadSumP"));
+			iEvent.put(make_unique<double>(double(-999.)), std::string("hadSumN"));
 
 			return;
 		}
@@ -212,23 +213,23 @@ void QWZDCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 //	cout << " emEn = " << emEn << "\thadEn = " << hadEn << "\temEp = " << emEp << "\thadEp = " << hadEp << endl;
 
-	iEvent.put(pADC, std::string("ADC"));
-	iEvent.put(pfC, std::string("nominalfC"));
-	iEvent.put(pregfC, std::string("regularfC"));
+	iEvent.put(move(pADC), std::string("ADC"));
+	iEvent.put(move(pfC), std::string("nominalfC"));
+	iEvent.put(move(pregfC), std::string("regularfC"));
 
-	iEvent.put(auto_ptr<double>(new double(sum)), std::string("Sum"));
-	iEvent.put(auto_ptr<double>(new double(sump)), std::string("SumP"));
-	iEvent.put(auto_ptr<double>(new double(sumn)), std::string("SumN"));
+	iEvent.put(make_unique<double>(double(sum)), std::string("Sum"));
+	iEvent.put(make_unique<double>(double(sump)), std::string("SumP"));
+	iEvent.put(make_unique<double>(double(sumn)), std::string("SumN"));
 
-	iEvent.put(auto_ptr<double>(new double(emEp)), std::string("emSumP"));
-	iEvent.put(auto_ptr<double>(new double(emEn)), std::string("emSumN"));
+	iEvent.put(make_unique<double>(double(emEp)), std::string("emSumP"));
+	iEvent.put(make_unique<double>(double(emEn)), std::string("emSumN"));
 
-	iEvent.put(auto_ptr<double>(new double(hadEp)), std::string("hadSumP"));
-	iEvent.put(auto_ptr<double>(new double(hadEn)), std::string("hadSumN"));
+	iEvent.put(make_unique<double>(double(hadEp)), std::string("hadSumP"));
+	iEvent.put(make_unique<double>(double(hadEn)), std::string("hadSumN"));
 }
 
 
-void QWZDCProducer::beginRun(edm::Run const &r, edm::EventSetup const& iSetup)
+void QWZDCProducer::beginRun(const edm::Run &r, const edm::EventSetup & iSetup)
 {
 	unordered_map<int, array<double, 9> >  hilo = {
 		{286178, {{9.856489512695157, 10.854145252342596, 13.565189553176221, 15.395486966950507, 13.154277310581694, 10.462177137213546, 10.187345279693565, 12.696381277408312, 10.512571984836665}}},
