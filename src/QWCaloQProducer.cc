@@ -109,17 +109,17 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 
 
-	iEvent.put(std::auto_ptr<double>(new double(std::arg(HFsum))),   "arg");
-	iEvent.put(std::auto_ptr<double>(new double(std::arg(HFplus))),  "argp");
-	iEvent.put(std::auto_ptr<double>(new double(std::arg(HFminus))), "argm");
+	iEvent.put(std::make_unique<double>(double(std::arg(HFsum))),   "arg");
+	iEvent.put(std::make_unique<double>(double(std::arg(HFplus))),  "argp");
+	iEvent.put(std::make_unique<double>(double(std::arg(HFminus))), "argm");
 
-	iEvent.put(std::auto_ptr<double>(new double(std::abs(HFsum))),   "abs");
-	iEvent.put(std::auto_ptr<double>(new double(std::abs(HFplus))),  "absp");
-	iEvent.put(std::auto_ptr<double>(new double(std::abs(HFminus))), "absm");
+	iEvent.put(std::make_unique<double>(double(std::abs(HFsum))),   "abs");
+	iEvent.put(std::make_unique<double>(double(std::abs(HFplus))),  "absp");
+	iEvent.put(std::make_unique<double>(double(std::abs(HFminus))), "absm");
 
-	iEvent.put(std::auto_ptr<double>(new double(Wsum)), "W");
-	iEvent.put(std::auto_ptr<double>(new double(Wplus)), "Wplus");
-	iEvent.put(std::auto_ptr<double>(new double(Wminus)), "Wminus");
+	iEvent.put(std::make_unique<double>(double(Wsum)), "W");
+	iEvent.put(std::make_unique<double>(double(Wplus)), "Wplus");
+	iEvent.put(std::make_unique<double>(double(Wminus)), "Wminus");
 
 	iEvent.put(move(caloEmE), "CaloTowerEmE");
 	iEvent.put(move(caloHadE),"CaloTowerHadE");

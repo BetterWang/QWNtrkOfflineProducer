@@ -53,9 +53,7 @@ void QWVectorSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	if ( t->size() <= (unsigned int)(idx_) ) ret = -9999999;
 	else ret = (*t)[idx_];
 
-	std::auto_ptr<double> pret(new double(ret));
-
-	iEvent.put(pret);
+	iEvent.put(make_unique<double>(ret));
 }
 
 
