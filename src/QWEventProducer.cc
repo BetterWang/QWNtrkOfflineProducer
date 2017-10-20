@@ -256,13 +256,13 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	using namespace reco;
 
-	std::unique_ptr<std::vector<double> > pphi;
-	std::unique_ptr<std::vector<double> > peta;
-	std::unique_ptr<std::vector<double> > ppT;
-	std::unique_ptr<std::vector<double> > pweight;
-	std::unique_ptr<std::vector<double> > pref;
-	std::unique_ptr<std::vector<double> > pcharge;
-	std::unique_ptr<std::vector<double> > pvz;
+	std::vector<double> pphi;
+	std::vector<double> peta;
+	std::vector<double> ppT;
+	std::vector<double> pweight;
+	std::vector<double> pref;
+	std::vector<double> pcharge;
+	std::vector<double> pvz;
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
@@ -271,7 +271,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			return a.tracksSize() > b.tracksSize();
 			});
 	for ( auto it = recoVertices.begin(); it != recoVertices.end(); ++it ) {
-		pvz->push_back(it->z());
+		pvz.push_back(it->z());
 	}
 
 	Handle<TrackCollection> tracks;
@@ -317,24 +317,24 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			weight = 0.;
 		}
 
-		pphi->push_back(itTrack->phi());
-		ppT->push_back(itTrack->pt());
-		pweight->push_back(weight);
-		pcharge->push_back(itTrack->charge());
-		pref->push_back(std::distance(tracks->begin(), itTrack));
+		pphi.push_back(itTrack->phi());
+		ppT.push_back(itTrack->pt());
+		pweight.push_back(weight);
+		pcharge.push_back(itTrack->charge());
+		pref.push_back(std::distance(tracks->begin(), itTrack));
 		if ( bFlip_ ) {
-			peta->push_back(-itTrack->eta());
+			peta.push_back(-itTrack->eta());
 		} else {
-			peta->push_back(itTrack->eta());
+			peta.push_back(itTrack->eta());
 		}
 	}
-	iEvent.put(std::move(pphi), std::string("phi"));
-	iEvent.put(std::move(peta), std::string("eta"));
-	iEvent.put(std::move(ppT), std::string("pt"));
-	iEvent.put(std::move(pweight), std::string("weight"));
-	iEvent.put(std::move(pcharge), std::string("charge"));
-	iEvent.put(std::move(pref), std::string("ref"));
-	iEvent.put(std::move(pvz), std::string("vz"));
+	iEvent.put(std::make_unique<std::vector<double> >(pphi), std::string("phi"));
+	iEvent.put(std::make_unique<std::vector<double> >(peta), std::string("eta"));
+	iEvent.put(std::make_unique<std::vector<double> >(ppT), std::string("pt"));
+	iEvent.put(std::make_unique<std::vector<double> >(pweight), std::string("weight"));
+	iEvent.put(std::make_unique<std::vector<double> >(pcharge), std::string("charge"));
+	iEvent.put(std::make_unique<std::vector<double> >(pref), std::string("ref"));
+	iEvent.put(std::make_unique<std::vector<double> >(pvz), std::string("vz"));
 }
 
 
@@ -422,7 +422,6 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 
 	double dz=itTrack->dz(v1);
 	double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
-//	std::cout << __LINE__ << "\tnHits = " << nHits << std::endl;
 	if ( itTrack->pt() < 2.4 and (nHits==3 or nHits==4 or nHits==5 or nHits==6) ) bPix = true;
 	if ( not bPix ) {
 		if ( nHits < 11 ) return false;
