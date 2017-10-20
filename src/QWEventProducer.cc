@@ -282,15 +282,15 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
 	}
 	if ( primaryvtx == recoVertices.size() ) {
-		iEvent.put(pphi, std::string("phi"));
-		iEvent.put(peta, std::string("eta"));
-		iEvent.put(ppT, std::string("pt"));
-		iEvent.put(pweight, std::string("weight"));
-		iEvent.put(pcharge, std::string("charge"));
-		iEvent.put(pNchi2, std::string("Nchi2"));
-		iEvent.put(pNchi2oNLayers, std::string("Nchi2oNLayers"));
-		iEvent.put(pref, std::string("ref"));
-		iEvent.put(pvz, std::string("vz"));
+		iEvent.put(std::move(pphi), std::string("phi"));
+		iEvent.put(std::move(peta), std::string("eta"));
+		iEvent.put(std::move(ppT), std::string("pt"));
+		iEvent.put(std::move(pweight), std::string("weight"));
+		iEvent.put(std::move(pcharge), std::string("charge"));
+		iEvent.put(std::move(pNchi2), std::string("Nchi2"));
+		iEvent.put(std::move(pNchi2oNLayers), std::string("Nchi2oNLayers"));
+		iEvent.put(std::move(pref), std::string("ref"));
+		iEvent.put(std::move(pvz), std::string("vz"));
 		return;
 	}
 	pvz->push_back(recoVertices[primaryvtx].z());
@@ -448,7 +448,6 @@ QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator&
 
 	double dz=itTrack->dz(v1);
 	double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
-//	std::cout << __LINE__ << "\tnHits = " << nHits << std::endl;
 	if ( itTrack->pt() < 2.4 and (nHits==3 or nHits==4 or nHits==5 or nHits==6) ) bPix = true;
 	if ( not bPix ) {
 		if ( nHits < 11 ) return false;
