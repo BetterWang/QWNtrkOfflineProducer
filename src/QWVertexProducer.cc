@@ -24,10 +24,10 @@
 #include "TMath.h"
 
 using namespace std;
-class QWVertextProducer : public edm::EDProducer {
+class QWVertexProducer : public edm::EDProducer {
 public:
-	explicit QWVertextProducer(const edm::ParameterSet&);
-	~QWVertextProducer();
+	explicit QWVertexProducer(const edm::ParameterSet&);
+	~QWVertexProducer();
 
 private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
@@ -36,7 +36,7 @@ private:
 
 };
 
-QWVertextProducer::QWVertextProducer(const edm::ParameterSet& pset) :
+QWVertexProducer::QWVertexProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc"))
 {
 	consumes<reco::VertexCollection>(vertexSrc_);
@@ -48,12 +48,12 @@ QWVertextProducer::QWVertextProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("vz");
 }
 
-QWVertextProducer::~QWVertextProducer()
+QWVertexProducer::~QWVertexProducer()
 {
 	return;
 }
 
-void QWVertextProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+void QWVertexProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 	using namespace reco;
@@ -88,4 +88,4 @@ void QWVertextProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
 
-DEFINE_FWK_MODULE(QWVertextProducer);
+DEFINE_FWK_MODULE(QWVertexProducer);
