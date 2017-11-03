@@ -26,7 +26,7 @@ QWVectCounter::QWVectCounter(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
 {
 	consumes<std::vector<double> >(src_);
-	produces<double>();
+	produces<int>();
 }
 
 QWVectCounter::~QWVectCounter() {
