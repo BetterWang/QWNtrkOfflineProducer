@@ -133,6 +133,28 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 0; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
+		} else if ( streff == string("XeXe_eff_table_92x_cent.root") ) {
+			// XeXe centrality 92X table
+			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_0_10");
+			for ( int c = 0; c < 20; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_10_30");
+			for ( int c = 20; c < 60; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_30_50");
+			for ( int c = 60; c < 100; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_50_70");
+			for ( int c = 100; c < 140; c++ ) {
+				hEff_cbin[c] = h;
+			}
+			h = (TH2D*) fEffFak->Get("rTotalEff3D_70_100");
+			for ( int c = 140; c < 200; c++ ) {
+				hEff_cbin[c] = h;
+			}
 		} else if ( streff == string("trkEff_pp_all_74X_origin.root") ) {
 			// pp 13 TeV HM 2015 TOTEM
 			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D");
