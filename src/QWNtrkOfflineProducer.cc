@@ -50,7 +50,18 @@ void QWNtrkOfflineProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 			return a.tracksSize() > b.tracksSize();
 			});
 
-	int primaryvtx = 0;
+	unsigned int primaryvtx = 0;
+	for ( primaryvtx = 0; primaryvtx < recoVertices.size(); primaryvtx++ ) {
+		if ( (!recoVertices[primaryvtx].isFake())
+			and fabs(recoVertices[primaryvtx].z()) <= 25.
+			and recoVertices[primaryvtx].position().Rho() <= 2.0
+			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
+	}
+	if ( primaryvtx == recoVertices.size() ) {
+		iEvent.put(std::make_unique<int>(-1));
+		return;
+	}
+
 	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
 	double vxError = recoVertices[primaryvtx].xError();
 	double vyError = recoVertices[primaryvtx].yError();

@@ -244,6 +244,8 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("charge");
 	produces<std::vector<double> >("ref");
 	produces<std::vector<double> >("vz");
+	produces<std::vector<double> >("Nchi2");
+	produces<std::vector<double> >("Nchi2oNLayers");
 }
 
 QWEventProducer::~QWEventProducer()
@@ -263,6 +265,8 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr<std::vector<double> > pref( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pcharge( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pvz( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > pNchi2( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > pNchi2oNLayers( new std::vector<double> );
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
@@ -321,6 +325,8 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		ppT->push_back(itTrack->pt());
 		pweight->push_back(weight);
 		pcharge->push_back(itTrack->charge());
+		pNchi2->push_back(itTrack->normalizedChi2());
+		pNchi2oNLayers->push_back(itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement());
 		pref->push_back(std::distance(tracks->begin(), itTrack));
 		if ( bFlip_ ) {
 			peta->push_back(-itTrack->eta());
@@ -333,6 +339,8 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(ppT, std::string("pt"));
 	iEvent.put(pweight, std::string("weight"));
 	iEvent.put(pcharge, std::string("charge"));
+	iEvent.put(pNchi2, std::string("Nchi2"));
+	iEvent.put(pNchi2oNLayers, std::string("Nchi2oNLayers"));
 	iEvent.put(pref, std::string("ref"));
 	iEvent.put(pvz, std::string("vz"));
 }
@@ -345,7 +353,15 @@ QWEventProducer::TrackQuality_ppReco(const reco::TrackCollection::const_iterator
         if ( itTrack->charge() == 0 ) return false;
         if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
         if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) return false;
-	int primaryvtx = 0;
+	unsigned int primaryvtx = 0;
+	for ( primaryvtx = 0; primaryvtx < recoVertices.size(); primaryvtx++ ) {
+		if ( (!recoVertices[primaryvtx].isFake())
+			and fabs(recoVertices[primaryvtx].z()) <= 25.
+			and recoVertices[primaryvtx].position().Rho() <= 2.0
+			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
+	}
+	if ( primaryvtx == recoVertices.size() ) return false;
+
 	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
 	double vxError = recoVertices[primaryvtx].xError();
 	double vyError = recoVertices[primaryvtx].yError();
