@@ -32,9 +32,9 @@ public:
 private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 	///
-	bool TrackQuality_ppReco(const reco::TrackCollection::const_iterator&, const reco::VertexCollection&);
-	bool TrackQuality_HIReco(const reco::TrackCollection::const_iterator&, const reco::VertexCollection&);
-	bool TrackQuality_Pixel(const reco::TrackCollection::const_iterator&, const reco::VertexCollection&);
+	bool TrackQuality_ppReco(const reco::TrackCollection::const_iterator&, const reco::Vertex&);
+	bool TrackQuality_HIReco(const reco::TrackCollection::const_iterator&, const reco::Vertex&);
+	bool TrackQuality_Pixel(const reco::TrackCollection::const_iterator&, const reco::Vertex&);
 
 	edm::InputTag	vertexSrc_;
 	edm::InputTag	trackSrc_;
@@ -274,9 +274,26 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	sort(recoVertices.begin(), recoVertices.end(), [](const reco::Vertex &a, const reco::Vertex &b){
 			return a.tracksSize() > b.tracksSize();
 			});
-	for ( auto it = recoVertices.begin(); it != recoVertices.end(); ++it ) {
-		pvz->push_back(it->z());
+	unsigned int primaryvtx = 0;
+	for ( primaryvtx = 0; primaryvtx < recoVertices.size(); primaryvtx++ ) {
+		if ( (!recoVertices[primaryvtx].isFake())
+			and fabs(recoVertices[primaryvtx].z()) <= 25.
+			and recoVertices[primaryvtx].position().Rho() <= 2.0
+			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
 	}
+	if ( primaryvtx == recoVertices.size() ) {
+		iEvent.put(pphi, std::string("phi"));
+		iEvent.put(peta, std::string("eta"));
+		iEvent.put(ppT, std::string("pt"));
+		iEvent.put(pweight, std::string("weight"));
+		iEvent.put(pcharge, std::string("charge"));
+		iEvent.put(pNchi2, std::string("Nchi2"));
+		iEvent.put(pNchi2oNLayers, std::string("Nchi2oNLayers"));
+		iEvent.put(pref, std::string("ref"));
+		iEvent.put(pvz, std::string("vz"));
+		return;
+	}
+	pvz->push_back(recoVertices[primaryvtx].z());
 
 	Handle<TrackCollection> tracks;
 	iEvent.getByLabel(trackSrc_,tracks);
@@ -294,9 +311,9 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	for(TrackCollection::const_iterator itTrack = tracks->begin();
 			itTrack != tracks->end();
 			++itTrack) {
-		if ( sTrackQuality == HIReco and not TrackQuality_HIReco(itTrack, recoVertices) ) continue;
-		else if ( sTrackQuality == ppReco and not TrackQuality_ppReco(itTrack, recoVertices) ) continue;
-		else if ( sTrackQuality == Pixel  and not TrackQuality_Pixel (itTrack, recoVertices) ) continue;
+		if ( sTrackQuality == HIReco and not TrackQuality_HIReco(itTrack, recoVertices[primaryvtx]) ) continue;
+		else if ( sTrackQuality == ppReco and not TrackQuality_ppReco(itTrack, recoVertices[primaryvtx]) ) continue;
+		else if ( sTrackQuality == Pixel  and not TrackQuality_Pixel (itTrack, recoVertices[primaryvtx]) ) continue;
 
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 		if (itTrack->hitPattern().pixelLayersWithMeasurement() < minPxLayers_) continue;
@@ -334,6 +351,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			peta->push_back(itTrack->eta());
 		}
 	}
+
 	iEvent.put(pphi, std::string("phi"));
 	iEvent.put(peta, std::string("eta"));
 	iEvent.put(ppT, std::string("pt"));
@@ -348,25 +366,18 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 ///
 bool
-QWEventProducer::TrackQuality_ppReco(const reco::TrackCollection::const_iterator& itTrack, const reco::VertexCollection& recoVertices)
+QWEventProducer::TrackQuality_ppReco(const reco::TrackCollection::const_iterator& itTrack, const reco::Vertex& recoVertex)
 {
         if ( itTrack->charge() == 0 ) return false;
         if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
         if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) return false;
-	unsigned int primaryvtx = 0;
-	for ( primaryvtx = 0; primaryvtx < recoVertices.size(); primaryvtx++ ) {
-		if ( (!recoVertices[primaryvtx].isFake())
-			and fabs(recoVertices[primaryvtx].z()) <= 25.
-			and recoVertices[primaryvtx].position().Rho() <= 2.0
-			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
-	}
-	if ( primaryvtx == recoVertices.size() ) return false;
 
-	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
-	double vxError = recoVertices[primaryvtx].xError();
-	double vyError = recoVertices[primaryvtx].yError();
-	double vzError = recoVertices[primaryvtx].zError();
-        double d0 = -1.* itTrack->dxy(v1);
+	math::XYZPoint v1( recoVertex.position().x(), recoVertex.position().y(), recoVertex.position().z() );
+	double vxError = recoVertex.xError();
+	double vyError = recoVertex.yError();
+	double vzError = recoVertex.zError();
+	double d0 = -1.* itTrack->dxy(v1);
+
         double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
         if ( fabs( d0/derror ) > d0d0error_ ) {
                 return false;
@@ -381,7 +392,7 @@ QWEventProducer::TrackQuality_ppReco(const reco::TrackCollection::const_iterator
 
 ///
 bool
-QWEventProducer::TrackQuality_HIReco(const reco::TrackCollection::const_iterator& itTrack, const reco::VertexCollection& recoVertices)
+QWEventProducer::TrackQuality_HIReco(const reco::TrackCollection::const_iterator& itTrack, const reco::Vertex& recoVertex)
 {
 	if ( itTrack->charge() == 0 ) return false;
 	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
@@ -401,12 +412,12 @@ QWEventProducer::TrackQuality_HIReco(const reco::TrackCollection::const_iterator
 		return false;
 	}
 
-	int primaryvtx = 0;
-	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
-	double vxError = recoVertices[primaryvtx].xError();
-	double vyError = recoVertices[primaryvtx].yError();
-	double vzError = recoVertices[primaryvtx].zError();
+	math::XYZPoint v1( recoVertex.position().x(), recoVertex.position().y(), recoVertex.position().z() );
+	double vxError = recoVertex.xError();
+	double vyError = recoVertex.yError();
+	double vzError = recoVertex.zError();
 	double d0 = -1.* itTrack->dxy(v1);
+
 	double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
 	if ( fabs( d0/derror ) > d0d0error_ ) {
 		return false;
@@ -422,18 +433,17 @@ QWEventProducer::TrackQuality_HIReco(const reco::TrackCollection::const_iterator
 
 ///
 bool
-QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator& itTrack, const reco::VertexCollection& recoVertices)
+QWEventProducer::TrackQuality_Pixel(const reco::TrackCollection::const_iterator& itTrack, const reco::Vertex& recoVertex)
 {
 	if ( itTrack->charge() == 0 ) return false;
 	if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
 	bool bPix = false;
 	int nHits = itTrack->numberOfValidHits();
 
-	int primaryvtx = 0;
-	math::XYZPoint v1( recoVertices[primaryvtx].position().x(), recoVertices[primaryvtx].position().y(), recoVertices[primaryvtx].position().z() );
-	double vxError = recoVertices[primaryvtx].xError();
-	double vyError = recoVertices[primaryvtx].yError();
-	double vzError = recoVertices[primaryvtx].zError();
+	math::XYZPoint v1( recoVertex.position().x(), recoVertex.position().y(), recoVertex.position().z() );
+	double vxError = recoVertex.xError();
+	double vyError = recoVertex.yError();
+	double vzError = recoVertex.zError();
 	double d0 = -1.* itTrack->dxy(v1);
 
 	double dz=itTrack->dz(v1);

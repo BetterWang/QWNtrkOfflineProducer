@@ -240,31 +240,53 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	edm::Handle< reco::VertexCollection > pvHandle;
 	iEvent.getByLabel(vertexSrc_, pvHandle);
-	reco::Vertex const * pv = nullptr;  
-	size_t nPV = 0;
-	int const pvNDOF_ = 4; // hardcoded
-	if (pvHandle.isValid()) {
-//		pv = &pvHandle->front();
-//		//--- pv fake (the pv collection should have size==1 and the pv==beam spot)
-//		if (   pv->isFake() || pv->tracksSize()==0
-//			// definition of goodOfflinePrimaryVertex
-//			|| pv->ndof() < pvNDOF_ || pv->z() > 24.)  pv = nullptr;
-
-
-		for (auto& v : *pvHandle) {
-			//--- pv fake (the pv collection should have size==1 and the pv==beam spot)
-			if (  v.isFake() || v.tracksSize()==0 ) continue;
-			// definition of goodOfflinePrimaryVertex
-			if (  v.ndof() < pvNDOF_ || v.z() > 24.) continue;
-			++nPV;
-			if ( pv == nullptr ) pv = &v;
-		}
+	VertexCollection recoVertices = *pvHandle;
+	sort(recoVertices.begin(), recoVertices.end(), [](const reco::Vertex &a, const reco::Vertex &b){
+			return a.tracksSize() > b.tracksSize();
+			});
+	unsigned int primaryvtx = 0;
+	for ( primaryvtx = 0; primaryvtx < recoVertices.size(); primaryvtx++ ) {
+		if ( (!recoVertices[primaryvtx].isFake())
+			and fabs(recoVertices[primaryvtx].z()) <= 25.
+			and recoVertices[primaryvtx].position().Rho() <= 2.0
+			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
 	}
-	if ( pv == nullptr ) return;
+	for ( primaryvtx = 0; primaryvtx < recoVertices.size(); primaryvtx++ ) {
+		if ( (!recoVertices[primaryvtx].isFake())
+			and fabs(recoVertices[primaryvtx].z()) <= 25.
+			and recoVertices[primaryvtx].position().Rho() <= 2.0
+			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
+	}
+	if ( primaryvtx == recoVertices.size() ) {
+		iEvent.put(pphi, std::string("phi"));
+		iEvent.put(peta, std::string("eta"));
+		iEvent.put(ppT, std::string("pt"));
+		iEvent.put(pmass, std::string("mass"));
+		iEvent.put(pweight, std::string("weight"));
+
+		iEvent.put(pvtxChi2, std::string("vtxChi2"));
+		iEvent.put(pvtxNdf, std::string("vtxNdf"));
+		iEvent.put(pvtxChi2oNdf, std::string("vtxChi2oNdf"));
+
+		iEvent.put(pLxy, std::string("Lxy"));
+		iEvent.put(pLxyz, std::string("Lxyz"));
+
+		iEvent.put(pcosThetaXY, std::string("cosThetaXY"));
+		iEvent.put(pcosThetaXYZ, std::string("cosThetaXYZ"));
+
+		iEvent.put(pvtxDecaySigXY, std::string("vtxDecaySigXY"));
+		iEvent.put(pvtxDecaySigXYZ, std::string("vtxDecaySigXYZ"));
+
+		iEvent.put(pDCA, std::string("DCA"));
+		iEvent.put(pRefs, std::string("Refs"));
+
+		return;
+	}
+
+	reco::Vertex const * pv = &recoVertices[primaryvtx];
 
 	Handle<VertexCompositeCandidateCollection> V0s;
 	iEvent.getByLabel(V0Src_, V0s);
-
 	for ( auto & v0 : (*V0s) ) {
 		float mass     = v0.mass();
 		float pt       = v0.pt();
