@@ -25,32 +25,35 @@ private:
 	///
 	edm::InputTag	srcPhi_;
 	edm::InputTag	srcEta_;
+	edm::InputTag	srcPt_;
+	edm::InputTag	srcWeight_;
 	double		PhiMin_;
 	double		PhiMax_;
 	double		EtaMin_;
 	double		EtaMax_;
-	std::vector<edm::InputTag>	srcVtag_;
+	double		eff_;
 };
 
 QWAccHole::QWAccHole(const edm::ParameterSet& pset) :
 	srcPhi_(pset.getUntrackedParameter<edm::InputTag>("srcPhi")),
 	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta")),
+	srcPt_(pset.getUntrackedParameter<edm::InputTag>("srcPt")),
+	srcWeight_(pset.getUntrackedParameter<edm::InputTag>("srcWeight")),
 	PhiMin_(pset.getUntrackedParameter<double>("PhiMin")),
 	PhiMax_(pset.getUntrackedParameter<double>("PhiMax")),
 	EtaMin_(pset.getUntrackedParameter<double>("EtaMin")),
 	EtaMax_(pset.getUntrackedParameter<double>("EtaMax")),
-	srcVtag_(pset.getUntrackedParameter< std::vector< edm::InputTag > > ("srcVtag") )
+	eff_(pset.getUntrackedParameter< double > ("hole") )
 {
 	consumes< std::vector<double> >(srcPhi_);
 	consumes< std::vector<double> >(srcEta_);
-
-	for ( auto it = srcVtag_.begin(); it != srcVtag_.end(); it++ ) {
-		consumes< std::vector<double> >( *it );
-		produces<std::vector<double> >(it->instance());
-	}
+	consumes< std::vector<double> >(srcPt_);
+	consumes< std::vector<double> >(srcWeight_);
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
+	produces<std::vector<double> >("pt");
+	produces<std::vector<double> >("weight");
 }
 
 QWAccHole::~QWAccHole()
@@ -63,44 +66,42 @@ void QWAccHole::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	Handle< std::vector<double> > pphi;
 	Handle< std::vector<double> > peta;
+	Handle< std::vector<double> > ppt;
+	Handle< std::vector<double> > pweight;
 	iEvent.getByLabel(srcPhi_, pphi);
 	iEvent.getByLabel(srcEta_, peta);
+	iEvent.getByLabel(srcPt_ , ppt);
+	iEvent.getByLabel(srcWeight_, pweight);
 
 	std::vector<double> phi = *pphi;
 	std::vector<double> eta = *peta;
+	std::vector<double> pt = *ppt;
+	std::vector<double> weight = *pweight;
 
-	auto_ptr<std::vector<double> > pphi_new( new std::vector<double> );
-	auto_ptr<std::vector<double> > peta_new( new std::vector<double> );
-
-	std::vector< auto_ptr<std::vector<double> > >  vnew;
-
-	std::vector< Handle< std::vector<double> > > pH;
-	for ( unsigned int i = 0; i < srcVtag_.size(); i++ ) {
-		vnew.push_back( auto_ptr<std::vector<double> >(new std::vector<double>) );
-		pH.push_back(Handle< std::vector<double> >() );
-		iEvent.getByLabel(srcVtag_[i], pH[i]);
-	}
+	std::vector<double> pphi_new;
+	std::vector<double> peta_new;
+	std::vector<double> ppt_new;
+	std::vector<double> pweight_new;
 
 	for ( unsigned int i = 0; i < phi.size(); i++ ) {
 		if ( phi[i] > PhiMin_ and phi[i] < PhiMax_ and eta[i] > EtaMin_ and eta[i] < EtaMax_ ) {
-//			std::cout << __LINE__ << " " << phi[i] << "\t" << eta[i] << std::endl;
-			continue;
+			if ( gRandom->Uniform() < eff_ ) {
+				weight[i] /= eff_;
+			} else {
+				continue;
+			}
 		}
-//		std::cout << __LINE__ << std::endl;
 
-		pphi_new->push_back(phi[i]);
-		peta_new->push_back(eta[i]);
-
-		for ( unsigned int j = 0; j < srcVtag_.size(); j++ ) {
-			vnew[j]->push_back( (*(pH[j]))[i] );
-		}
+		pphi_new.push_back(phi[i]);
+		peta_new.push_back(eta[i]);
+		ppt_new.push_back(pt[i]);
+		pweight_new.push_back(weight[i]);
 	}
 
-	iEvent.put(pphi_new, std::string("phi"));
-	iEvent.put(peta_new, std::string("eta"));
-	for ( unsigned int i = 0; i < srcVtag_.size(); i++ ) {
-		iEvent.put( vnew[i], srcVtag_[i].instance() );
-	}
+	iEvent.put(std::make_unique<std::vector<double>>(pphi_new), std::string("phi"));
+	iEvent.put(std::make_unique<std::vector<double>>(peta_new), std::string("eta"));
+	iEvent.put(std::make_unique<std::vector<double>>(ppt_new), std::string("pt"));
+	iEvent.put(std::make_unique<std::vector<double>>(pweight_new), std::string("weight"));
 }
 
 
