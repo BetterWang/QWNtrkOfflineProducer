@@ -101,6 +101,11 @@ private:
 	double dauPtMax_;
 	double dauPterrorMin_;
 	double dauPterrorMax_;
+
+	double mis_ks_range_;
+	double mis_la_range_;
+	double mis_ph_range_;
+
 };
 
 QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
@@ -168,6 +173,10 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	dauPtMax_ = dcuts.getUntrackedParameter<double>("dauPtMax",  std::numeric_limits<double>::max());
 	dauPterrorMin_ = dcuts.getUntrackedParameter<double>("dauPterrorMin", -std::numeric_limits<double>::max());
 	dauPterrorMax_ = dcuts.getUntrackedParameter<double>("dauPterrorMax",  std::numeric_limits<double>::max());
+
+	mis_ks_range_ = iConfig.getUntrackedParameter<double>("mis_ks_range", 0.020);
+	mis_la_range_ = iConfig.getUntrackedParameter<double>("mis_la_range", 0.010);
+	mis_ph_range_ = iConfig.getUntrackedParameter<double>("mis_ph_range", 0.015);
 
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
@@ -339,6 +348,30 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 				or d2->pt() < dauPtMin_ or d2->pt() > dauPtMax_ ) continue;
 			if ( d1->ptError() / d1->pt() < dauPterrorMin_ or d1->ptError() / d1->pt() > dauPterrorMax_
 				or d2->ptError() / d2->pt() < dauPterrorMin_ or d2->ptError() / d2->pt() > dauPterrorMax_ ) continue;
+
+			double pxd1 = d1->px();
+			double pyd1 = d1->py();
+			double pzd1 = d1->pz();
+			double pd1  = d1->p();
+			double pxd2 = d2->px();
+			double pyd2 = d2->py();
+			double pzd2 = d2->pz();
+			double pd2  = d2->p();
+
+			TVector3 dauvec1(pxd1,pyd1,pzd1);
+			TVector3 dauvec2(pxd2,pyd2,pzd2);
+			TVector3 dauvecsum(dauvec1+dauvec2);
+
+			if ( V0Src_.instance() == "Kshort" ) {
+				double v0masspiproton1 = sqrt((sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
+				double v0masspiproton2 = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))-dauvecsum.Mag2());
+				if((v0masspiproton1>=(1.115683-mis_la_range_) && v0masspiproton1<=(1.115683+mis_la_range_)) || (v0masspiproton2>=(1.115683-mis_la_range_) && v0masspiproton2<=(1.115683+mis_la_range_)) ) continue;
+			}
+			if ( V0Src_.instance() == "Lambda" ) {
+				double v0masspipi = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
+				double v0massee = sqrt((sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))*(sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))-dauvecsum.Mag2());
+				if( (v0masspipi>=(0.497614-mis_ks_range_) && v0masspipi<=(0.497614+mis_ks_range_)) || v0massee <= mis_ph_range_ ) continue;
+			}
 		} else {
 			continue;
 		}
