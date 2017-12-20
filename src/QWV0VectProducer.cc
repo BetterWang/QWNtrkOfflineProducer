@@ -174,9 +174,9 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	dauPterrorMin_ = dcuts.getUntrackedParameter<double>("dauPterrorMin", -std::numeric_limits<double>::max());
 	dauPterrorMax_ = dcuts.getUntrackedParameter<double>("dauPterrorMax",  std::numeric_limits<double>::max());
 
-	mis_ks_range_ = iConfig.getUntrackedParameter<double>("mis_ks_range", 0.020);
-	mis_la_range_ = iConfig.getUntrackedParameter<double>("mis_la_range", 0.010);
-	mis_ph_range_ = iConfig.getUntrackedParameter<double>("mis_ph_range", 0.015);
+	mis_ks_range_ = pset.getUntrackedParameter<double>("mis_ks_range", 0.020);
+	mis_la_range_ = pset.getUntrackedParameter<double>("mis_la_range", 0.010);
+	mis_ph_range_ = pset.getUntrackedParameter<double>("mis_ph_range", 0.015);
 
 	consumes<reco::TrackCollection>(trackSrc_);
 	consumes<reco::VertexCollection>(vertexSrc_);
@@ -338,16 +338,22 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 					dca = std::abs(cApp.distance());
 				}
 			}
-			auto d1 = v0.daughter(0)->get<reco::TrackRef>();
-			auto d2 = v0.daughter(1)->get<reco::TrackRef>();
+
+
+//			auto d1 = v0.daughter(0)->get<reco::TrackRef>();
+//			auto d2 = v0.daughter(1)->get<reco::TrackRef>();
+
+			auto d1 = v0.daughter(0);
+			auto d2 = v0.daughter(1);
+
 			if ( d1->eta() < dauEtaMin_ or d1->eta() > dauEtaMax_
 				or d2->eta() < dauEtaMin_ or d2->eta() > dauEtaMax_ ) continue;
-			if ( d1->numberOfValidHits() < dauNhitsMin_ or d1->numberOfValidHits() > dauNhitsMax_
-				or d2->numberOfValidHits() < dauNhitsMin_ or d2->numberOfValidHits() > dauNhitsMax_ ) continue;
+			if ( d1->get<reco::TrackRef>()->numberOfValidHits() < dauNhitsMin_ or d1->get<reco::TrackRef>()->numberOfValidHits() > dauNhitsMax_
+				or d2->get<reco::TrackRef>()->numberOfValidHits() < dauNhitsMin_ or d2->get<reco::TrackRef>()->numberOfValidHits() > dauNhitsMax_ ) continue;
 			if ( d1->pt() < dauPtMin_ or d1->pt() > dauPtMax_
 				or d2->pt() < dauPtMin_ or d2->pt() > dauPtMax_ ) continue;
-			if ( d1->ptError() / d1->pt() < dauPterrorMin_ or d1->ptError() / d1->pt() > dauPterrorMax_
-				or d2->ptError() / d2->pt() < dauPterrorMin_ or d2->ptError() / d2->pt() > dauPterrorMax_ ) continue;
+			if ( d1->get<reco::TrackRef>()->ptError() / d1->pt() < dauPterrorMin_ or d1->get<reco::TrackRef>()->ptError() / d1->pt() > dauPterrorMax_
+				or d2->get<reco::TrackRef>()->ptError() / d2->pt() < dauPterrorMin_ or d2->get<reco::TrackRef>()->ptError() / d2->pt() > dauPterrorMax_ ) continue;
 
 			double pxd1 = d1->px();
 			double pyd1 = d1->py();
