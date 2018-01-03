@@ -273,28 +273,28 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
 	}
 	if ( primaryvtx == recoVertices.size() ) {
-		iEvent.put(pphi, std::string("phi"));
-		iEvent.put(peta, std::string("eta"));
-		iEvent.put(prapidity, std::string("rapidity"));
-		iEvent.put(ppT, std::string("pt"));
-		iEvent.put(pmass, std::string("mass"));
-		iEvent.put(pweight, std::string("weight"));
+		iEvent.put(std::move(pphi), std::string("phi"));
+		iEvent.put(std::move(peta), std::string("eta"));
+		iEvent.put(std::move(prapidity), std::string("rapidity"));
+		iEvent.put(std::move(ppT), std::string("pt"));
+		iEvent.put(std::move(pmass), std::string("mass"));
+		iEvent.put(std::move(pweight), std::string("weight"));
 
-		iEvent.put(pvtxChi2, std::string("vtxChi2"));
-		iEvent.put(pvtxNdf, std::string("vtxNdf"));
-		iEvent.put(pvtxChi2oNdf, std::string("vtxChi2oNdf"));
+		iEvent.put(std::move(pvtxChi2), std::string("vtxChi2"));
+		iEvent.put(std::move(pvtxNdf), std::string("vtxNdf"));
+		iEvent.put(std::move(pvtxChi2oNdf), std::string("vtxChi2oNdf"));
 
-		iEvent.put(pLxy, std::string("Lxy"));
-		iEvent.put(pLxyz, std::string("Lxyz"));
+		iEvent.put(std::move(pLxy), std::string("Lxy"));
+		iEvent.put(std::move(pLxyz), std::string("Lxyz"));
 
-		iEvent.put(pcosThetaXY, std::string("cosThetaXY"));
-		iEvent.put(pcosThetaXYZ, std::string("cosThetaXYZ"));
+		iEvent.put(std::move(pcosThetaXY), std::string("cosThetaXY"));
+		iEvent.put(std::move(pcosThetaXYZ), std::string("cosThetaXYZ"));
 
-		iEvent.put(pvtxDecaySigXY, std::string("vtxDecaySigXY"));
-		iEvent.put(pvtxDecaySigXYZ, std::string("vtxDecaySigXYZ"));
+		iEvent.put(std::move(pvtxDecaySigXY), std::string("vtxDecaySigXY"));
+		iEvent.put(std::move(pvtxDecaySigXYZ), std::string("vtxDecaySigXYZ"));
 
-		iEvent.put(pDCA, std::string("DCA"));
-		iEvent.put(pRefs, std::string("Refs"));
+		iEvent.put(std::move(pDCA), std::string("DCA"));
+		iEvent.put(std::move(pRefs), std::string("Refs"));
 
 		return;
 	}
@@ -456,28 +456,28 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	}
 
 
-	iEvent.put(move(pphi), std::string("phi"));
-	iEvent.put(move(peta), std::string("eta"));
-	iEvent.put(move(prapidity), std::string("rapidity"));
-	iEvent.put(move(ppT), std::string("pt"));
-	iEvent.put(move(pmass), std::string("mass"));
-	iEvent.put(move(pweight), std::string("weight"));
+	iEvent.put(std::move(pphi), std::string("phi"));
+	iEvent.put(std::move(peta), std::string("eta"));
+	iEvent.put(std::move(prapidity), std::string("rapidity"));
+	iEvent.put(std::move(ppT), std::string("pt"));
+	iEvent.put(std::move(pmass), std::string("mass"));
+	iEvent.put(std::move(pweight), std::string("weight"));
 
-	iEvent.put(move(pvtxChi2), std::string("vtxChi2"));
-	iEvent.put(move(pvtxNdf), std::string("vtxNdf"));
-	iEvent.put(move(pvtxChi2oNdf), std::string("vtxChi2oNdf"));
+	iEvent.put(std::move(pvtxChi2), std::string("vtxChi2"));
+	iEvent.put(std::move(pvtxNdf), std::string("vtxNdf"));
+	iEvent.put(std::move(pvtxChi2oNdf), std::string("vtxChi2oNdf"));
 
-	iEvent.put(move(pLxy), std::string("Lxy"));
-	iEvent.put(move(pLxyz), std::string("Lxyz"));
+	iEvent.put(std::move(pLxy), std::string("Lxy"));
+	iEvent.put(std::move(pLxyz), std::string("Lxyz"));
 
-	iEvent.put(move(pcosThetaXY), std::string("cosThetaXY"));
-	iEvent.put(move(pcosThetaXYZ), std::string("cosThetaXYZ"));
+	iEvent.put(std::move(pcosThetaXY), std::string("cosThetaXY"));
+	iEvent.put(std::move(pcosThetaXYZ), std::string("cosThetaXYZ"));
 
-	iEvent.put(move(pvtxDecaySigXY), std::string("vtxDecaySigXY"));
-	iEvent.put(move(pvtxDecaySigXYZ), std::string("vtxDecaySigXYZ"));
+	iEvent.put(std::move(pvtxDecaySigXY), std::string("vtxDecaySigXY"));
+	iEvent.put(std::move(pvtxDecaySigXYZ), std::string("vtxDecaySigXYZ"));
 
-	iEvent.put(move(pDCA), std::string("DCA"));
-	iEvent.put(move(pRefs), std::string("Refs"));
+	iEvent.put(std::move(pDCA), std::string("DCA"));
+	iEvent.put(std::move(pRefs), std::string("Refs"));
 }
 
 
