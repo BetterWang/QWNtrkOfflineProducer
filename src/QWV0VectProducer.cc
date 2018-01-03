@@ -52,6 +52,8 @@ private:
 		double	pTmax_;
 		double	Etamin_;
 		double	Etamax_;
+		double	Rapmin_;
+		double	Rapmax_;
 		double	Massmin_;
 		double	Massmax_;
 
@@ -122,6 +124,8 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 		cut.pTmax_ = pcut.getUntrackedParameter<double>("ptMax", 100.);
 		cut.Etamin_ = pcut.getUntrackedParameter<double>("Etamin", -2.4);
 		cut.Etamax_ = pcut.getUntrackedParameter<double>("Etamax", 2.4);
+		cut.Rapmin_ = pcut.getUntrackedParameter<double>("Rapmin", -3.0);
+		cut.Rapmax_ = pcut.getUntrackedParameter<double>("Rapmax", 3.0);
 		cut.Massmin_ = pcut.getUntrackedParameter<double>("Massmin", 0.);
 		cut.Massmax_ = pcut.getUntrackedParameter<double>("Massmax", 1000);
 
@@ -184,6 +188,7 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
+	produces<std::vector<double> >("rapidity");
 	produces<std::vector<double> >("pt");
 	produces<std::vector<double> >("mass");
 	produces<std::vector<double> >("weight");
@@ -218,6 +223,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	std::auto_ptr<std::vector<double> > pphi( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > peta( new std::vector<double> );
+	std::auto_ptr<std::vector<double> > prapidity( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > ppT( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pmass( new std::vector<double> );
 	std::auto_ptr<std::vector<double> > pweight( new std::vector<double> );
@@ -269,6 +275,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	if ( primaryvtx == recoVertices.size() ) {
 		iEvent.put(pphi, std::string("phi"));
 		iEvent.put(peta, std::string("eta"));
+		iEvent.put(prapidity, std::string("rapidity"));
 		iEvent.put(ppT, std::string("pt"));
 		iEvent.put(pmass, std::string("mass"));
 		iEvent.put(pweight, std::string("weight"));
@@ -300,6 +307,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		float mass     = v0.mass();
 		float pt       = v0.pt();
 		float eta      = v0.eta();
+		float rapidity = v0.rapidity();
 		float phi      = v0.phi();
 		GlobalPoint displacementFromPV ( (pv->x() - v0.vx()), (pv->y() - v0.vy()), (pv->z() - v0.vz()) ) ;
 		float lxy      = ( displacementFromPV.perp() );
@@ -389,6 +397,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		for ( auto const cut : cuts_ ) {
 			if ( pt > cut.pTmax_ or pt < cut.pTmin_ ) continue;
 			if ( eta > cut.Etamax_ or eta < cut.Etamin_ ) continue;
+			if ( rapidity > cut.Rapmax_ or rapidity < cut.Rapmin_ ) continue;
 			if ( mass > cut.Massmax_ or mass < cut.Massmin_ ) continue;
 
 			if ( Chi2 > cut.Chi2max_ or Chi2 < cut.Chi2min_ ) continue;
@@ -413,6 +422,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			pphi		->push_back( phi	);
 			peta		->push_back( eta	);
+			prapidity	->push_back( rapidity	);
 			ppT		->push_back( pt		);
 			pmass		->push_back( mass	);
 			pweight		->push_back( 1.0	);
@@ -448,6 +458,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	iEvent.put(pphi, std::string("phi"));
 	iEvent.put(peta, std::string("eta"));
+	iEvent.put(prapidity, std::string("rapidity"));
 	iEvent.put(ppT, std::string("pt"));
 	iEvent.put(pmass, std::string("mass"));
 	iEvent.put(pweight, std::string("weight"));
