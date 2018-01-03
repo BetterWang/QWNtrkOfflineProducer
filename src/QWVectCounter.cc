@@ -41,8 +41,7 @@ void QWVectCounter::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Handle<std::vector<double> > vect;
 	iEvent.getByLabel(src_, vect);
 	int Noff = int(vect->size());
-	std::auto_ptr<int> pNoff(new int(Noff));
-	iEvent.put(pNoff);
+	iEvent.put(std::make_unique<int>(Noff));
 }
 
 DEFINE_FWK_MODULE(QWVectCounter);
