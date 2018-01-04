@@ -62,11 +62,11 @@ QWTreeProducer::~QWTreeProducer()
 void QWTreeProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
-	std::unique_ptr<std::vector<double> > pphi;
-	std::unique_ptr<std::vector<double> > peta;
-	std::unique_ptr<std::vector<double> > ppT;
-	std::unique_ptr<std::vector<double> > pweight;
-	std::unique_ptr<std::vector<double> > pvz;
+	auto pphi = std::make_unique<std::vector<double>>();
+	auto peta = std::make_unique<std::vector<double>>();
+	auto ppT = std::make_unique<std::vector<double>>();
+	auto pweight = std::make_unique<std::vector<double>>();
+	auto pvz = std::make_unique<std::vector<double>>();
 
 	int sz = ch_.GetEntry(idx_++);
 	if ( sz > 0 and Nmult_ > 0 ) {

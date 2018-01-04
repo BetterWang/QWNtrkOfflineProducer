@@ -72,11 +72,11 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	double Wplus = 0.;
 	double Wminus = 0.;
 
-	std::unique_ptr<std::vector<double> > caloEmE;
-	std::unique_ptr<std::vector<double> > caloHadE;
-	std::unique_ptr<std::vector<double> > caloE;
-	std::unique_ptr<std::vector<double> > caloPhi;
-	std::unique_ptr<std::vector<double> > caloEta;
+	auto caloEmE = std::make_unique<std::vector<double>>();
+	auto caloHadE = std::make_unique<std::vector<double>>();
+	auto caloE = std::make_unique<std::vector<double>>();
+	auto caloPhi = std::make_unique<std::vector<double>>();
+	auto caloEta = std::make_unique<std::vector<double>>();
 
 	Handle<CaloTowerCollection> caloCollection;
 	iEvent.getByLabel(caloSrc_, caloCollection);

@@ -280,15 +280,15 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	using namespace reco;
 
-	std::unique_ptr<std::vector<double> > pphi;
-	std::unique_ptr<std::vector<double> > peta;
-	std::unique_ptr<std::vector<double> > ppT;
-	std::unique_ptr<std::vector<double> > pweight;
-	std::unique_ptr<std::vector<double> > pref;
-	std::unique_ptr<std::vector<double> > pcharge;
-	std::unique_ptr<std::vector<double> > pvz;
-	std::unique_ptr<std::vector<double> > pNchi2;
-	std::unique_ptr<std::vector<double> > pNchi2oNLayers;
+	auto pphi = std::make_unique<std::vector<double>>();
+	auto peta = std::make_unique<std::vector<double>>();
+	auto ppT = std::make_unique<std::vector<double>>();
+	auto pweight = std::make_unique<std::vector<double>>();
+	auto pref = std::make_unique<std::vector<double>>();
+	auto pcharge = std::make_unique<std::vector<double>>();
+	auto pvz = std::make_unique<std::vector<double>>();
+	auto pNchi2 = std::make_unique<std::vector<double>>();
+	auto pNchi2oNLayers = std::make_unique<std::vector<double>>();
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
