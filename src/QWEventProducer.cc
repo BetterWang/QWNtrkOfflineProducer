@@ -133,8 +133,14 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 0; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
-		} else if ( streff == string("XeXe_eff_table_92x_cent.root") ) {
-			// XeXe centrality 92X table
+		} else if ( streff == string("XeXe_eff_table_92x_cent.root")
+				or streff == string("XeXe_eff_table_94x_cent.root")
+				or streff == string("XeXe_eff_tight_table_94x_cent.root")
+				or streff == string("XeXe_eff_loose_table_94x_cent.root")
+				or streff == string("XeXe_eff_wide_table_94x_cent.root")
+				or streff == string("XeXe_eff_narrow_table_94x_cent.root")
+				) {
+			// XeXe centrality 92X and 94X table
 			TH2D * h = (TH2D*) fEffFak->Get("rTotalEff3D_0_10");
 			for ( int c = 0; c < 20; c++ ) {
 				hEff_cbin[c] = h;
