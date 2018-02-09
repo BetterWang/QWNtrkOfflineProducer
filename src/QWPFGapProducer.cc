@@ -16,15 +16,15 @@ private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 
 	edm::InputTag	src_;
-	double		etamin_;
-	double		etamax_;
+//	double		etamin_;
+//	double		etamax_;
 	double const	pfE[20] = {13.4, 16.4, 15.3, 16.9, 27.4, 5.5, 3.5, 2.5, 1.9, 2.7, 2.3, 1.7, 2.4, 3.8, 5.8, 21.8, 15.9, 31.7, 17.1, 13.6};
 };
 
 QWPFGapProducer::QWPFGapProducer(const edm::ParameterSet& pset) :
-	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
-	etamin_(pset.getUntrackedParameter<double>("etamin", -5.)),
-	etamax_(pset.getUntrackedParameter<double>("etamax", 5.))
+	src_(pset.getUntrackedParameter<edm::InputTag>("src"))
+//	etamin_(pset.getUntrackedParameter<double>("etamin", -5.)),
+//	etamax_(pset.getUntrackedParameter<double>("etamax", 5.))
 {
 	consumes<reco::PFCandidateCollection>(src_);
 	// FRG -- Forward Rapidity Gap, count from eta=-5
@@ -48,14 +48,14 @@ void QWPFGapProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	double FRG = -99.;
 	double BRG = -99.;
-	for ( int i = h.FindBin(etamin_)-1; i < h.FindBin(etamax_)-1; i++ ) {
+	for ( int i = 0; i < 20; i++ ) {
 		if ( h.GetBinContent(i+1) > pfE[i] ) {
 			FRG = 0.5 * i;
 			break;
 		}
 	}
 
-	for ( int i = h.FindBin(etamin_)-1; i < h.FindBin(etamax_)-1; i++ ) {
+	for ( int i = 0; i < 20; i++ ) {
 		if ( h.GetBinContent(20-i) > pfE[19-i] ) {
 			BRG = 0.5 * i;
 			break;
