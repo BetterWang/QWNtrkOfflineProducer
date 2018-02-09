@@ -8,10 +8,10 @@
 #include "TH1D.h"
 #include "iostream"
 
-class QWPFGapFilter : public edm::EDProducer {
+class QWPFGapProducer : public edm::EDProducer {
 public:
-	explicit QWPFGapFilter(const edm::ParameterSet&);
-	~QWPFGapFilter() {return;}
+	explicit QWPFGapProducer(const edm::ParameterSet&);
+	~QWPFGapProducer() {return;}
 private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 
@@ -21,7 +21,7 @@ private:
 	double const	pfE[20] = {13.4, 16.4, 15.3, 16.9, 27.4, 5.5, 3.5, 2.5, 1.9, 2.7, 2.3, 1.7, 2.4, 3.8, 5.8, 21.8, 15.9, 31.7, 17.1, 13.6};
 };
 
-QWPFGapFilter::QWPFGapFilter(const edm::ParameterSet& pset) :
+QWPFGapProducer::QWPFGapProducer(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
 	etamin_(pset.getUntrackedParameter<double>("etamin", -5.)),
 	etamax_(pset.getUntrackedParameter<double>("etamax", 5.))
@@ -33,7 +33,7 @@ QWPFGapFilter::QWPFGapFilter(const edm::ParameterSet& pset) :
 	produces< double >("BRG");
 }
 
-void QWPFGapFilter::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+void QWPFGapProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	edm::Handle<reco::PFCandidateCollection> pf;
 	iEvent.getByLabel( src_, pf );
@@ -68,4 +68,4 @@ void QWPFGapFilter::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	return;
 }
 
-DEFINE_FWK_MODULE(QWPFGapFilter);
+DEFINE_FWK_MODULE(QWPFGapProducer);

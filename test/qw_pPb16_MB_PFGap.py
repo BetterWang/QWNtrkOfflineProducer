@@ -95,7 +95,7 @@ process.monSumN0N = cms.EDAnalyzer('QWHistDAnalyzer',
 		end = cms.untracked.double(600.),
 		)
 
-process.QWPFgap = cms.EDProducer('QWPFGapFilter',
+process.QWPFgap = cms.EDProducer('QWPFGapProducer',
 		src = cms.untracked.InputTag('particleFlow'),
 		)
 
