@@ -12,6 +12,7 @@
 #include "TFile.h"
 #include "TH2.h"
 #include "TMath.h"
+#include "iostream"
 
 using namespace std;
 class QWXeXeB2CentProducer : public edm::EDProducer {
@@ -68,9 +69,10 @@ void QWXeXeB2CentProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 	iEvent.getByLabel(src_, b);
 	int i;
 	for(i=199; i>0; i--) {
-		if(5*(*b)<bounds[i]) continue;
+		if(500*(*b)<bounds[i]) continue;
 		else break;
 	}
+	std::cout << " --> 5*b = " << 5*(*b) << " i = " << i << " bounds[i] = " << bounds[i] << std::endl;
 	iEvent.put(std::make_unique<int> (i), std::string("AMPT"));
 }
 
