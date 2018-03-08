@@ -22,6 +22,8 @@
 #include "DataFormats/Candidate/interface/VertexCompositeCandidateFwd.h"
 #include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
 
+#include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
+
 #include "TFile.h"
 #include "TH2.h"
 #include "TMath.h"
@@ -209,6 +211,10 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("DCA");
 
 	produces<std::vector<double> >("Refs");
+
+	produces<std::vector<double> >("pdgId");
+	produces<std::vector<double> >("pPhiCM");
+	produces<std::vector<double> >("nPhiCM");
 }
 
 QWV0VectProducer::~QWV0VectProducer()
@@ -243,6 +249,10 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	std::unique_ptr<std::vector<double> > pDCA( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pRefs( new std::vector<double> );
+
+	std::unique_ptr<std::vector<double> > ppdgId( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppPhiCM( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnPhiCM( new std::vector<double> );
 
 	edm::ESHandle<TransientTrackBuilder> theB;
 	iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
@@ -295,6 +305,10 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		iEvent.put(std::move(pDCA), std::string("DCA"));
 		iEvent.put(std::move(pRefs), std::string("Refs"));
+
+		iEvent.put(std::move(ppdgId), std::string("pdgId"));
+		iEvent.put(std::move(ppPhiCM), std::string("pPhiCM"));
+		iEvent.put(std::move(pnPhiCM), std::string("nPhiCM"));
 
 		return;
 	}
@@ -386,6 +400,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 				double v0massee = sqrt((sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))*(sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))-dauvecsum.Mag2());
 				if( (v0masspipi>=(0.497614-mis_ks_range_) && v0masspipi<=(0.497614+mis_ks_range_)) || v0massee <= mis_ph_range_ ) continue;
 			}
+
 		} else {
 			continue;
 		}
@@ -443,6 +458,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			pvtxDecaySigXYZ	->push_back( vtxDecaySigXYZ	);
 
 			pDCA	->push_back( dca	);
+			ppdgId	->push_back( v0.pdgId()	);
 
 			if ( v0.numberOfDaughters() == 2 ) {
 				for ( unsigned int i = 0; i < 2; i++ ) {
@@ -451,6 +467,19 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 					if ( dau ) idx = dau->track().index();
 					pRefs->push_back( idx );
 				}
+			}
+			// boostToCM
+			CenterOfMassBooster b(v0);
+			b.set(v0);
+			if ( v0.daughter(0).charge() > 0 ) {
+				ppPhiCM->push_back(v0.daughter(0).phi());
+			} else {
+				pnPhiCM->push_back(v0.daughter(0).phi());
+			}
+			if ( v0.daughter(1).charge() > 0 ) {
+				ppPhiCM->push_back(v0.daughter(1).phi());
+			} else {
+				pnPhiCM->push_back(v0.daughter(1).phi());
 			}
 		}
 	}
@@ -478,6 +507,10 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	iEvent.put(std::move(pDCA), std::string("DCA"));
 	iEvent.put(std::move(pRefs), std::string("Refs"));
+
+	iEvent.put(std::move(ppdgId), std::string("pdgId"));
+	iEvent.put(std::move(ppPhiCM), std::string("pPhiCM"));
+	iEvent.put(std::move(pnPhiCM), std::string("nPhiCM"));
 }
 
 
