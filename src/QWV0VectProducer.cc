@@ -317,7 +317,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	Handle<VertexCompositeCandidateCollection> V0s;
 	iEvent.getByLabel(V0Src_, V0s);
-	for ( auto & v0 : (*V0s) ) {
+	for ( auto v0 : (*V0s) ) {
 		float mass     = v0.mass();
 		float pt       = v0.pt();
 		float eta      = v0.eta();
@@ -469,18 +469,22 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 				}
 			}
 			// boostToCM
-			CenterOfMassBooster b(v0);
-			b.set(v0);
-			if ( v0.daughter(0).charge() > 0 ) {
-				ppPhiCM->push_back(v0.daughter(0).phi());
+			//std::cout << " -> " << __LINE__ << " d0.p4() = " << v0.daughter(0)->p4() << std::endl;
+			//std::cout << " -> " << __LINE__ << " d1.p4() = " << v0.daughter(1)->p4() << std::endl;
+			CenterOfMassBooster b(dynamic_cast<reco::Candidate&>(v0));
+			b.set(dynamic_cast<reco::Candidate&>(v0));
+			if ( v0.daughter(0)->charge() > 0 ) {
+				ppPhiCM->push_back(v0.daughter(0)->phi());
 			} else {
-				pnPhiCM->push_back(v0.daughter(0).phi());
+				pnPhiCM->push_back(v0.daughter(0)->phi());
 			}
-			if ( v0.daughter(1).charge() > 0 ) {
-				ppPhiCM->push_back(v0.daughter(1).phi());
+			if ( v0.daughter(1)->charge() > 0 ) {
+				ppPhiCM->push_back(v0.daughter(1)->phi());
 			} else {
-				pnPhiCM->push_back(v0.daughter(1).phi());
+				pnPhiCM->push_back(v0.daughter(1)->phi());
 			}
+			//std::cout << " -> " << __LINE__ << " boost d0.p4() = " << v0.daughter(0)->p4() << std::endl;
+			//std::cout << " -> " << __LINE__ << " boost d1.p4() = " << v0.daughter(1)->p4() << std::endl;
 		}
 	}
 
