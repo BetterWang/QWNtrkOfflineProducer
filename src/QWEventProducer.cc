@@ -241,7 +241,14 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 			for ( int c = 800; c < 2000; c++ ) {
 				hEff_cbin[c] = h;
 			}
-		} else if ( streff == std::string("EffCorrectionsPixel_TT_pt_0_10_v2.root") ) {
+		} else if ( streff == std::string("EffCorrectionsPixel_TT_pt_0_10_v2.root") or
+				streff == std::string("EffCorrectionsPixelPbPb_nominal.root") or
+				streff == std::string("EffCorrectionsPixelPbPb_tight.root") or
+				streff == std::string("EffCorrectionsPixelPbPb_loose.root") or
+				streff == std::string("EffCorrectionsPixelPbPb_wide.root") or
+				streff == std::string("EffCorrectionsPixelPbPb_narrow.root") or
+				streff == std::string("EffCorrectionsPixelPbPb_TightB.root")
+				) {
 			TH2D * h = (TH2D*) fEffFak->Get("Eff_0_5");
 			for ( int c = 0; c < 10; c++ ) {
 				hEff_cbin[c] = h;
