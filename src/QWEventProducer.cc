@@ -268,6 +268,9 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
 	produces<std::vector<double> >("pt");
+	produces<std::vector<double> >("px");
+	produces<std::vector<double> >("py");
+	produces<std::vector<double> >("pz");
 	produces<std::vector<double> >("weight");
 	produces<std::vector<double> >("charge");
 	produces<std::vector<double> >("ref");
@@ -289,6 +292,9 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	auto pphi = std::make_unique<std::vector<double>>();
 	auto peta = std::make_unique<std::vector<double>>();
 	auto ppT = std::make_unique<std::vector<double>>();
+	auto ppX = std::make_unique<std::vector<double>>();
+	auto ppY = std::make_unique<std::vector<double>>();
+	auto ppZ = std::make_unique<std::vector<double>>();
 	auto pweight = std::make_unique<std::vector<double>>();
 	auto pref = std::make_unique<std::vector<double>>();
 	auto pcharge = std::make_unique<std::vector<double>>();
@@ -313,6 +319,9 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		iEvent.put(std::move(pphi), std::string("phi"));
 		iEvent.put(std::move(peta), std::string("eta"));
 		iEvent.put(std::move(ppT), std::string("pt"));
+		iEvent.put(std::move(ppX), std::string("px"));
+		iEvent.put(std::move(ppY), std::string("py"));
+		iEvent.put(std::move(ppZ), std::string("pz"));
 		iEvent.put(std::move(pweight), std::string("weight"));
 		iEvent.put(std::move(pcharge), std::string("charge"));
 		iEvent.put(std::move(pNchi2), std::string("Nchi2"));
@@ -368,6 +377,9 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		pphi->push_back(itTrack->phi());
 		ppT->push_back(itTrack->pt());
+		ppX->push_back(itTrack->px());
+		ppY->push_back(itTrack->py());
+		ppZ->push_back(itTrack->pz());
 		pweight->push_back(weight);
 		pcharge->push_back(itTrack->charge());
 		pNchi2->push_back(itTrack->normalizedChi2());
@@ -383,6 +395,9 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(std::move(pphi), std::string("phi"));
 	iEvent.put(std::move(peta), std::string("eta"));
 	iEvent.put(std::move(ppT), std::string("pt"));
+	iEvent.put(std::move(ppX), std::string("px"));
+	iEvent.put(std::move(ppY), std::string("py"));
+	iEvent.put(std::move(ppZ), std::string("pz"));
 	iEvent.put(std::move(pweight), std::string("weight"));
 	iEvent.put(std::move(pcharge), std::string("charge"));
 	iEvent.put(std::move(pNchi2), std::string("Nchi2"));
