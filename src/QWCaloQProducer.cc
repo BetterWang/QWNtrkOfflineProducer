@@ -88,7 +88,7 @@ void QWCaloQProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			double et = j->emEt() + j->hadEt();
 
 			std::complex<double> Q(TMath::Cos(N_*phi), TMath::Sin(N_*phi));
-			if ( eta > etaMin_ and eta < etaMax_ ) {
+			if ( fabs(eta) > etaMin_ and fabs(eta) < etaMax_ ) {
 				caloEmE->push_back( j->emEnergy() );
 				caloHadE->push_back( j->hadEnergy() );
 				caloE  ->push_back( j->emEnergy() + j->hadEnergy() );
