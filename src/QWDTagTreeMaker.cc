@@ -23,7 +23,7 @@ private:
 	virtual void endJob() {};
 
 	edm::InputTag   src_;
-	std::vector<std::string>	vTags_;
+	std::vector<edm::InputTag>	vTags_;
 
 	TTree*	trV;
 	std::map< std::string, double* >	psv_;
@@ -50,8 +50,8 @@ void
 QWDTagTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	for ( auto & [key, val] : psv_ ) {
-		*val = 0.;
+	for ( auto & pair : psv_ ) {
+		*(pair.second) = 0.;
 	}
 	for ( auto &tag : vTags_ ) {
 		Handle<double> handle;
