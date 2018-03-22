@@ -22,7 +22,6 @@ private:
 	virtual void analyze(const edm::Event&, const edm::EventSetup&);
 	virtual void endJob() {};
 
-	edm::InputTag   src_;
 	std::vector<edm::InputTag>	vTags_;
 
 	TTree*	trV;
@@ -30,7 +29,6 @@ private:
 };
 
 QWDTagTreeMaker::QWDTagTreeMaker(const edm::ParameterSet& pset) :
-	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
 	vTags_(pset.getUntrackedParameter< std::vector<edm::InputTag> >("vTag"))
 {
 	for ( auto & tag : vTags_ ) {
