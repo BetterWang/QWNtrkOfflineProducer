@@ -72,7 +72,7 @@ void QWXeXeB2CentProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 		if(500*(*b)<bounds[i]) continue;
 		else break;
 	}
-	std::cout << " --> 5*b = " << 5*(*b) << " i = " << i << " bounds[i] = " << bounds[i] << std::endl;
+//	std::cout << " --> 5*b = " << 5*(*b) << " i = " << i << " bounds[i] = " << bounds[i] << std::endl;
 	iEvent.put(std::make_unique<int> (i), std::string("AMPT"));
 }
 
