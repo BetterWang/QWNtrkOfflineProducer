@@ -53,15 +53,22 @@ void QWHepMCProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	HepMC::GenEvent * genevt = (HepMC::GenEvent *)HepMCEvt->GetEvent();
 	HepMC::HeavyIon * hi = genevt->heavy_ion();
 
-        unique_ptr<double> pb(new double(hi->impact_parameter()));
-        unique_ptr<double> pEP(new double(hi->event_plane_angle()));
-        unique_ptr<double> pNpart(new double(hi->Npart_proj() + hi->Npart_targ()));
-        unique_ptr<double> pNcoll(new double(hi->Ncoll()));
+	if ( hi ) {
+		unique_ptr<double> pb(new double(hi->impact_parameter()));
+		unique_ptr<double> pEP(new double(hi->event_plane_angle()));
+		unique_ptr<double> pNpart(new double(hi->Npart_proj() + hi->Npart_targ()));
+		unique_ptr<double> pNcoll(new double(hi->Ncoll()));
 
-	iEvent.put(move(pb), std::string("b"));
-	iEvent.put(move(pEP), std::string("EP"));
-	iEvent.put(move(pNpart), std::string("Npart"));
-	iEvent.put(move(pNcoll), std::string("Ncoll"));
+		iEvent.put(move(pb), std::string("b"));
+		iEvent.put(move(pEP), std::string("EP"));
+		iEvent.put(move(pNpart), std::string("Npart"));
+		iEvent.put(move(pNcoll), std::string("Ncoll"));
+	} else {
+		iEvent.put(unique_ptr<double>(new double(0.)), std::string("b"));
+		iEvent.put(unique_ptr<double>(new double(0.)), std::string("EP"));
+		iEvent.put(unique_ptr<double>(new double(0.)), std::string("Npart"));
+		iEvent.put(unique_ptr<double>(new double(0.)), std::string("Ncoll"));
+	}
 
 }
 
