@@ -37,7 +37,7 @@ QWVCorrAnalyzer::QWVCorrAnalyzer(const edm::ParameterSet& pset) :
 	consumes<std::vector<double> >(srcX_);
 	consumes<std::vector<double> >(srcY_);
 	bWeight_ = false;
-	if ( srcWeight_.label() != string("NA") ) {
+	if ( srcWeight_.label() != std::string("NA") ) {
 		consumes<std::vector<double> >(srcWeight_);
 		bWeight_ = true;
 	}
