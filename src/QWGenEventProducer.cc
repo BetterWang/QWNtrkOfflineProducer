@@ -50,6 +50,7 @@ QWGenEventProducer::QWGenEventProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("pt");
 	produces<std::vector<double> >("weight");
 	produces<std::vector<double> >("charge");
+	produces<std::vector<double> >("pdgId");
 	produces<std::vector<double> >("vz");
 }
 
@@ -69,6 +70,7 @@ void QWGenEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 	std::unique_ptr<std::vector<double> > pweight( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pcharge( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pvz( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppdg( new std::vector<double> );
 
 	pvz->push_back(0.0);
 
@@ -88,12 +90,14 @@ void QWGenEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 		ppT->push_back(itTrack->pt());
 		pweight->push_back(1.);
 		pcharge->push_back(itTrack->charge());
+		ppdg->push_back(itTrack->pdgId());
 	}
 	iEvent.put(move(pphi), std::string("phi"));
 	iEvent.put(move(peta), std::string("eta"));
 	iEvent.put(move(ppT), std::string("pt"));
 	iEvent.put(move(pweight), std::string("weight"));
 	iEvent.put(move(pcharge), std::string("charge"));
+	iEvent.put(move(ppdg), std::string("pdgId"));
 	iEvent.put(move(pvz), std::string("vz"));
 }
 
