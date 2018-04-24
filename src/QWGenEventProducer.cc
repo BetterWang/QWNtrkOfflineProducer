@@ -13,6 +13,7 @@
 #include "TFile.h"
 #include "TH2.h"
 #include "TMath.h"
+#include <algorithm>
 
 using namespace std;
 class QWGenEventProducer : public edm::EDProducer {
@@ -32,10 +33,14 @@ private:
 	double	Etamax_;
 	bool	isPrompt_;
 
+	bool	doFilterPdg_;
+	std::vector<int>	vPdgId_;
+
 };
 
 QWGenEventProducer::QWGenEventProducer(const edm::ParameterSet& pset) :
-	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc"))
+	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc")),
+	vPdgId_(pset.getUntrackedParameter<std::vector<int>>("pdgId", std::vector<int>{}))
 {
 	consumes<reco::GenParticleCollection>(trackSrc_);
 
@@ -44,6 +49,7 @@ QWGenEventProducer::QWGenEventProducer(const edm::ParameterSet& pset) :
 	Etamin_ = pset.getUntrackedParameter<double>("Etamin", -2.4);
 	Etamax_ = pset.getUntrackedParameter<double>("Etamax", 2.4);
 	isPrompt_ = pset.getUntrackedParameter<bool>("isPrompt", true);
+	doFilterPdg_ = pset.getUntrackedParameter<bool>("doFilterPdg", false);
 
 	produces<std::vector<double> >("phi");
 	produces<std::vector<double> >("eta");
@@ -84,6 +90,7 @@ void QWGenEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 		if ( isPrompt_ and (not itTrack->isPromptFinalState()) ) continue;
 		if ( itTrack->charge() == 0 ) continue;
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
+		if ( doFilterPdg_ and (std::find(vPdgId_.begin(), vPdgId_.end(), itTrack->pdgId()) == vPdgId_.end()) ) continue;
 
 		pphi->push_back(itTrack->phi());
 		peta->push_back(itTrack->eta());
