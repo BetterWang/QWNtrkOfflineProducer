@@ -75,6 +75,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 		const QIE10DataFrame digi = static_cast<const QIE10DataFrame>(*it);
 		HcalZDCDetId const& did = digi.detid();
 		cout << did << "\n";
+		cout << digi << "\n";
 	}
 
 	iEvent.put(move(pADC), std::string("ADC"));
