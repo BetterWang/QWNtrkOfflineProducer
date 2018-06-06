@@ -4,3 +4,5 @@ test/test*.py
 *.pyc
 bin/*
 Tracking
+run2018/*
+!run2018/*.py
