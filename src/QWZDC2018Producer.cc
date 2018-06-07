@@ -71,10 +71,11 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	double adc[25][10] = {};
 	double nom_fC[25][10] = {};
 
+	int idx = 0;
 	for ( auto it = digis->begin(); it != digis->end(); it++ ) {
 		const QIE10DataFrame digi = static_cast<const QIE10DataFrame>(*it);
 		HcalZDCDetId const& did = digi.detid();
-		cout << did << "\n";
+		cout << __LINE__ << "\t idx = " << idx++ << did << "\n";
 		cout << digi << "\n";
 	}
 

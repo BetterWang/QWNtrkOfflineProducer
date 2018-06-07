@@ -7,7 +7,7 @@ process = cms.Process("QWTest")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 #process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1))
 
 #
 #   Command Line Input(Copied from DQM for now)
@@ -66,7 +66,7 @@ process.es_ascii = cms.ESSource('HcalTextCalibrations',
         input = cms.VPSet(
                cms.PSet(
                 object = cms.string('ElectronicsMap'),
-		file = cms.FileInPath('ZDC904_emap.txt')
+		file = cms.FileInPath('ZDC904_emap_v2.txt')
                 )
         )
 )
