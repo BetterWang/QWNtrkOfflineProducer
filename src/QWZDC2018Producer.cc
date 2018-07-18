@@ -68,15 +68,20 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	Handle<QIE10DigiCollection> digis;
 	iEvent.getByLabel(Src_, digis);
 
-	double adc[25][10] = {};
-	double nom_fC[25][10] = {};
+	double adc[50][10] = {};
+	double nom_fC[50][10] = {};
 
 	int idx = 0;
 	for ( auto it = digis->begin(); it != digis->end(); it++ ) {
 		const QIE10DataFrame digi = static_cast<const QIE10DataFrame>(*it);
-		HcalZDCDetId const& did = digi.detid();
-		cout << __LINE__ << "\t idx = " << idx++ << did << "\n";
-		cout << digi << "\n";
+//		HcalZDCDetId const& did = digi.detid();
+//		cout << __LINE__ << "\t idx = " << idx << did << "\n";
+//		cout << digi << "\n";
+		for ( int i = 0; i < digi.samples(); i++ ) {
+			adc[idx][i] = digi[i].adc();
+			pADC->push_back(adc[idx][i]);
+		}
+		idx++;
 	}
 
 	iEvent.put(move(pADC), std::string("ADC"));

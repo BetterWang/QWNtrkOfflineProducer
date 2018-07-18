@@ -7,7 +7,7 @@ process = cms.Process("QWTest")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 #process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 
 #
 #   Command Line Input(Copied from DQM for now)
@@ -28,6 +28,10 @@ process.source = cms.Source("HcalTBSource",
 process.options = cms.untracked.PSet(
         wantSummary = cms.untracked.bool(False)
         )
+
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string('zdc.root')
+)
 
 process.hcalDigis = cms.EDProducer("HcalRawToDigi",
                                    #       UnpackHF = cms.untracked.bool(True),
@@ -77,9 +81,15 @@ process.zdcdigi = cms.EDProducer('QWZDC2018Producer',
 		Src = cms.untracked.InputTag('hcalDigis', 'ZDC')
 		)
 
+process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
+		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC')
+		)
+
 process.p = cms.Path(process.hcalDigis
 		* process.zdcdigi
+		* process.zdcana
                      )
+
 process.outpath = cms.EndPath(process.output)
 
 
