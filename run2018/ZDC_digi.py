@@ -30,7 +30,7 @@ process.options = cms.untracked.PSet(
         )
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('zdc.root')
+    fileName = cms.string('zdc_'+runNumber+'.root')
 )
 
 process.hcalDigis = cms.EDProducer("HcalRawToDigi",
