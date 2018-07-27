@@ -31,11 +31,11 @@ void QWEvtPlaneProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 	iEvent.getByLabel( src_, eps );
 
 	std::vector<double> vangle(eps->size());
-	for ( auto const & ep : *eps ) {
-		vangle.push_back(ep.angle(level_);
+	for ( auto ep : *eps ) {
+		vangle.push_back(ep.angle(level_));
 	}
 
-	iEvent.put(std::make_unique<double>(vangle), std::string("angle"));
+	iEvent.put(std::make_unique<std::vector<double>>(vangle), std::string("angle"));
 
 	return;
 }
