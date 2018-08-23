@@ -17,6 +17,7 @@
 #include "DataFormats/HcalDigi/interface/HcalDigiCollections.h"
 #include "iostream"
 
+#include "QWZDC2018Helper.h"
 
 using namespace std;
 class QWZDC2018Producer : public edm::EDProducer {
@@ -80,6 +81,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 		for ( int i = 0; i < digi.samples(); i++ ) {
 			adc[idx][i] = digi[i].adc();
 			pADC->push_back(adc[idx][i]);
+			pfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[adc[idx][i]]);
 		}
 		idx++;
 	}
