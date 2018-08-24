@@ -22,7 +22,7 @@
 #include "DataFormats/Candidate/interface/VertexCompositeCandidateFwd.h"
 #include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
 
-#include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
+#include "CommonTools/CandUtils/interface/CenterOfMassBooster.h"
 
 #include "TFile.h"
 #include "TH2.h"

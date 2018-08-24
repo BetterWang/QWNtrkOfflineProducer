@@ -70,7 +70,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	iEvent.getByLabel(Src_, digis);
 
 	double adc[50][10] = {};
-	double nom_fC[50][10] = {};
+//	double nom_fC[50][10] = {};
 
 	int idx = 0;
 	for ( auto it = digis->begin(); it != digis->end(); it++ ) {
@@ -81,7 +81,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 		for ( int i = 0; i < digi.samples(); i++ ) {
 			adc[idx][i] = digi[i].adc();
 			pADC->push_back(adc[idx][i]);
-			pfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[adc[idx][i]]);
+			pfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int(adc[idx][i]) ]);
 		}
 		idx++;
 	}
