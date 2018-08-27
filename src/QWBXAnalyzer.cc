@@ -52,10 +52,14 @@ QWBXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	if ( TS_ < 0 ) {
 		for ( int ts = 0; ts < NS_; ts++ ) {
-			hc->Fill( (*hBX)+ts, (*hfC)[ int(nChannel_+ts) ] );
+			double q = (*hfC)[ int(nChannel_+ts) ];
+			q = q>0?q:0;
+			hc->Fill( (*hBX)+ts, q );
 		}
 	} else {
-		hc->Fill( (*hBX)+TS_, (*hfC)[ int(nChannel_+TS_) ] );
+		double q = (*hfC)[ int(nChannel_+TS_) ];
+		q = q>0?q:0;
+		hc->Fill( (*hBX)+TS_, q );
 	}
 	return;
 }

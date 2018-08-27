@@ -57,7 +57,7 @@ process.options = cms.untracked.PSet(
 # Files to process
 #-----------------
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1)
+    input = cms.untracked.int32(-1)
     )
 
 process.source = cms.Source(
@@ -84,7 +84,7 @@ process.digiPath = cms.Path(
 process.output = cms.OutputModule(
 		'PoolOutputModule',
 		outputCommands = cms.untracked.vstring("drop *",
-			"keep *_*_*_MyTree"
+			"keep *_*_ZDC_MyTree"
 			),
 		SelectEvents = cms.untracked.PSet(
 			SelectEvents = cms.vstring('digiPath')
