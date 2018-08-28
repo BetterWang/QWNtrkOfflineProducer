@@ -22,7 +22,9 @@ private:
 	int		NS_;
 	int		TS_;
 	int		nChannel_;
+	int		nSig_;
 	TH1D *		hc;
+	TH1D *		hh;
 };
 
 QWBXAnalyzer::QWBXAnalyzer(const edm::ParameterSet& pset) :
@@ -30,14 +32,17 @@ QWBXAnalyzer::QWBXAnalyzer(const edm::ParameterSet& pset) :
 	fC_(pset.getUntrackedParameter<edm::InputTag>("fC")),
 	NS_(pset.getUntrackedParameter<int>("NS")),
 	TS_(pset.getUntrackedParameter<int>("TS")),
-	nChannel_(pset.getUntrackedParameter<int>("nChannel"))
+	nChannel_(pset.getUntrackedParameter<int>("nChannel")),
+	nSig_(pset.getUntrackedParameter<int>("nSig"))
 {
 	consumes<double>(BX_);
 	consumes<std::vector<double>>(fC_);
 
 	edm::Service<TFileService> fs;
 	hc = fs->make<TH1D>("hc", "hc", 4000, 0, 4000);
+	hh = fs->make<TH1D>("hh", "hh", 4000, 0, 4000);
 	hc->Sumw2();
+	hh->Sumw2();
 }
 
 void
@@ -52,14 +57,16 @@ QWBXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	if ( TS_ < 0 ) {
 		for ( int ts = 0; ts < NS_; ts++ ) {
-			double q = (*hfC)[ int(nChannel_+ts) ];
+			double q = (*hfC)[ int(nChannel_+ts - nSig_) ];
 			q = q>0?q:0;
-			hc->Fill( (*hBX)+ts, q );
+			hc->Fill( (*hBX)+ts-nSig_, q );
+			hh->Fill( (*hBX)+ts-nSig_);
 		}
 	} else {
 		double q = (*hfC)[ int(nChannel_+TS_) ];
 		q = q>0?q:0;
 		hc->Fill( (*hBX)+TS_, q );
+		hh->Fill( (*hBX)+TS_ );
 	}
 	return;
 }

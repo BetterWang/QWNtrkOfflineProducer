@@ -107,6 +107,7 @@ process.zdcbx0 = cms.EDAnalyzer('QWBXAnalyzer',
 		NS = cms.untracked.int32(3),
 		TS = cms.untracked.int32(0),
 		nChannel = cms.untracked.int32(0),
+		nSig = cms.untracked.int32(1),
 		)
 
 for i in range(1,50):
