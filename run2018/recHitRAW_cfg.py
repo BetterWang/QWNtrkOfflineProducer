@@ -34,7 +34,7 @@ process.es_ascii = cms.ESSource(
     input = cms.VPSet(
         cms.PSet(
             object = cms.string('ElectronicsMap'),
-            file = cms.FileInPath("HcalElectronicsMap_2018_v3.0_data_ZDCRPD_mockup.txt")
+            file = cms.FileInPath("HcalElectronicsMap_2018_v3.0_data.txt")
             )
         )
     )

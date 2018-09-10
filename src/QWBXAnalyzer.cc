@@ -57,10 +57,10 @@ QWBXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	if ( TS_ < 0 ) {
 		for ( int ts = 0; ts < NS_; ts++ ) {
-			double q = (*hfC)[ int(nChannel_+ts - nSig_) ];
+			double q = (*hfC)[ int(nChannel_+ts) ];
 			q = q>0?q:0;
 			hc->Fill( (*hBX)+ts-nSig_, q );
-			hh->Fill( (*hBX)+ts-nSig_);
+			hh->Fill( (*hBX)+ts-nSig_ );
 		}
 	} else {
 		double q = (*hfC)[ int(nChannel_+TS_) ];

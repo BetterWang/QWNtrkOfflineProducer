@@ -105,7 +105,7 @@ process.zdcbx0 = cms.EDAnalyzer('QWBXAnalyzer',
 		BX = cms.untracked.InputTag('QWInfo', 'BX'),
 		fC = cms.untracked.InputTag('zdcdigi', 'nominalfC'),
 		NS = cms.untracked.int32(3),
-		TS = cms.untracked.int32(0),
+		TS = cms.untracked.int32(-1),
 		nChannel = cms.untracked.int32(0),
 		nSig = cms.untracked.int32(1),
 		)
