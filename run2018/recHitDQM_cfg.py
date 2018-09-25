@@ -132,13 +132,13 @@ process.dqmoffline_step = cms.EndPath(process.dqm)
 process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # file
-process.TFileService = cms.Service("TFileService",
-		fileName = cms.string('zdcbx'+runNumber+'.root')
-		)
+#process.TFileService = cms.Service("TFileService",
+#		fileName = cms.string('zdcbx'+runNumber+'.root')
+#		)
 # path
 process.digiPath = cms.Path(
-    process.hcalDigis *
-    process.zdcdigi
+    process.hcalDigis 
+#    * process.zdcdigi
 )
 
 process.output = cms.OutputModule(
@@ -158,4 +158,5 @@ process.output = cms.OutputModule(
 process.outpath = cms.EndPath(process.output)
 
 
-process.schedule = cms.Schedule(process.digiPath,process.dqmoffline_step,process.DQMoutput_step)
+#process.schedule = cms.Schedule(process.digiPath,process.dqmoffline_step,process.DQMoutput_step)
+process.schedule = cms.Schedule(process.digiPath, process.dqmoffline_step,process.DQMoutput_step)

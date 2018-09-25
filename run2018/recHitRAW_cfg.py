@@ -14,7 +14,7 @@ if len(sys.argv) > 2:
 sourceTag = "PoolSource"         # for global runs
 rawTag    = cms.InputTag('rawDataCollector')
 era       = eras.Run2_2018
-GT        = "101X_dataRun2_Prompt_v11"
+GT        = "102X_dataRun2_Prompt_v7"
 filedir = '/eos/cms/store/express/Run2018D/ExpressPhysics/FEVT/Express-v1/000/'+runNumber[:3]+'/'+runNumber[3:]+'/00000'
 infile    = cms.untracked.vstring()
 for f in os.listdir(filedir):
@@ -35,6 +35,14 @@ process.es_ascii = cms.ESSource(
         cms.PSet(
             object = cms.string('ElectronicsMap'),
             file = cms.FileInPath("HcalElectronicsMap_2018_v3.0_data.txt")
+            ),
+        cms.PSet(
+            object = cms.string('QIETypes'),
+            file = cms.FileInPath("QIETypes.txt")
+            ),
+        cms.PSet(
+            object = cms.string('QIEData'),
+            file = cms.FileInPath("HcalQIEData_2018_ZDCtest_v1.txt")
             )
         )
     )
@@ -77,14 +85,21 @@ process.load("EventFilter.HcalRawToDigi.HcalRawToDigi_cfi")
 #set digi and analyzer
 process.hcalDigis.InputLabel = rawTag
 
+process.zdcdigi = cms.EDProducer('QWZDC2018Producer',
+                Src = cms.untracked.InputTag('hcalDigis', 'ZDC')
+                )
+
 process.digiPath = cms.Path(
-    process.hcalDigis
+    process.hcalDigis *
+    process.zdcdigi
 )
 
 process.output = cms.OutputModule(
 		'PoolOutputModule',
 		outputCommands = cms.untracked.vstring("drop *",
-			"keep *_*_ZDC_MyTree"
+			"keep *_zdcdigi_*_MyTree",
+			"keep *_*_ZDC_MyTree",
+			"keep *_TriggerResults_*_MyTree",
 			),
 		SelectEvents = cms.untracked.PSet(
 			SelectEvents = cms.vstring('digiPath')

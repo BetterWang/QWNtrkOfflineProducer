@@ -41,7 +41,7 @@ QWZDC2018Producer::QWZDC2018Producer(const edm::ParameterSet& pset) :
 
 	produces<std::vector<double> >("ADC");
 	produces<std::vector<double> >("nominalfC");
-//	produces<std::vector<double> >("regularfC");
+	produces<std::vector<double> >("regularfC");
 //
 //	produces< double >("Sum");
 //	produces< double >("SumP");
@@ -64,7 +64,12 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	using namespace edm;
 
 	std::unique_ptr<std::vector<double> > pADC( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnfC( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pfC( new std::vector<double> );
+
+	ESHandle<HcalDbService> conditions;
+	iSetup.get<HcalDbRecord>().get(conditions);
+
 
 	Handle<QIE10DigiCollection> digis;
 	iEvent.getByLabel(Src_, digis);
@@ -75,19 +80,27 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	int idx = 0;
 	for ( auto it = digis->begin(); it != digis->end(); it++ ) {
 		const QIE10DataFrame digi = static_cast<const QIE10DataFrame>(*it);
-//		HcalZDCDetId const& did = digi.detid();
+		HcalZDCDetId const& did = digi.detid();
 //		cout << __LINE__ << "\t idx = " << idx << did << "\n";
-//		cout << digi << "\n";
+//		cout << std::hex << digi << std::dec << "\n";
+//		const HcalCalibrations& calibrations(conditions->getHcalCalibrations(did));
+		const HcalQIECoder* channelCoder = conditions->getHcalCoder(did);
+		const HcalQIEShape* shape = conditions->getHcalShape(channelCoder);
+		const HcalCoderDb coder(*channelCoder, *shape);
+		CaloSamples cs;
+		coder.adc2fC(digi, cs);
 		for ( int i = 0; i < digi.samples(); i++ ) {
 			adc[idx][i] = digi[i].adc();
 			pADC->push_back(adc[idx][i]);
-			pfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int(adc[idx][i]) ]);
+			pnfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int(adc[idx][i]) ]);
+			pfC->push_back(cs[i]);
 		}
 		idx++;
 	}
 
 	iEvent.put(move(pADC), std::string("ADC"));
-	iEvent.put(move(pfC), std::string("nominalfC"));
+	iEvent.put(move(pnfC), std::string("nominalfC"));
+	iEvent.put(move(pfC), std::string("regularfC"));
 
 }
 
