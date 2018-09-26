@@ -376,7 +376,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 
 		double weight;
-		if ( eff >= 0.1 and not TMath::IsNaN(eff) ) {
+		if ( eff >= 0.01 and not TMath::IsNaN(eff) ) {
 			weight = 1./eff;
 		} else {
 			weight = 0.;
