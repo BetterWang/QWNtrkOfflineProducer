@@ -469,8 +469,9 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 				}
 			}
 			// boostToCM
-			//std::cout << " -> " << __LINE__ << " d0.p4() = " << v0.daughter(0)->p4() << std::endl;
-			//std::cout << " -> " << __LINE__ << " d1.p4() = " << v0.daughter(1)->p4() << std::endl;
+			std::cout << " ---> " << __LINE__ << " v0.pdgId() = " << v0.pdgId() << " v0.p4() = " << v0.p4() << std::endl;
+			std::cout << " -> " << __LINE__ << " d0.p4() = " << v0.daughter(0)->p4() << std::endl;
+			std::cout << " -> " << __LINE__ << " d1.p4() = " << v0.daughter(1)->p4() << std::endl;
 			CenterOfMassBooster b(dynamic_cast<reco::Candidate&>(v0));
 			b.set(dynamic_cast<reco::Candidate&>(v0));
 			if ( v0.daughter(0)->charge() > 0 ) {
@@ -483,6 +484,9 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			} else {
 				pnPhiCM->push_back(v0.daughter(1)->phi());
 			}
+			std::cout << " ---> " << __LINE__ << " v0.pdgId() = " << v0.pdgId() << " v0.p4() = " << v0.p4() << std::endl;
+			std::cout << " after boost -> " << __LINE__ << " d0.p4() = " << v0.daughter(0)->p4() << " d0charge = " << v0.daughter(0)->charge() << std::endl;
+			std::cout << " after boost -> " << __LINE__ << " d1.p4() = " << v0.daughter(1)->p4() << " d1charge = " << v0.daughter(1)->charge() << std::endl;
 			//std::cout << " -> " << __LINE__ << " boost d0.p4() = " << v0.daughter(0)->p4() << std::endl;
 			//std::cout << " -> " << __LINE__ << " boost d1.p4() = " << v0.daughter(1)->p4() << std::endl;
 		}
