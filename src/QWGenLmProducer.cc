@@ -133,7 +133,7 @@ void QWGenLmProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		b.set(dynamic_cast<reco::Candidate&>(d1));
 //		std::cout << " !!! " << __LINE__ << "\n";
 		if ( v0.pdgId() == 3122 ) {
-			if ( d0.pdgId() == 2212 and d0.pdgId() == -211 ) {
+			if ( d0.pdgId() == 2212 and d1.pdgId() == -211 ) {
 				ppPhiCM->push_back(d0.phi());
 				pnPhiCM->push_back(d1.phi());
 			} else {
