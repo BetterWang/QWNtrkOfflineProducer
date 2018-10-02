@@ -31,11 +31,15 @@ private:
 	///
 
 	edm::InputTag	Src_;
+	bool		bHardCode_;
+	bool		bDebug_;
 };
 
 
 QWZDC2018Producer::QWZDC2018Producer(const edm::ParameterSet& pset) :
-	Src_(pset.getUntrackedParameter<edm::InputTag>("Src"))
+	Src_(pset.getUntrackedParameter<edm::InputTag>("Src")),
+	bHardCode_(pset.getUntrackedParameter<bool>("HardCode", true)), // has to be hard coded now, calibration format is not working at the moment =_=
+	bDebug_(pset.getUntrackedParameter<bool>("Debug", false))
 {
 	consumes<QIE10DigiCollection>(Src_);
 
@@ -68,7 +72,8 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	std::unique_ptr<std::vector<double> > pfC( new std::vector<double> );
 
 	ESHandle<HcalDbService> conditions;
-	iSetup.get<HcalDbRecord>().get(conditions);
+	if ( bHardCode_ )
+		iSetup.get<HcalDbRecord>().get(conditions);
 
 
 	Handle<QIE10DigiCollection> digis;
@@ -81,19 +86,28 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	for ( auto it = digis->begin(); it != digis->end(); it++ ) {
 		const QIE10DataFrame digi = static_cast<const QIE10DataFrame>(*it);
 		HcalZDCDetId const& did = digi.detid();
-//		cout << __LINE__ << "\t idx = " << idx << did << "\n";
-//		cout << std::hex << digi << std::dec << "\n";
+		if ( bDebug_ ) {
+			cout << __LINE__ << "\t idx = " << idx << did << "\n";
+			cout << std::hex << digi << std::dec << "\n";
+		}
+
 //		const HcalCalibrations& calibrations(conditions->getHcalCalibrations(did));
-		const HcalQIECoder* channelCoder = conditions->getHcalCoder(did);
-		const HcalQIEShape* shape = conditions->getHcalShape(channelCoder);
-		const HcalCoderDb coder(*channelCoder, *shape);
 		CaloSamples cs;
-		coder.adc2fC(digi, cs);
+		if ( bHardCode_ ) {
+			const HcalQIECoder* channelCoder = conditions->getHcalCoder(did);
+			const HcalQIEShape* shape = conditions->getHcalShape(channelCoder);
+			const HcalCoderDb coder(*channelCoder, *shape);
+			coder.adc2fC(digi, cs);
+		}
 		for ( int i = 0; i < digi.samples(); i++ ) {
 			adc[idx][i] = digi[i].adc();
 			pADC->push_back(adc[idx][i]);
 			pnfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int(adc[idx][i]) ]);
-			pfC->push_back(cs[i]);
+			if ( bHardCode_ ) {
+				pfC->push_back(QWAna::ZDC2018::QIE10_regular_fC[digi[i].adc()][digi[i].capid()]);
+			} else {
+				pfC->push_back(cs[i]);
+			}
 		}
 		idx++;
 	}
