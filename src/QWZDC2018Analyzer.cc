@@ -17,14 +17,20 @@ private:
 	virtual void analyze(const edm::Event&, const edm::EventSetup&);
 	virtual void endJob() {};
 
+	int NS_;
 	edm::InputTag   srcADC_;
+	edm::InputTag   srcfC_;
 	TH1D * hADC[50];
+	TH1D * hfC[50];
 };
 
 QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
-	srcADC_(pset.getUntrackedParameter<edm::InputTag>("srcADC"))
+	NS_(pset.getUntrackedParameter<int>("NS", 10)),
+	srcADC_(pset.getUntrackedParameter<edm::InputTag>("srcADC")),
+	srcfC_(pset.getUntrackedParameter<edm::InputTag>("srcfC"))
 {
 	consumes<std::vector<double> >(srcADC_);
+	consumes<std::vector<double> >(srcfC_);
 
 
 	std::string cname[] = {
@@ -82,8 +88,10 @@ QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
 
 	edm::Service<TFileService> fs;
 	auto fADC = fs->mkdir("ADC");
+	auto ffC = fs->mkdir("fC");
 	for ( int i = 0; i < 50; i++ ) {
 		hADC[i] = fADC.make<TH1D>(cname[i].c_str(), cname[i].c_str(), 10, 0, 10);
+		hfC[i] = ffC.make<TH1D>(cname[i].c_str(), cname[i].c_str(), 10, 0, 10);
 	}
 
 }
@@ -93,12 +101,16 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 {
 	using namespace edm;
 	Handle<std::vector<double> > hadc;
+	Handle<std::vector<double> > hfc;
 
 	iEvent.getByLabel(srcADC_, hadc);
+	iEvent.getByLabel(srcfC_,  hfc);
+
 	int sz = hadc->size();
-	for ( int ch = 0; ch < sz/10; ch++ ) {
-		for ( int i = 0; i < 10; i++ ) {
-			hADC[ch]->Fill(i, (*hadc)[10*ch+i]);
+	for ( int ch = 0; ch < sz/NS_; ch++ ) {
+		for ( int i = 0; i < NS_; i++ ) {
+			hADC[ch]->Fill(i, (*hadc)[NS_*ch+i]);
+			hfC[ch] ->Fill(i, (*hfc)[NS_*ch+i]);
 		}
 	}
 	return;

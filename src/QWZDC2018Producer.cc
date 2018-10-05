@@ -72,7 +72,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	std::unique_ptr<std::vector<double> > pfC( new std::vector<double> );
 
 	ESHandle<HcalDbService> conditions;
-	if ( bHardCode_ )
+	if ( !bHardCode_ )
 		iSetup.get<HcalDbRecord>().get(conditions);
 
 
@@ -93,7 +93,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
 //		const HcalCalibrations& calibrations(conditions->getHcalCalibrations(did));
 		CaloSamples cs;
-		if ( bHardCode_ ) {
+		if ( !bHardCode_ ) {
 			const HcalQIECoder* channelCoder = conditions->getHcalCoder(did);
 			const HcalQIEShape* shape = conditions->getHcalShape(channelCoder);
 			const HcalCoderDb coder(*channelCoder, *shape);
