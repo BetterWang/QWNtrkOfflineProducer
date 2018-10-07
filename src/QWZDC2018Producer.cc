@@ -46,6 +46,9 @@ QWZDC2018Producer::QWZDC2018Producer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("ADC");
 	produces<std::vector<double> >("nominalfC");
 	produces<std::vector<double> >("regularfC");
+	produces<std::vector<double> >("DetId");
+	produces<std::vector<double> >("CapId");
+	produces<std::vector<double> >("overflow");
 //
 //	produces< double >("Sum");
 //	produces< double >("SumP");
@@ -70,6 +73,9 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	std::unique_ptr<std::vector<double> > pADC( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnfC( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pfC( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pDid( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pCap( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > poverflow( new std::vector<double> );
 
 	ESHandle<HcalDbService> conditions;
 	if ( !bHardCode_ )
@@ -91,6 +97,8 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 			cout << std::hex << digi << std::dec << "\n";
 		}
 
+		pDid->push_back( double(did()) );
+
 //		const HcalCalibrations& calibrations(conditions->getHcalCalibrations(did));
 		CaloSamples cs;
 		if ( !bHardCode_ ) {
@@ -102,6 +110,12 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 		for ( int i = 0; i < digi.samples(); i++ ) {
 			adc[idx][i] = digi[i].adc();
 			pADC->push_back(adc[idx][i]);
+			pCap->push_back(digi[i].capid());
+			if ( digi[i].adc() >= 255 ) {
+				poverflow->push_back(1.);
+			} else {
+				poverflow->push_back(0.);
+			}
 			pnfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int(adc[idx][i]) ]);
 			if ( bHardCode_ ) {
 				pfC->push_back(QWAna::ZDC2018::QIE10_regular_fC[digi[i].adc()][digi[i].capid()]);
@@ -115,6 +129,9 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	iEvent.put(move(pADC), std::string("ADC"));
 	iEvent.put(move(pnfC), std::string("nominalfC"));
 	iEvent.put(move(pfC), std::string("regularfC"));
+	iEvent.put(move(pDid), std::string("DetId"));
+	iEvent.put(move(pCap), std::string("CapId"));
+	iEvent.put(move(poverflow), std::string("overflow"));
 
 }
 

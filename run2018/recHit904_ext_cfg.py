@@ -85,9 +85,9 @@ process.zdcdigi = cms.EDProducer('QWZDC2018Producer',
                 )
 
 process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
-		NS = cms.untracked.int32(10),
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
-		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC')
+		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
+		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId')
 		)
 
 process.digiPath = cms.Path(
