@@ -6,38 +6,34 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/HcalDetId/interface/HcalZDCDetId.h"
-#include "TH1D.h"
+#include "TProfile.h"
 #include <iostream>
 
-class QWZDC2018Analyzer : public edm::EDAnalyzer {
+class QWZDC2018Calib : public edm::EDAnalyzer {
 public:
-	explicit QWZDC2018Analyzer(const edm::ParameterSet&);
-	~QWZDC2018Analyzer() {};
+	explicit QWZDC2018Calib(const edm::ParameterSet&);
+	~QWZDC2018Calib() {};
 private:
 	virtual void beginJob() {};
 	virtual void analyze(const edm::Event&, const edm::EventSetup&);
 	virtual void endJob();
 
-	edm::InputTag   srcADC_;
+	edm::InputTag   srcCapId_;
 	edm::InputTag   srcfC_;
 	edm::InputTag   srcDid_;
-	bool		bNorm_;
 	bool		firstEvent_;
-	std::map<uint32_t, TH1D*>	hADC;
-	std::map<uint32_t, TH1D*>	hfC;
+	std::map<uint32_t, TProfile*>	hfC;
 
 	std::map<uint32_t, std::string> cname;
-	unsigned int	Nevent_;
 };
 
-QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
-	srcADC_(pset.getUntrackedParameter<edm::InputTag>("srcADC")),
+QWZDC2018Calib::QWZDC2018Calib(const edm::ParameterSet& pset) :
+	srcCapId_(pset.getUntrackedParameter<edm::InputTag>("srcCapId")),
 	srcfC_(pset.getUntrackedParameter<edm::InputTag>("srcfC")),
 	srcDid_(pset.getUntrackedParameter<edm::InputTag>("srcDetId")),
-	bNorm_(pset.getUntrackedParameter<bool>("Norm", false)),
 	firstEvent_(true)
 {
-	consumes<std::vector<double> >(srcADC_);
+	consumes<std::vector<double> >(srcCapId_);
 	consumes<std::vector<double> >(srcfC_);
 	consumes<std::vector<double> >(srcDid_);
 
@@ -61,34 +57,30 @@ QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
 		cname[did()] = std::string("hZDCM_RPD") + std::to_string(channel);
 	}
 
-	Nevent_ = 0;
 }
 
 void
-QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+QWZDC2018Calib::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	Handle<std::vector<double> > hadc;
+	Handle<std::vector<double> > hCapId;
 	Handle<std::vector<double> > hfc;
 	Handle<std::vector<double> > hDid;
 
-	iEvent.getByLabel(srcADC_, hadc);
+	iEvent.getByLabel(srcCapId_, hCapId);
 	iEvent.getByLabel(srcfC_,  hfc);
 	iEvent.getByLabel(srcDid_, hDid);
 
-	int sz = hadc->size();
+	int sz = hfc->size();
 
 	int NS_ = sz / hDid->size();
+
 	if ( firstEvent_ ) {
 		firstEvent_ = false;
-
 		edm::Service<TFileService> fs;
-		auto fADC = fs->mkdir("ADC");
-		auto ffC = fs->mkdir("fC");
 		for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
 			if ( cname.find( (uint32_t)(*it) ) != cname.end() ) {
-				hADC[uint32_t(*it)] = fADC.make<TH1D>(cname[(uint32_t)(*it)].c_str(), cname[(uint32_t)(*it)].c_str(), 10, 0, 10);
-				hfC[uint32_t(*it)]  = ffC.make<TH1D> (cname[(uint32_t)(*it)].c_str(), cname[(uint32_t)(*it)].c_str(), 10, 0, 10);
+				hfC[uint32_t(*it)]  = fs->make<TProfile> (cname[(uint32_t)(*it)].c_str(), cname[(uint32_t)(*it)].c_str(), 4, 0, 4);
 			}
 		}
 	}
@@ -96,26 +88,15 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 	int idx = 0;
 	for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
 		for ( int ts = 0; ts < NS_; ts++ ) {
-			hADC[uint32_t(*it)]->Fill( ts, (*hadc)[idx] );
-			hfC [uint32_t(*it)]->Fill( ts, (*hfc) [idx] );
+			hfC [uint32_t(*it)]->Fill( (*hCapId)[idx], (*hfc) [idx] );
 			idx++;
 		}
 	}
-	Nevent_++;
 	return;
 }
 
 void
-QWZDC2018Analyzer::endJob() {
-	if ( bNorm_ ) {
-		for ( auto it = hfC.begin(); it != hfC.end(); it++ ) {
-			it->second->Scale(1./Nevent_);
-		}
-		for ( auto it = hADC.begin(); it != hADC.end(); it++ ) {
-			it->second->Scale(1./Nevent_);
-		}
-	}
-	return;
+QWZDC2018Calib::endJob() {
 }
 
-DEFINE_FWK_MODULE(QWZDC2018Analyzer);
+DEFINE_FWK_MODULE(QWZDC2018Calib);
