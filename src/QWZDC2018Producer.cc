@@ -18,6 +18,7 @@
 #include "iostream"
 
 #include "QWZDC2018Helper.h"
+#include "boost/bimap.hpp"
 
 using namespace std;
 class QWZDC2018Producer : public edm::EDProducer {
@@ -31,17 +32,58 @@ private:
 	///
 
 	edm::InputTag	Src_;
+	int		SOI_;
 	bool		bHardCode_;
 	bool		bDebug_;
+
+	std::map<uint32_t, std::vector<double>> pedestal_;
+	std::map<std::string, uint32_t>		cname_;
+
 };
 
 
 QWZDC2018Producer::QWZDC2018Producer(const edm::ParameterSet& pset) :
 	Src_(pset.getUntrackedParameter<edm::InputTag>("Src")),
+	SOI_(pset.getUntrackedParameter<int>("SOI", 4)),
 	bHardCode_(pset.getUntrackedParameter<bool>("HardCode", true)), // has to be hard coded now, calibration format is not working at the moment =_=
 	bDebug_(pset.getUntrackedParameter<bool>("Debug", false))
 {
 	consumes<QIE10DigiCollection>(Src_);
+
+	for ( int channel = 0; channel < 16; channel++ ) {
+		HcalZDCDetId did(HcalZDCDetId::EM, true, channel);
+		cname_[ std::string("hZDCP_EM") + std::to_string(channel) ] = did();
+
+		did = HcalZDCDetId(HcalZDCDetId::EM, false, channel);
+		cname_[ std::string("hZDCM_EM") + std::to_string(channel) ] = did();
+
+		did = HcalZDCDetId(HcalZDCDetId::HAD, true, channel);
+		cname_[ std::string("hZDCP_HAD") + std::to_string(channel) ] = did();
+
+		did = HcalZDCDetId(HcalZDCDetId::HAD, false, channel);
+		cname_[ std::string("hZDCM_HAD") + std::to_string(channel) ] = did();
+
+		did = HcalZDCDetId(HcalZDCDetId::RPD, true, channel+1);
+		cname_[ std::string("hZDCP_RPD") + std::to_string(channel) ] = did();
+
+		did = HcalZDCDetId(HcalZDCDetId::RPD, false, channel+1);
+		cname_[ std::string("hZDCM_RPD") + std::to_string(channel) ] = did();
+	}
+
+
+	std::vector<double>	ped0{0.,0.,0.,0.};
+	if ( pset.exists("Pedestal") ) {
+		std::vector<edm::ParameterSet> ped = pset.getParameter<std::vector<edm::ParameterSet> >("Pedestal");
+		for ( auto ch = ped.begin(); ch != ped.end(); ch++ ) {
+			auto ch_str = ch->getUntrackedParameter<std::string>("object");
+			pedestal_[cname_[ch->getUntrackedParameter<std::string>("object")]] =
+				ch->getUntrackedParameter<std::vector<double>>("ped");
+		}
+	} else {
+		for ( auto it = cname_.begin(); it != cname_.end(); it++ ) {
+			pedestal_[it->second] = ped0;
+		}
+	}
 
 	produces<std::vector<double> >("ADC");
 	produces<std::vector<double> >("nominalfC");
@@ -49,6 +91,10 @@ QWZDC2018Producer::QWZDC2018Producer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("DetId");
 	produces<std::vector<double> >("CapId");
 	produces<std::vector<double> >("overflow");
+
+	produces<std::vector<double> >("chargeHigh");
+	produces<std::vector<double> >("chargeLow");
+	produces<std::vector<double> >("chargeSum");
 //
 //	produces< double >("Sum");
 //	produces< double >("SumP");
@@ -76,6 +122,9 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	std::unique_ptr<std::vector<double> > pDid( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pCap( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > poverflow( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pChargeHigh( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pChargeLow( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pChargeSum( new std::vector<double> );
 
 	ESHandle<HcalDbService> conditions;
 	if ( !bHardCode_ )
@@ -107,6 +156,9 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 			const HcalCoderDb coder(*channelCoder, *shape);
 			coder.adc2fC(digi, cs);
 		}
+		double chargeSOI_high = 0;
+		double chargeSOI_low = 0;
+		double chargeSOI_sum = 0;
 		for ( int i = 0; i < digi.samples(); i++ ) {
 			adc[idx][i] = digi[i].adc();
 			pADC->push_back(adc[idx][i]);
@@ -117,12 +169,26 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 				poverflow->push_back(0.);
 			}
 			pnfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int(adc[idx][i]) ]);
+			double charge = 0;
 			if ( bHardCode_ ) {
-				pfC->push_back(QWAna::ZDC2018::QIE10_regular_fC[digi[i].adc()][digi[i].capid()]);
+				charge = QWAna::ZDC2018::QIE10_regular_fC[digi[i].adc()][digi[i].capid()] - pedestal_[did()][digi[i].capid()];
 			} else {
-				pfC->push_back(cs[i]);
+				charge = cs[i] - pedestal_[did()][digi[i].capid()];
 			}
+			pfC->push_back(charge);
+			if ( i == SOI_ ) {
+				chargeSOI_high = charge;
+				chargeSOI_sum = charge;
+			} else if ( i == SOI_+1 ) {
+				chargeSOI_low = charge;
+				chargeSOI_sum += charge;
+			}
+
+			if ( bDebug_ ) std::cout << " !!! " << std::hex << did() << " CapId = " << digi[i].capid() << " -> Ped = " << pedestal_[did()][digi[i].capid()] << "\n";
 		}
+		pChargeHigh->push_back(chargeSOI_high);
+		pChargeLow->push_back(chargeSOI_low);
+		pChargeSum->push_back(chargeSOI_sum);
 		idx++;
 	}
 
@@ -132,6 +198,9 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	iEvent.put(move(pDid), std::string("DetId"));
 	iEvent.put(move(pCap), std::string("CapId"));
 	iEvent.put(move(poverflow), std::string("overflow"));
+	iEvent.put(move(pChargeHigh), std::string("chargeHigh"));
+	iEvent.put(move(pChargeLow), std::string("chargeLow"));
+	iEvent.put(move(pChargeSum), std::string("chargeSum"));
 
 }
 

@@ -97,6 +97,12 @@ QWZDC2018Calib::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 void
 QWZDC2018Calib::endJob() {
+	for ( auto it = hfC.begin(); it != hfC.end(); it++ ) {
+		std::cout << "\t\tcms.PSet(" << "\n";
+		std::cout << "\t\t\tobject = cms.untracked.string('" << cname[it->first] << "'),\n";
+		std::cout << "\t\t\tped = cms.untracked.vdouble(" << std::setw(6) << it->second->GetBinContent(1) << ", " << std::setw(6) << it->second->GetBinContent(2) << ", " << std::setw(6) << it->second->GetBinContent(3) << ", " << std::setw(6) << it->second->GetBinContent(4) << ")\n";
+		std::cout << "\t\t),\n";
+	}
 }
 
 DEFINE_FWK_MODULE(QWZDC2018Calib);

@@ -3,7 +3,7 @@ from Configuration.StandardSequences.Eras import eras
 import os
 import sys
 
-runNumber = '1000031366'
+runNumber = '1000031330'
 if len(sys.argv) > 2:
 	runNumber = sys.argv[2]
 
@@ -18,7 +18,7 @@ era       = eras.Run2_2018
 GT        = "102X_dataRun2_Prompt_v7"
 infile    = 'file:/eos/cms/store/group/dpg_hcal/comm_hcal/B904/run'+runNumber+'/B904_Integration_'+runNumber+'.root'
 
-
+print infile
 
 #-----------------------------------
 # Standard CMSSW Imports/Definitions
@@ -77,9 +77,11 @@ process.load("EventFilter.HcalRawToDigi.HcalRawToDigi_cfi")
 process.hcalDigis.InputLabel = rawTag
 #process.hcalDigis.saveQIE10DataNSamples = cms.untracked.vint32(10)
 #process.hcalDigis.saveQIE10DataTags = cms.untracked.vstring( "UNUSED10" )
+process.load('ZDC2018Pedestal_cfg')
 
 process.zdcdigi = cms.EDProducer('QWZDC2018Producer',
                 Src = cms.untracked.InputTag('hcalDigis', 'ZDC'),
+		Pedestal = process.ZDC2018Pedestal_904_ext12,
                 HardCode = cms.untracked.bool(True),
                 Debug = cms.untracked.bool(False)
                 )
@@ -87,24 +89,21 @@ process.zdcdigi = cms.EDProducer('QWZDC2018Producer',
 process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
 		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
-		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId')
-		)
-process.zdcped = cms.EDAnalyzer('QWZDC2018Calib',
-		srcCapId = cms.untracked.InputTag('zdcdigi', 'CapId'),
-		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
-		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId')
+		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
+		srcHigh = cms.untracked.InputTag('zdcdigi', 'chargeHigh'),
+		srcLow = cms.untracked.InputTag('zdcdigi', 'chargeLow'),
+		srcSum = cms.untracked.InputTag('zdcdigi', 'chargeSum'),
 		)
 
 process.digiPath = cms.Path(
     process.hcalDigis *
     process.zdcdigi *
-    process.zdcped
+    process.zdcana
 )
 
 process.TFileService = cms.Service("TFileService",
-		fileName = cms.string('zdcped_'+runNumber+'.root')
+		fileName = cms.string('zdc_'+runNumber+'.root')
 		)
-
 process.output = cms.OutputModule(
 		'PoolOutputModule',
 		outputCommands = cms.untracked.vstring("drop *",

@@ -18,7 +18,7 @@ era       = eras.Run2_2018
 GT        = "102X_dataRun2_Prompt_v7"
 infile    = 'file:/eos/cms/store/group/dpg_hcal/comm_hcal/B904/run'+runNumber+'/B904_Integration_'+runNumber+'.root'
 
-
+print infile
 
 #-----------------------------------
 # Standard CMSSW Imports/Definitions
