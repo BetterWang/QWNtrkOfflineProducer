@@ -44,5 +44,5 @@
 3. Example DIGIs output from ZDC\_digi.py: HFanalysis_1000030239.root
 4. Ideally, there should be 48 channels with 10 time slices each channel.
 5. *Update*, all B904 runs can be found at `/eos/cms/store/group/dpg_hcal/comm_hcal/B904/`
-
+6. Run summary for [PMT testing](https://www.evernote.com/l/AAG1pcCjgENOX6JdCExUbyTMNX4_Mf6Ydcs)
 
