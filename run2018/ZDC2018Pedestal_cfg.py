@@ -9,194 +9,194 @@ import FWCore.ParameterSet.Config as cms
 ZDC2018Pedestal_904_ext12 = cms.VPSet(
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_EM1'),
-			ped = cms.untracked.vdouble(15.606, 15.3491, 14.7818, 13.4043)
+			ped = cms.untracked.vdouble(15.6083, 15.2689, 14.768, 13.3416)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_EM2'),
-			ped = cms.untracked.vdouble(9.5454, 12.3147, 8.26609, 9.93686)
+			ped = cms.untracked.vdouble(9.41336, 12.1918, 8.21728, 9.76649)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_EM3'),
-			ped = cms.untracked.vdouble(13.5441, 12.8479, 14.571, 14.9084)
+			ped = cms.untracked.vdouble(13.4873, 12.7648, 14.5413, 14.8814)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_EM4'),
-			ped = cms.untracked.vdouble(14.7521, 14.4579, 17.1729, 14.8872)
+			ped = cms.untracked.vdouble(14.7575, 14.451, 17.1683, 14.8702)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_EM5'),
-			ped = cms.untracked.vdouble(14.6007, 14.7184, 14.2629, 16.7196)
+			ped = cms.untracked.vdouble(14.6055, 14.7122, 14.2617, 16.7126)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_HAD1'),
-			ped = cms.untracked.vdouble(15.036, 12.4895, 14.713, 14.2131)
+			ped = cms.untracked.vdouble(15.0058, 12.404, 14.7046, 14.1515)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_HAD2'),
-			ped = cms.untracked.vdouble(14.9643, 16.1604, 12.3311, 14.3595)
+			ped = cms.untracked.vdouble( 14.95, 16.1148, 12.2919, 14.3467)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_HAD3'),
-			ped = cms.untracked.vdouble(10.9024, 12.1848, 11.3597, 10.8579)
+			ped = cms.untracked.vdouble(10.8538, 12.112, 11.3263, 10.7855)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_EM1'),
-			ped = cms.untracked.vdouble(15.982, 10.4949, 12.7527, 11.575)
+			ped = cms.untracked.vdouble(15.9358, 10.4533, 12.7106, 11.5529)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_EM2'),
-			ped = cms.untracked.vdouble(  14.8, 14.5702, 11.2533, 13.5095)
+			ped = cms.untracked.vdouble(14.7899, 14.5666, 11.2359, 13.4967)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_EM3'),
-			ped = cms.untracked.vdouble(17.0116, 14.5225, 11.5343, 15.5811)
+			ped = cms.untracked.vdouble(17.0179, 14.5213, 11.5068, 15.5748)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_EM4'),
-			ped = cms.untracked.vdouble(13.6508, 11.987, 11.2885, 16.4723)
+			ped = cms.untracked.vdouble(13.6099, 11.9383, 11.2673, 16.4173)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_EM5'),
-			ped = cms.untracked.vdouble(14.3426, 13.0859, 10.5663, 14.6305)
+			ped = cms.untracked.vdouble(14.3384, 13.0884, 10.5253, 14.6361)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_HAD1'),
-			ped = cms.untracked.vdouble(13.9172, 11.6089, 11.3117, 15.7986)
+			ped = cms.untracked.vdouble(13.8815, 11.5781, 11.2892, 15.7391)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_HAD2'),
-			ped = cms.untracked.vdouble(14.5024, 12.9188, 14.8549, 14.5081)
+			ped = cms.untracked.vdouble(14.4749, 12.8443, 14.8394, 14.4989)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_HAD3'),
-			ped = cms.untracked.vdouble(9.16921, 8.10088, 8.15071, 8.6963)
+			ped = cms.untracked.vdouble(9.06214, 8.06979, 8.12848, 8.59083)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD0'),
-			ped = cms.untracked.vdouble(20.3504, 18.3011, 20.3966, 18.8418)
+			ped = cms.untracked.vdouble(21.8017, 16.7815, 21.5617, 17.7388)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD1'),
-			ped = cms.untracked.vdouble(15.5619, 16.7027, 14.796, 16.5082)
+			ped = cms.untracked.vdouble(15.3408, 16.7762, 14.4841, 16.6738)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD2'),
-			ped = cms.untracked.vdouble(14.3656, 9.97622, 13.5149, 10.5256)
+			ped = cms.untracked.vdouble(14.2779, 10.0383, 13.255, 10.5414)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD3'),
-			ped = cms.untracked.vdouble(18.5245, 17.9001, 16.9661, 15.3701)
+			ped = cms.untracked.vdouble(18.5859, 17.8428, 16.9534, 15.3126)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD4'),
-			ped = cms.untracked.vdouble(15.1588, 14.6709,  17.87, 14.5689)
+			ped = cms.untracked.vdouble(15.1648, 14.6349, 17.8611, 14.5332)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD5'),
-			ped = cms.untracked.vdouble(14.0652, 14.5502, 14.0321, 11.2417)
+			ped = cms.untracked.vdouble(14.0309, 14.4929, 13.9492, 11.177)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD6'),
-			ped = cms.untracked.vdouble(15.1462, 13.624, 14.9373, 14.5511)
+			ped = cms.untracked.vdouble(15.1696, 13.4929, 14.924, 14.5378)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD7'),
-			ped = cms.untracked.vdouble(15.0989, 14.7611, 13.9193, 17.6621)
+			ped = cms.untracked.vdouble(15.1128, 14.6979, 13.8887, 17.6131)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD8'),
-			ped = cms.untracked.vdouble(17.8855, 14.0973, 15.6661, 17.4102)
+			ped = cms.untracked.vdouble(17.8935, 13.9952, 15.6243, 17.344)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD9'),
-			ped = cms.untracked.vdouble(20.1679, 19.4383, 14.9966, 20.4873)
+			ped = cms.untracked.vdouble(20.2393, 19.2369, 14.9737, 20.3862)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD10'),
-			ped = cms.untracked.vdouble(11.9747, 14.4168, 11.9135, 16.1451)
+			ped = cms.untracked.vdouble(12.0221, 14.3521, 11.9133, 16.073)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD11'),
-			ped = cms.untracked.vdouble(16.2777, 14.4478, 15.6334, 14.147)
+			ped = cms.untracked.vdouble(16.3644, 14.3827, 15.6325, 14.0836)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD12'),
-			ped = cms.untracked.vdouble(15.3498, 15.1837, 14.552, 14.4021)
+			ped = cms.untracked.vdouble(15.4127, 15.1099, 14.5655, 14.3548)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD13'),
-			ped = cms.untracked.vdouble(11.5927, 11.8388, 10.4409, 14.7141)
+			ped = cms.untracked.vdouble(11.6072, 11.7433, 10.4341, 14.684)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD14'),
-			ped = cms.untracked.vdouble(18.0928, 20.3203, 20.5187, 17.7369)
+			ped = cms.untracked.vdouble(18.1413, 20.189, 20.5513, 17.6956)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCM_RPD15'),
-			ped = cms.untracked.vdouble(20.2375, 21.2191, 17.9609, 20.6106)
+			ped = cms.untracked.vdouble(20.4136, 21.183, 17.9832, 20.5295)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD0'),
-			ped = cms.untracked.vdouble(15.5897, 17.5748, 18.0703, 14.7896)
+			ped = cms.untracked.vdouble(15.6852, 17.5086, 18.0853, 14.7496)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD1'),
-			ped = cms.untracked.vdouble(12.9444, 14.7272, 11.5537, 13.1901)
+			ped = cms.untracked.vdouble(12.9077, 14.6858, 11.524, 13.0808)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD2'),
-			ped = cms.untracked.vdouble(19.3295, 16.9701, 17.412, 18.4778)
+			ped = cms.untracked.vdouble(19.4074, 16.9448, 17.4224, 18.4837)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD3'),
-			ped = cms.untracked.vdouble(15.9374, 14.3689, 14.6512, 13.9714)
+			ped = cms.untracked.vdouble(15.9245, 14.3199, 14.6333, 13.8805)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD4'),
-			ped = cms.untracked.vdouble(17.3638, 13.9387, 17.6703, 18.1531)
+			ped = cms.untracked.vdouble(17.3613, 13.8852, 17.6593, 18.1441)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD5'),
-			ped = cms.untracked.vdouble(15.9989, 16.2604, 16.3655, 17.1847)
+			ped = cms.untracked.vdouble(16.0604, 16.2478, 16.3608, 17.1693)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD6'),
-			ped = cms.untracked.vdouble(14.5833, 14.6036, 12.9906, 14.6842)
+			ped = cms.untracked.vdouble(14.5853, 14.5886, 12.986, 14.681)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD7'),
-			ped = cms.untracked.vdouble(14.7257, 14.8689, 14.9295, 14.7159)
+			ped = cms.untracked.vdouble(14.7179, 14.837, 14.9085, 14.705)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD8'),
-			ped = cms.untracked.vdouble(8.22027, 11.5532, 8.3668, 12.5143)
+			ped = cms.untracked.vdouble(8.19399, 11.4826, 8.32948, 12.3732)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD9'),
-			ped = cms.untracked.vdouble(12.0765, 10.8223, 11.1155, 9.72326)
+			ped = cms.untracked.vdouble(12.0351, 10.728, 11.0728, 9.61176)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD10'),
-			ped = cms.untracked.vdouble(14.5587, 16.2962, 17.6888, 16.0731)
+			ped = cms.untracked.vdouble(14.5537, 16.2121, 17.6692, 16.0103)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD11'),
-			ped = cms.untracked.vdouble(14.6351, 11.0675, 11.5787, 11.4281)
+			ped = cms.untracked.vdouble(14.6294, 11.0007, 11.5597, 11.4046)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD12'),
-			ped = cms.untracked.vdouble(13.1163, 11.9869, 11.3521, 12.7243)
+			ped = cms.untracked.vdouble(13.0648, 11.9332, 11.3372, 12.6258)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD13'),
-			ped = cms.untracked.vdouble(17.3509, 16.9257, 17.6498, 15.9125)
+			ped = cms.untracked.vdouble(17.3754, 16.8414, 17.645,  15.86)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD14'),
-			ped = cms.untracked.vdouble(17.9158, 15.1911, 17.6415, 17.8971)
+			ped = cms.untracked.vdouble(17.9211, 15.1678, 17.6351, 17.8983)
 		),
 		cms.PSet(
 			object = cms.untracked.string('hZDCP_RPD15'),
-			ped = cms.untracked.vdouble(14.6875, 15.7009, 14.0207, 16.6754)
+			ped = cms.untracked.vdouble(14.7133, 15.586, 14.0089, 16.6532)
 		)
 	)

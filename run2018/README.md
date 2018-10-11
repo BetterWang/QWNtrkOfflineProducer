@@ -27,18 +27,22 @@
 1. In each side of the tunnel, one crate is powered by a 50V LV supply, (namely ZDCP/ZDCM in B904)
 2. Inside each crate, one ngCCM in slot8, one QIE10 in slot4
 3. In crate 50, slot2, one ngFEC is installed to control the ngCCM(s) in ZDCP/ZDCM
-4. In crate 50, slot11, one uHTR card is installed to receive data from QIE10(s) from ZDCP/ZDCM
-5. For uHTR, ZDCP: fiber 0-5, ZDCM: fiber 6-11, each fiber has 4 channels (0-3)
+4. In crate 50, slot11,12, two uHTR cards are installed to receive data from QIE10s from ZDCP/ZDCM
+5. Each QIE10 card is modified with 16 LEMO connectors, connecting to channel 1-16.
 
 ## Software Setup
 1. Generally, the QIE10 unpacker software is already in the CMSSW release along with the HF
-2. CMSSW\_10\_0\_4
-3. cp ZDC904_emap.txt to CMSSW\_10\_0\_4/src/
-4. example config: ZDC\_digi.py
-5. to run the config: cmsRun ZDC_digi.py 1000030239
+2. `CMSSW_10_X_X`
+3. The latest emap for B904 is `ZDC904\_emap\_ext12.txt`
+4. to run the config: `cmsRun recHit904_extPed_cfg.py 1000031441`
+5. This should run out of the box. It subtracts the pedestal which is loaded from `ZDC2018Pedestal_cfg.py`
+6. The pedestal is calculated from run 1000031442, with `cmsRun recHit904_Ped_cfg.py 1000031442`
 
 ## Example data (B904)
 1. Location: /afs/cern.ch/work/q/qwang/public/ZDC2018/example
 2. Example B904 data: B904_Integration_1000030239.root
 3. Example DIGIs output from ZDC\_digi.py: HFanalysis_1000030239.root
 4. Ideally, there should be 48 channels with 10 time slices each channel.
+5. *Update*, all B904 runs can be found at `/eos/cms/store/group/dpg_hcal/comm_hcal/B904/`
+
+
