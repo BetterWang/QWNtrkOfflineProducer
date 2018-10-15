@@ -39,10 +39,25 @@
 6. The pedestal is calculated from run 1000031442, with `cmsRun recHit904_Ped_cfg.py 1000031442`
 
 ## Example data (B904)
-1. Location: /afs/cern.ch/work/q/qwang/public/ZDC2018/example
-2. Example B904 data: B904_Integration_1000030239.root
-3. Example DIGIs output from ZDC\_digi.py: HFanalysis_1000030239.root
+1. Location: `/afs/cern.ch/work/q/qwang/public/ZDC2018/example`
+2. Example B904 data: `B904_Integration_1000030239.root`
+3. Example DIGIs output from `ZDC_digi.py`: `HFanalysis_1000030239.root`
 4. Ideally, there should be 48 channels with 10 time slices each channel.
 5. *Update*, all B904 runs can be found at `/eos/cms/store/group/dpg_hcal/comm_hcal/B904/`
 6. Run summary for [PMT testing](https://www.evernote.com/l/AAG1pcCjgENOX6JdCExUbyTMNX4_Mf6Ydcs)
+
+# P5 situation
+## Electronics (P5 before run)
+1. The ZDC QIE10 cards are installed in the USC, [Elog](http://cmsonline.cern.ch/cms-elog/1054529).
+2. The QIE10s will be read out through uHTR card located at crate 38 slot 7.
+3. The emap is `HcalElectronicsMap_2018_v3.0_data.txt`.
+
+## Software Setup (Data)
+1. Unpacker is working in `10_X_Y`.
+2. to run the config: `cmsRun recHitRAW_cfg.py [run number]`
+3. It reads express physics data from eos. So, pick your favorite run.
+4. The number of samples (TS) has been changing over the time for debugging purpose (3, 4, 6 or 10). Since TS2, it is set to 6TS, beginning from run 323031.
+5. Since TS2, FCD is readout as ZDC HAD channels. ZDC HAD is [1-5]. FCD is [0, 6-15]. Don't be scared if you see more than HAD channels from ZDC DIGIs.
+6. During TS3, FCD will be out, so no extra ZDC HAD channels will be read out during HI data taking.
+
 

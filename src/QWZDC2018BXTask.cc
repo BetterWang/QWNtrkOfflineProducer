@@ -38,24 +38,27 @@ class QWZDC2018BXTask : public DQMEDAnalyzer
 
 		//	tags
 		edm::InputTag   BX_;
-		edm::InputTag   fC_;
-		int		NS_;
-		int		nChannel_;
-		int		nSig_;
+		edm::InputTag   srcfC_;
+		edm::InputTag   srcDid_;
+		int		SOI_;
+		int		BXShift_;
+		bool		firstEvent_;
 
-		MonitorElement *	hc;
-		MonitorElement *	_fC_BX_perChannel[50];
+		MonitorElement *			hc;
+		std::map<uint32_t,MonitorElement*>	_fC_BX_perChannel;
 };
 
 QWZDC2018BXTask::QWZDC2018BXTask(edm::ParameterSet const& pset) :
 	BX_(pset.getUntrackedParameter<edm::InputTag>("BX")),
-	fC_(pset.getUntrackedParameter<edm::InputTag>("fC")),
-	NS_(pset.getUntrackedParameter<int>("NS", 10)),
-	nChannel_(pset.getUntrackedParameter<int>("nChannel")),
-	nSig_(pset.getUntrackedParameter<int>("soi", 3))
+	srcfC_(pset.getUntrackedParameter<edm::InputTag>("srcfC")),
+	srcDid_(pset.getUntrackedParameter<edm::InputTag>("srcDid")),
+	SOI_(pset.getUntrackedParameter<int>("SOI", 4)),
+	BXShift_(pset.getUntrackedParameter<int>("SOI", 100)),
+	firstEvent_(true)
 {
 	consumes<double>(BX_);
-	consumes<std::vector<double>>(fC_);
+	consumes<std::vector<double>>(srcfC_);
+	consumes<std::vector<double>>(srcDid_);
 }
 
 /* virtual */
@@ -71,63 +74,51 @@ void QWZDC2018BXTask::bookHistograms(DQMStore::IBooker &ib,
 
 	//book histos per channel
 	ib.setCurrentFolder("Hcal/ZDC_BX_timein/fC_vs_BX_perChannel");
-	const char * histoname[50] = {
-		"EM_M_1",
-		"EM_M_2",
-		"EM_M_3",
-		"EM_M_4",
-		"EM_M_5",
-		"HAD_M_1",
-		"HAD_M_2",
-		"HAD_M_3",
-		"HAD_M_4",
-		"EM_P_1",
-		"EM_P_2",
-		"EM_P_3",
-		"EM_P_4",
-		"EM_P_5",
-		"HAD_P_1",
-		"HAD_P_2",
-		"HAD_P_3",
-		"HAD_P_4",
-		"RPD_M_1",
-		"RPD_M_2",
-		"RPD_M_3",
-		"RPD_M_4",
-		"RPD_M_5",
-		"RPD_M_6",
-		"RPD_M_7",
-		"RPD_M_8",
-		"RPD_M_9",
-		"RPD_M_10",
-		"RPD_M_11",
-		"RPD_M_12",
-		"RPD_M_13",
-		"RPD_M_14",
-		"RPD_M_15",
-		"RPD_M_16",
-		"RPD_P_1",
-		"RPD_P_2",
-		"RPD_P_3",
-		"RPD_P_4",
-		"RPD_P_5",
-		"RPD_P_6",
-		"RPD_P_7",
-		"RPD_P_8",
-		"RPD_P_9",
-		"RPD_P_10",
-		"RPD_P_11",
-		"RPD_P_12",
-		"RPD_P_13",
-		"RPD_P_14",
-		"RPD_P_15",
-		"RPD_P_16"
-	};
-	for ( int i = 0; i < 50; i++ ) {
-		_fC_BX_perChannel[i] = ib.book1D( histoname[i], histoname[i], 4000, 0, 4000);
-		_fC_BX_perChannel[i]->setAxisTitle("BX", 1);
-		_fC_BX_perChannel[i]->setAxisTitle("sum fC", 2);
+	std::string histoname;
+	for ( int channel = 0; channel < 16; channel++ ) {
+		// EM Pos
+		HcalZDCDetId did(HcalZDCDetId::EM, true, channel);
+		histoname = std::string("hZDCP_EM") + std::to_string(channel);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
+		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
+
+		// EM Minus
+		did = HcalZDCDetId(HcalZDCDetId::EM, false, channel);
+		histoname = std::string("hZDCM_EM") + std::to_string(channel);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
+		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
+
+		// HAD Pos
+		did = HcalZDCDetId(HcalZDCDetId::HAD, true, channel);
+		histoname = std::string("hZDCP_HAD") + std::to_string(channel);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
+		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
+
+		// HAD Minus
+		did = HcalZDCDetId(HcalZDCDetId::HAD, false, channel);
+		histoname = std::string("hZDCM_HAD") + std::to_string(channel);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
+		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
+
+		// RPD Pos
+		did = HcalZDCDetId(HcalZDCDetId::RPD, true, channel+1);
+		histoname = std::string("hZDCP_RPD") + std::to_string(channel);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
+		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
+
+		// RPD Minus
+		did = HcalZDCDetId(HcalZDCDetId::RPD, false, channel+1);
+		histoname = std::string("hZDCM_RPD") + std::to_string(channel);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
+		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
 	}
+
 }
 
 
@@ -136,17 +127,31 @@ void QWZDC2018BXTask::bookHistograms(DQMStore::IBooker &ib,
 	using namespace edm;
 	Handle<double> hBX;
 	Handle<std::vector<double>> hfC;
+	Handle<std::vector<double>> hDid;
 
 	iEvent.getByLabel(BX_, hBX);
-	iEvent.getByLabel(fC_, hfC);
+	iEvent.getByLabel(srcfC_, hfC);
+	iEvent.getByLabel(srcDid_, hDid);
 
-	for ( int i = 0; i < 50; i++ ) {
-		for ( int ts = 0; ts < NS_; ts++ ) {
-			double q = (*hfC)[ int(NS_ * i + ts) ];
-			_fC_BX_perChannel[i]->Fill( (*hBX)+ts-nSig_, q );
-			hc->Fill( (*hBX)+ts-nSig_, q );
+	int NS_ = hfC->size() / hDid->size();
+	int BX = *hBX + BXShift_;
+	if ( firstEvent_ ) {
+		firstEvent_ = false;
+		std::cout << "\033[1;31mNsamples = " << NS_ << "\033[0m\n";
+	}
+
+	{
+		int idx = 0;
+		for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
+			for ( int ts = 0; ts < NS_; ts++ ) {
+				double q = (*hfC)[ idx ];
+				hc->Fill( BX + ts - SOI_, q );
+				_fC_BX_perChannel[ uint32_t(*it) ]->Fill( BX + ts - SOI_, q );
+				idx++;
+			}
 		}
 	}
+
 }
 
 

@@ -2,9 +2,397 @@ import FWCore.ParameterSet.Config as cms
 
 # Manual Pedestal calibration
 
+# all 0
+ZDC2018Pedestal_0 = cms.VPSet(
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM0'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM1'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM2'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM3'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM4'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM5'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM6'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM7'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM8'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM9'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM10'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM11'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM12'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM13'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM14'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_EM15'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD0'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD1'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD2'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD3'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD4'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD5'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD6'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD7'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD8'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD9'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD10'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD11'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD12'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD13'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD14'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_HAD15'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM0'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM1'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM2'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM3'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM4'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM5'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM6'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM7'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM8'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM9'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM10'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM11'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM12'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM13'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM14'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_EM15'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD0'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD1'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD2'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD3'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD4'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD5'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD6'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD7'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD8'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD9'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD10'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD11'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD12'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD13'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD14'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_HAD15'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD0'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD1'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD2'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD3'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD4'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD5'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD6'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD7'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD8'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD9'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD10'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD11'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD12'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD13'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD14'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCM_RPD15'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD0'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD1'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD2'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD3'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD4'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD5'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD6'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD7'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD8'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD9'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD10'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD11'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD12'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD13'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD14'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		),
+		cms.PSet(
+			object = cms.untracked.string('hZDCP_RPD15'),
+			ped = cms.untracked.vdouble(0.,0.,0.,0.)
+		)
+	)
+
 # 904 uHTR slot 12, QIE #5 in slot 4, #6 in slot 10
 # emap: ZDC904_emap_ext12.txt
-# run: 1000031435
+# run: 1000031442
 
 ZDC2018Pedestal_904_ext12 = cms.VPSet(
 		cms.PSet(

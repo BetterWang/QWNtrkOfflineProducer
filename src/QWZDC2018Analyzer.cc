@@ -115,6 +115,8 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 				hSum[uint32_t(*it)] = fSum.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 1100, -100, 1000);
 			}
 		}
+
+		std::cout << "\033[1;31mNsamples = " << NS_ << "\033[0m\n";
 	}
 
 	int idx = 0;

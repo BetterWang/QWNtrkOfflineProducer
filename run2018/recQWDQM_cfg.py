@@ -1,25 +1,26 @@
 import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
+from DQMServices.Core.DQMEDAnalyzer import DQMEDAnalyzer
 import os
 import sys
 
-runNumber = '1000031330'
+runNumber = '321730'
 if len(sys.argv) > 2:
 	runNumber = sys.argv[2]
-
 
 #---------------
 # My definitions
 #---------------
 
-sourceTag = "HcalTBSource"         # for 904/local runs
-rawTag    = cms.InputTag('source')
+sourceTag = "PoolSource"         # for global runs
+rawTag    = cms.InputTag('rawDataCollector')
 era       = eras.Run2_2018
-GT        = "102X_dataRun2_Prompt_v7"
-#infile    = 'file:/eos/cms/store/group/dpg_hcal/comm_hcal/B904/run'+runNumber+'/B904_Integration_'+runNumber+'.root'
-infile    = 'file:/afs/cern.ch/work/q/qwang/public/904_runs/B904_Integration_'+runNumber+'.root'
-
-print infile
+GT        = "101X_dataRun2_Prompt_v11"
+filedir = '/eos/cms/store/express/Run2018D/ExpressPhysics/FEVT/Express-v1/000/'+runNumber[:3]+'/'+runNumber[3:]+'/00000'
+infile    = cms.untracked.vstring()
+for f in reversed(os.listdir(filedir)):
+	if f[-5:] == '.root' :
+		infile.append('file:'+filedir+'/'+f)
 
 #-----------------------------------
 # Standard CMSSW Imports/Definitions
@@ -35,11 +36,12 @@ process.es_ascii = cms.ESSource(
     input = cms.VPSet(
         cms.PSet(
             object = cms.string('ElectronicsMap'),
-            file = cms.FileInPath("QWAna/QWNtrkOfflineProducer/run2018/ZDC904_emap_ext12.txt")
+            file = cms.FileInPath("QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_FCD.txt")
             )
         )
     )
 process.es_prefer = cms.ESPrefer('HcalTextCalibrations', 'es_ascii')
+
 
 #-----------
 # Log output
@@ -57,14 +59,27 @@ process.options = cms.untracked.PSet(
 # Files to process
 #-----------------
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(1000000)
     )
 
 process.source = cms.Source(
     sourceTag,
-    fileNames = cms.untracked.vstring(infile)
+    fileNames = infile
     )
 #process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange('293765:264-293765:9999')
+
+#-----------------------------------------
+# HLT selection -- Random
+#-----------------------------------------
+
+import HLTrigger.HLTfilters.hltHighLevel_cfi
+
+process.hltRND = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
+process.hltRND.HLTPaths = [
+		"HLT_Random_v*",
+		]
+process.hltRND.andOr = cms.bool(True)
+process.hltRND.throw = cms.bool(False)
 
 
 #-----------------------------------------
@@ -76,14 +91,20 @@ process.load("EventFilter.HcalRawToDigi.HcalRawToDigi_cfi")
 
 #set digi and analyzer
 process.hcalDigis.InputLabel = rawTag
-#process.hcalDigis.saveQIE10DataNSamples = cms.untracked.vint32(10)
-#process.hcalDigis.saveQIE10DataTags = cms.untracked.vstring( "UNUSED10" )
+
+
+# event info
+process.QWInfo = cms.EDProducer('QWEventInfoProducer')
+
+# ZDC info
 process.load('QWZDC2018Producer_cfi')
-process.load('ZDC2018Pedestal_cfg')
+process.zdcdigi.SOI = cms.untracked.int32(4)
 
-process.zdcdigi.Pedestal = process.ZDC2018Pedestal_904_ext12
 
-process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
+# DQM step
+process.load('Configuration.StandardSequences.Services_cff')
+#process.load("DQM.HcalTasks.ZDCTask")
+process.QWzdcQIE10Task = DQMEDAnalyzer('QWZDCQIE10Task',
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
 		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
 		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
@@ -92,24 +113,47 @@ process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcSum = cms.untracked.InputTag('zdcdigi', 'chargeSum'),
 		)
 
-process.digiPath = cms.Path(
-    process.hcalDigis *
-    process.zdcdigi *
-    process.zdcana
+process.dqm = cms.Sequence(process.QWzdcQIE10Task)
+
+process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string('DQMIO'),
+        filterName = cms.untracked.string('')
+    ),
+    fileName = cms.untracked.string('file:step3_inDQM.root'),
+    outputCommands = cms.untracked.vstring("keep *"),
+    splitLevel = cms.untracked.int32(0)
 )
 
-process.TFileService = cms.Service("TFileService",
-		fileName = cms.string('zdc_'+runNumber+'.root')
-		)
+process.dqmoffline_step = cms.EndPath(process.dqm)
+process.DQMoutput_step = cms.EndPath(process.DQMoutput)
+
+# file
+#process.TFileService = cms.Service("TFileService",
+#		fileName = cms.string('zdcbx'+runNumber+'.root')
+#		)
+# path
+process.digiPath = cms.Path(
+    process.hcalDigis 
+    * process.zdcdigi
+)
+
 process.output = cms.OutputModule(
 		'PoolOutputModule',
 		outputCommands = cms.untracked.vstring("drop *",
-			"keep *_*_*_MyTree"
+			"keep *_*_ZDC_MyTree",
+			"keep *_QWInfo_*_MyTree",
+			"keep *_zdcdigi_*_MyTree",
+			"keep *_TriggerResults_*_MyTree",
 			),
 		SelectEvents = cms.untracked.PSet(
 			SelectEvents = cms.vstring('digiPath')
 			),
-		fileName = cms.untracked.string('digis904_'+runNumber+'.root')
+		fileName = cms.untracked.string('digisRAW_'+runNumber+'.root')
 		)
 
 process.outpath = cms.EndPath(process.output)
+
+
+process.schedule = cms.Schedule(process.digiPath, process.dqmoffline_step,process.DQMoutput_step)
+#process.schedule = cms.Schedule(process.digiPath)

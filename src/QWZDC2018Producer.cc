@@ -134,7 +134,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	Handle<QIE10DigiCollection> digis;
 	iEvent.getByLabel(Src_, digis);
 
-	double adc[50][10] = {};
+//	double adc[50][10] = {};
 //	double nom_fC[50][10] = {};
 
 	int idx = 0;
@@ -147,6 +147,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 		}
 
 		pDid->push_back( double(did()) );
+		if ( bDebug_ ) cout << __LINE__ << "\n";
 
 //		const HcalCalibrations& calibrations(conditions->getHcalCalibrations(did));
 		CaloSamples cs;
@@ -159,22 +160,27 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 		double chargeSOI_high = 0;
 		double chargeSOI_low = 0;
 		double chargeSOI_sum = 0;
+		if ( bDebug_ ) cout << __LINE__ << "\n";
 		for ( int i = 0; i < digi.samples(); i++ ) {
-			adc[idx][i] = digi[i].adc();
-			pADC->push_back(adc[idx][i]);
+			if ( bDebug_ ) cout << __LINE__ << "\n";
+//			adc[idx][i] = digi[i].adc();
+			pADC->push_back( digi[i].adc() );
 			pCap->push_back(digi[i].capid());
 			if ( digi[i].adc() >= 255 ) {
 				poverflow->push_back(1.);
 			} else {
 				poverflow->push_back(0.);
 			}
-			pnfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int(adc[idx][i]) ]);
+			if ( bDebug_ ) cout << __LINE__ << " i = " << i << digi[i].adc() << "\n";
+			pnfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int( digi[i].adc() ) ]);
 			double charge = 0;
+			if ( bDebug_ ) cout << __LINE__ << "\n";
 			if ( bHardCode_ ) {
 				charge = QWAna::ZDC2018::QIE10_regular_fC[digi[i].adc()][digi[i].capid()] - pedestal_[did()][digi[i].capid()];
 			} else {
 				charge = cs[i] - pedestal_[did()][digi[i].capid()];
 			}
+			if ( bDebug_ ) cout << __LINE__ << "\n";
 			pfC->push_back(charge);
 			if ( i == SOI_ ) {
 				chargeSOI_high = charge;
@@ -186,11 +192,13 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
 			if ( bDebug_ ) std::cout << " !!! " << std::hex << did() << " CapId = " << digi[i].capid() << " -> Ped = " << pedestal_[did()][digi[i].capid()] << "\n";
 		}
+		if ( bDebug_ ) cout << __LINE__ << "\n";
 		pChargeHigh->push_back(chargeSOI_high);
 		pChargeLow->push_back(chargeSOI_low);
 		pChargeSum->push_back(chargeSOI_sum);
 		idx++;
 	}
+	if ( bDebug_ ) cout << __LINE__ << "\n";
 
 	iEvent.put(move(pADC), std::string("ADC"));
 	iEvent.put(move(pnfC), std::string("nominalfC"));
