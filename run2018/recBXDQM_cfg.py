@@ -118,6 +118,8 @@ process.QWBXTask = DQMEDAnalyzer('QWZDC2018BXTask',
 		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
 		srcDid = cms.untracked.InputTag('zdcdigi', 'DetId'),
 		BX = cms.untracked.InputTag('QWInfo', 'BX'),
+		SOI = cms.untracked.int32(1),
+		BXShift = cms.untracked.int32(0),
 		)
 
 process.dqm = cms.Sequence(process.QWBXTask)
@@ -143,8 +145,8 @@ process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # path
 process.digiPath = cms.Path(
-    process.hltRND
-    * process.hcalDigis 
+#    process.hltRND
+    process.hcalDigis 
     * process.zdcdigi
     * process.QWInfo
     * process.QWBXTask

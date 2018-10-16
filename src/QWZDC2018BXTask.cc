@@ -53,7 +53,7 @@ QWZDC2018BXTask::QWZDC2018BXTask(edm::ParameterSet const& pset) :
 	srcfC_(pset.getUntrackedParameter<edm::InputTag>("srcfC")),
 	srcDid_(pset.getUntrackedParameter<edm::InputTag>("srcDid")),
 	SOI_(pset.getUntrackedParameter<int>("SOI", 4)),
-	BXShift_(pset.getUntrackedParameter<int>("SOI", 100)),
+	BXShift_(pset.getUntrackedParameter<int>("BXShift", 100)),
 	firstEvent_(true)
 {
 	consumes<double>(BX_);
