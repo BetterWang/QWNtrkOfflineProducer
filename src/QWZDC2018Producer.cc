@@ -95,6 +95,9 @@ QWZDC2018Producer::QWZDC2018Producer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("chargeHigh");
 	produces<std::vector<double> >("chargeLow");
 	produces<std::vector<double> >("chargeSum");
+
+	produces<std::vector<double> >("ratio5o4");
+	produces<std::vector<double> >("ratio6o5");
 //
 //	produces< double >("Sum");
 //	produces< double >("SumP");
@@ -126,6 +129,9 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	std::unique_ptr<std::vector<double> > pChargeLow( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pChargeSum( new std::vector<double> );
 
+	std::unique_ptr<std::vector<double> > pratio5o4( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pratio6o5( new std::vector<double> );
+
 	ESHandle<HcalDbService> conditions;
 	if ( !bHardCode_ )
 		iSetup.get<HcalDbRecord>().get(conditions);
@@ -135,8 +141,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	iEvent.getByLabel(Src_, digis);
 
 //	double adc[50][10] = {};
-//	double nom_fC[50][10] = {};
-
+//
 	int idx = 0;
 	for ( auto it = digis->begin(); it != digis->end(); it++ ) {
 		const QIE10DataFrame digi = static_cast<const QIE10DataFrame>(*it);
@@ -160,10 +165,10 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 		double chargeSOI_high = 0;
 		double chargeSOI_low = 0;
 		double chargeSOI_sum = 0;
+		double regular_fC[10] = {}; // hard coded 10TS maximum;
 		if ( bDebug_ ) cout << __LINE__ << "\n";
 		for ( int i = 0; i < digi.samples(); i++ ) {
 			if ( bDebug_ ) cout << __LINE__ << "\n";
-//			adc[idx][i] = digi[i].adc();
 			pADC->push_back( digi[i].adc() );
 			pCap->push_back(digi[i].capid());
 			if ( digi[i].adc() >= 255 ) {
@@ -171,8 +176,10 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 			} else {
 				poverflow->push_back(0.);
 			}
+
 			if ( bDebug_ ) cout << __LINE__ << " i = " << i << digi[i].adc() << "\n";
 			pnfC->push_back(QWAna::ZDC2018::QIE10_nominal_fC[ int( digi[i].adc() ) ]);
+
 			double charge = 0;
 			if ( bDebug_ ) cout << __LINE__ << "\n";
 			if ( bHardCode_ ) {
@@ -181,6 +188,7 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 				charge = cs[i] - pedestal_[did()][digi[i].capid()];
 			}
 			if ( bDebug_ ) cout << __LINE__ << "\n";
+			regular_fC[i] = charge;
 			pfC->push_back(charge);
 			if ( i == SOI_ ) {
 				chargeSOI_high = charge;
@@ -196,6 +204,12 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 		pChargeHigh->push_back(chargeSOI_high);
 		pChargeLow->push_back(chargeSOI_low);
 		pChargeSum->push_back(chargeSOI_sum);
+
+		if (regular_fC[4] != 0) pratio5o4->push_back( regular_fC[5] / regular_fC[4] );
+		else pratio5o4->push_back(-1.);
+		if (regular_fC[5] != 0) pratio6o5->push_back( regular_fC[6] / regular_fC[5] );
+		else pratio6o5->push_back(-1.);
+
 		idx++;
 	}
 	if ( bDebug_ ) cout << __LINE__ << "\n";
@@ -210,6 +224,8 @@ void QWZDC2018Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	iEvent.put(move(pChargeLow), std::string("chargeLow"));
 	iEvent.put(move(pChargeSum), std::string("chargeSum"));
 
+	iEvent.put(move(pratio5o4), std::string("ratio5o4"));
+	iEvent.put(move(pratio6o5), std::string("ratio6o5"));
 }
 
 
