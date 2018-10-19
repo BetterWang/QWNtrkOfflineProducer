@@ -2,25 +2,53 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from DQMServices.Core.DQMEDAnalyzer import DQMEDAnalyzer
 import os
+import FWCore.ParameterSet.VarParsing as VarParsing
 import sys
 
-runNumber = '323336'
-if len(sys.argv) > 2:
-	runNumber = sys.argv[2]
+options = VarParsing.VarParsing('analysis')
+
+# options.inputFiles are inherited from 'analysis'
+options.register('runNumber',
+		111,
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.int,
+		"Run number.")
+
+options.register('runInputDir',
+		'/eos/cms/store/express/Run2018D/ExpressPhysics/FEVT/Express-v1/000/',
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+		"Directory where the DQM files will appear. P5: /fff/BU0/output/lookarea or /fff/production_bu")
+
+options.register('source',
+		'PoolSource', # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+		"Source type. Can be either PoolSource, or Streamer")
+
+options.register('rawTag',
+		'rawDataCollector', # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+		"RAW inputtag. Can be either rawDataCollector, or rawDataRepacker")
+
+options.register('era',
+		'Run2_2018', # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+		"Era, does not matter now")
+
+options.parseArguments()
 
 #---------------
 # My definitions
 #---------------
 
-sourceTag = "PoolSource"         # for global runs
-rawTag    = cms.InputTag('rawDataCollector')
+rawTag    = cms.InputTag(options.rawTag)
 era       = eras.Run2_2018
 GT        = "101X_dataRun2_Prompt_v11"
-filedir = '/eos/cms/store/express/Run2018D/ExpressPhysics/FEVT/Express-v1/000/'+runNumber[:3]+'/'+runNumber[3:]+'/00000'
-infile    = cms.untracked.vstring()
-for f in reversed(os.listdir(filedir)):
-	if f[-5:] == '.root' :
-		infile.append('file:'+filedir+'/'+f)
+runNumber = str(options.runNumber)
+
 
 #-----------------------------------
 # Standard CMSSW Imports/Definitions
@@ -29,6 +57,33 @@ process = cms.Process('MyTree',era)
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = GT
+
+#-----------------------------------
+# Input source
+#-----------------------------------
+if options.rawTag=='PoolSource':
+    filedir = options.runInputDir+runNumber[:3]+'/'+runNumber[3:]+'/00000'
+    infile    = cms.untracked.vstring()
+    for f in reversed(os.listdir(filedir)):
+    	if f[-5:] == '.root' :
+    		infile.append('file:'+filedir+'/'+f)
+    process.source = cms.Source('PoolSource',
+        fileNames = infile
+        )
+else:
+    process.source = cms.Source("DQMStreamerReader",
+        SelectEvents = cms.untracked.vstring('*'),
+        delayMillis = cms.untracked.uint32(500),
+        deleteDatFiles = cms.untracked.bool(False),
+        endOfRunKills = cms.untracked.bool(False),
+        minEventsPerLumi = cms.untracked.int32(-1),
+        nextLumiTimeoutMillis = cms.untracked.int32(0),
+        runInputDir = cms.untracked.string(options.runInputDir),
+        runNumber = cms.untracked.uint32(options.runNumber),
+        scanOnce = cms.untracked.bool(True),
+        skipFirstLumis = cms.untracked.bool(False),
+        streamLabel = cms.untracked.string('streamDQM')
+    )
 
 #----------
 process.es_ascii = cms.ESSource(
@@ -63,10 +118,6 @@ process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(-1)
     )
 
-process.source = cms.Source(
-    sourceTag,
-    fileNames = infile
-    )
 #process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange('293765:264-293765:9999')
 
 #-----------------------------------------
