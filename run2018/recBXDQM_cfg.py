@@ -61,7 +61,7 @@ process.GlobalTag.globaltag = GT
 #-----------------------------------
 # Input source
 #-----------------------------------
-if options.rawTag=='PoolSource':
+if options.source=='PoolSource':
     filedir = options.runInputDir+runNumber[:3]+'/'+runNumber[3:]+'/00000'
     infile    = cms.untracked.vstring()
     for f in reversed(os.listdir(filedir)):
@@ -196,7 +196,7 @@ process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # path
 process.digiPath = cms.Path(
-#    process.hltRND
+    process.hltRND *
     process.hcalDigis 
     * process.zdcdigi
     * process.QWInfo
