@@ -15,13 +15,13 @@ options.register('runNumber',
 		"Run number.")
 
 options.register('runInputDir',
-		'/eos/cms/store/express/Run2018D/ExpressPhysics/FEVT/Express-v1/000/',
+		'/fff/production_bu',
 		VarParsing.VarParsing.multiplicity.singleton,
 		VarParsing.VarParsing.varType.string,
 		"Directory where the DQM files will appear. P5: /fff/BU0/output/lookarea or /fff/production_bu")
 
 options.register('source',
-		'PoolSource', # default value
+		'Streamer', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
 		VarParsing.VarParsing.varType.string,
 		"Source type. Can be either PoolSource, or Streamer")
@@ -39,7 +39,7 @@ options.register('era',
 		"Era, does not matter now")
 
 options.register('emap',
-		'real', # default value
+		'', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
 		VarParsing.VarParsing.varType.string,
 		"Emap used for ZDC. Can be 'mockup', 'real', or 'FCD'")
@@ -52,7 +52,7 @@ options.parseArguments()
 
 rawTag    = cms.InputTag(options.rawTag)
 era       = eras.Run2_2018
-GT        = "101X_dataRun2_Prompt_v11"
+GT        = "103X_dataRun2_HLT_v1"
 runNumber = str(options.runNumber)
 
 
@@ -61,6 +61,7 @@ runNumber = str(options.runNumber)
 #-----------------------------------
 process = cms.Process('MyTree',era)
 
+process.load('DQM.Integration.config.environment_cfi')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = GT
 
@@ -186,7 +187,7 @@ process.QWBXTask = DQMEDAnalyzer('QWZDC2018BXTask',
 		BXShift = cms.untracked.int32(0),
 		)
 
-process.dqm = cms.Sequence(process.QWBXTask * process.QWzdcQIE10Task)
+process.dqm = cms.Sequence(process.QWBXTask )
 #process.dqm = cms.Sequence(process.QWzdcQIE10Task)
 
 process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
@@ -194,7 +195,7 @@ process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
         dataTier = cms.untracked.string('DQMIO'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:step3_inDQM.root'),
+    fileName = cms.untracked.string('file:step3_inDQM_'+runNumber+'.root'),
     outputCommands = cms.untracked.vstring("keep *"),
     splitLevel = cms.untracked.int32(0)
 )
@@ -209,11 +210,12 @@ process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # path
 process.digiPath = cms.Path(
-#    process.hltRND *
+    process.hltRND *
     process.hcalDigis 
     * process.zdcdigi
     * process.QWInfo
     * process.QWBXTask
+    * process.QWzdcQIE10Task
 )
 
 process.output = cms.OutputModule(

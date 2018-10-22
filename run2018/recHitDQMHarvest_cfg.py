@@ -4,10 +4,15 @@
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: step4 --conditions auto:phase1_2018_realistic -s HARVESTING:validationHarvesting+dqmHarvesting --filetype DQM -n 2 --era Run2_2018_pp_on_AA --mc --filein file:step3_inDQM.root --fileout file:step4.root
 import FWCore.ParameterSet.Config as cms
-
+import sys
 from Configuration.StandardSequences.Eras import eras
 
 process = cms.Process('HARVESTING',eras.Run2_2018_pp_on_AA)
+
+if len(sys.argv) > 2:
+    input_name = 'file:step3_inDQM_'+sys.argv[2]+'.root'
+else:
+    input_name = 'file:step3_inDQM.root'
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -27,7 +32,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("DQMRootSource",
-    fileNames = cms.untracked.vstring('file:step3_inDQM.root')
+    fileNames = cms.untracked.vstring(input_name)
 )
 
 process.options = cms.untracked.PSet(
