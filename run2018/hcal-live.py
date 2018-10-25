@@ -210,7 +210,7 @@ process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # path
 process.digiPath = cms.Path(
-    process.hltRND *
+#    process.hltRND *
     process.hcalDigis 
     * process.zdcdigi
     * process.QWInfo
