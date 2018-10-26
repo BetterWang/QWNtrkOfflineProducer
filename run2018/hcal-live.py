@@ -51,7 +51,6 @@ options.parseArguments()
 #---------------
 
 rawTag    = cms.InputTag(options.rawTag)
-era       = eras.Run2_2018
 GT        = "103X_dataRun2_HLT_v1"
 runNumber = str(options.runNumber)
 
@@ -59,7 +58,7 @@ runNumber = str(options.runNumber)
 #-----------------------------------
 # Standard CMSSW Imports/Definitions
 #-----------------------------------
-process = cms.Process('MyTree',era)
+process = cms.Process('MyTree',eras.Run2_2018_pp_on_AA)
 
 process.load('DQM.Integration.config.environment_cfi')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
@@ -164,7 +163,7 @@ process.QWInfo = cms.EDProducer('QWEventInfoProducer')
 
 # ZDC info
 process.load('QWZDC2018Producer_cfi')
-process.zdcdigi.SOI = cms.untracked.int32(1)
+process.zdcdigi.SOI = cms.untracked.int32(4)
 
 
 # DQM step
