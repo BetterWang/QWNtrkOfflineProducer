@@ -17,7 +17,7 @@ options.register('runInputDir',
 		'/eos/cms/store/express/Run2018D/ExpressPhysics/FEVT/Express-v1/000/',
 		VarParsing.VarParsing.multiplicity.singleton,
 		VarParsing.VarParsing.varType.string,
-                "Directory where the RAW files will appear. lxplus: /eos/cms/store/t0streamer/Data/HIPhysicsMinimumBiasReducedFormat0/000/ or ...")
+                "Directory where the RAW files will appear. lxplus: /eos/cms/store/t0streamer/Data/HIPhysicsMinimumBiasReducedFormat0/ or ...")
 
 options.register('source',
 		'Streamer', # default value
@@ -71,7 +71,7 @@ if options.source=='PoolSource':
         fileNames = infile
         )
 else:
-    filedir = options.runInputDir+runNumber[:3]+'/'+runNumber[3:]+'/00000'
+    filedir = options.runInputDir+'000/'+runNumber[:3]+'/'+runNumber[3:]
     infile    = cms.untracked.vstring()
     for f in reversed(os.listdir(filedir)):
     	if f[-4:] == '.dat' :
@@ -187,4 +187,4 @@ process.output = cms.OutputModule(
 		fileName = cms.untracked.string('digisRAW_'+runNumber+'.root')
 		)
 
-process.outpath = cms.EndPath(process.output)
+#process.outpath = cms.EndPath(process.output)
