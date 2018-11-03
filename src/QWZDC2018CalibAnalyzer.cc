@@ -80,9 +80,7 @@ QWZDC2018CalibAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	iEvent.getByLabel(srcLow_, hChargeLow);
 	iEvent.getByLabel(srcSum_, hChargeSum);
 
-	int sz = hadc->size();
 
-	int NS_ = sz / hDid->size();
 	if ( firstEvent_ ) {
 		firstEvent_ = false;
 
@@ -98,7 +96,6 @@ QWZDC2018CalibAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 			}
 		}
 
-		std::cout << "\033[1;31mNsamples = " << NS_ << "\033[0m\n";
 	}
 
 	int idx = 0;
@@ -109,11 +106,11 @@ QWZDC2018CalibAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	double qHAD1M_low  = -1.;
 	double qHAD1M_sum  = -1.;
 	for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
-		if ( *it == HcalZDCDetId(HcalZDCDetId::HAD, true, 1) ) {
+		if ( uint32_t(*it) == HcalZDCDetId(HcalZDCDetId::HAD, true, 1) ) {
 			qHAD1P_high = (*hChargeHigh)[idx];
 			qHAD1P_low  = (*hChargeLow)[idx];
 			qHAD1P_sum  = (*hChargeSum)[idx];
-		} else if ( *it == HcalZDCDetId(HcalZDCDetId::HAD, false, 1) ) {
+		} else if ( uint32_t(*it) == HcalZDCDetId(HcalZDCDetId::HAD, false, 1) ) {
 			qHAD1M_high = (*hChargeHigh)[idx];
 			qHAD1M_low  = (*hChargeLow)[idx];
 			qHAD1M_sum  = (*hChargeSum)[idx];
@@ -122,7 +119,7 @@ QWZDC2018CalibAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	}
 
 	for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
-		if ( it->zside() == 1 ) {
+		if ( HcalZDCDetId(uint32_t(*it)).zside() == 1 ) {
 			hHigh[uint32_t(*it)]->Fill( (*hChargeHigh)[idx] / qHAD1P_high );
 			hLow [uint32_t(*it)]->Fill( (*hChargeLow )[idx] / qHAD1P_low  );
 			hSum [uint32_t(*it)]->Fill( (*hChargeSum )[idx] / qHAD1P_sum  );

@@ -13,11 +13,29 @@ options.register('runNumber',
 		VarParsing.VarParsing.varType.int,
 		"Run number.")
 
+options.register('skipEvents',
+		0,
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.int,
+		"Skip first N events.")
+
+#options.register('maxEvents',
+#		-1,
+#		VarParsing.VarParsing.multiplicity.singleton,
+#		VarParsing.VarParsing.varType.int,
+#		"Number of Events to run.")
+
 options.register('runInputDir',
 		'/eos/cms/store/express/Run2018D/ExpressPhysics/FEVT/Express-v1/000/',
 		VarParsing.VarParsing.multiplicity.singleton,
 		VarParsing.VarParsing.varType.string,
                 "Directory where the RAW files will appear. lxplus: /eos/cms/store/t0streamer/Data/HIPhysicsMinimumBiasReducedFormat0/ or ...")
+
+options.register('outputTag',
+		'',
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+                "Output file name tag.")
 
 options.register('source',
 		'Streamer', # default value
@@ -29,8 +47,19 @@ options.register('rawTag',
 		'rawDataRepacker', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
 		VarParsing.VarParsing.varType.string,
-		"RAW input tag. Can be either rawDataCollector, or rawDataRepacker")
+		"RAW input tag. Can be either rawDataCollector, or rawDataRepacker, or rawDataReducedFormat, or virginRawDataRepacker")
 
+options.register('normed',
+		False, # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.bool,
+		"Normed.")
+
+options.register('bTree',
+		False, # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.bool,
+		"Generate TTree.")
 
 options.register('emap',
 		'', # default value
@@ -68,7 +97,15 @@ if options.source=='PoolSource':
     	if f[-5:] == '.root' :
     		infile.append('file:'+filedir+'/'+f)
     process.source = cms.Source('PoolSource',
-        fileNames = infile
+        fileNames = infile,
+	skipEvents=cms.untracked.uint32(options.skipEvents)
+        )
+if options.source=='HcalTBSource':
+    infile    = 'file:'+options.runInputDir+'/run'+runNumber+'/USC_'+runNumber+'.root'
+    process.source = cms.Source(
+        'HcalTBSource',
+        fileNames = cms.untracked.vstring(infile),
+	skipEvents=cms.untracked.uint32(options.skipEvents)
         )
 else:
     filedir = options.runInputDir+'000/'+runNumber[:3]+'/'+runNumber[3:]
@@ -77,13 +114,15 @@ else:
     	if f[-4:] == '.dat' :
     		infile.append('file:'+filedir+'/'+f)
     process.source = cms.Source('NewEventStreamFileReader',
-        fileNames = infile
+        fileNames = infile,
+	skipEvents=cms.untracked.uint32(options.skipEvents)
         )
 
 #----------
 _emap = {
     'mockup': "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ZDCRPD_mockup.txt",
     'real'  : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data.txt",
+    'ext'   : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ext.txt",
     'FCD'   : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_FCD.txt",
 }
 
@@ -118,7 +157,7 @@ process.options = cms.untracked.PSet(
 # Files to process
 #-----------------
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(options.maxEvents)
     )
 
 #process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange('293765:264-293765:9999')
@@ -162,6 +201,8 @@ process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcHigh = cms.untracked.InputTag('zdcdigi', 'chargeHigh'),
 		srcLow = cms.untracked.InputTag('zdcdigi', 'chargeLow'),
 		srcSum = cms.untracked.InputTag('zdcdigi', 'chargeSum'),
+		Norm = cms.untracked.bool(options.normed),
+		bTree = cms.untracked.bool(options.bTree)
 		)
 
 process.digiPath = cms.Path(
@@ -171,7 +212,7 @@ process.digiPath = cms.Path(
 )
 
 process.TFileService = cms.Service("TFileService",
-		fileName = cms.string('zdc_'+runNumber+'.root')
+		fileName = cms.string('zdc_'+runNumber+options.outputTag+'.root')
 		)
 
 process.output = cms.OutputModule(

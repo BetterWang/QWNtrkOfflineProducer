@@ -61,3 +61,13 @@
 6. During TS3, FCD will be out, so no extra ZDC HAD channels will be read out during HI data taking.
 
 
+## P5 runs
+1. 325769 local Pedestal run with ZDC HV 1500V, RPD HV 650V.
+2. 325774 local Pedestal run with ZDC HV 0V, RPD HV 0V.
+3. 325792 local Pedestal run with ZDC HV 1500V, RPD HV 750V.
+4. 325868 global run with ZDC HV 1500V, RPD HV 750V.
+5. 325897 local Pedestal run with ZDC HV 1500V, RPD HV 750V. After tunnel work Saturday.
+6. 325906 local Pedestal run with ZDC HV 1500V, RPD HV 750V. After tunnel work Saturday. Taking off LV control limo connector for P side.
+7. 325915 local Pedestal run with ZDC HV 0V, RPD HV 0V. After tunnel work Saturday. P side HV is disconnected.
+8. 325921 local Pedestal run with ZDC HV 0V, RPD HV 0V. After tunnel work Saturday. P side HV is connected.
+

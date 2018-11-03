@@ -7,6 +7,8 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/HcalDetId/interface/HcalZDCDetId.h"
 #include "TH1D.h"
+#include "TH2D.h"
+#include "TTree.h"
 #include <iostream>
 
 class QWZDC2018Analyzer : public edm::EDAnalyzer {
@@ -26,14 +28,21 @@ private:
 	edm::InputTag   srcSum_;
 	bool		bNorm_;
 	bool		firstEvent_;
-	std::map<uint32_t, TH1D*>	hADC;
-	std::map<uint32_t, TH1D*>	hfC;
+	bool		bTree_;
+	std::map<uint32_t, TH2D*>	hADC;
+	std::map<uint32_t, TH2D*>	hfC;
+
 	std::map<uint32_t, TH1D*>	hHigh;
 	std::map<uint32_t, TH1D*>	hLow;
 	std::map<uint32_t, TH1D*>	hSum;
 
 	std::map<uint32_t, std::string> cname;
 	unsigned int	Nevent_;
+
+	TTree*		trADC_;
+	TTree*		trfC_;
+	std::map<uint32_t, double*>	mapADC_;
+	std::map<uint32_t, double*>	mapfC_;
 };
 
 QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
@@ -44,7 +53,8 @@ QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
 	srcLow_(pset.getUntrackedParameter<edm::InputTag>("srcLow")),
 	srcSum_(pset.getUntrackedParameter<edm::InputTag>("srcSum")),
 	bNorm_(pset.getUntrackedParameter<bool>("Norm", false)),
-	firstEvent_(true)
+	firstEvent_(true),
+	bTree_(pset.getUntrackedParameter<bool>("bTree", false))
 {
 	consumes<std::vector<double> >(srcADC_);
 	consumes<std::vector<double> >(srcfC_);
@@ -74,6 +84,8 @@ QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
 	}
 
 	Nevent_ = 0;
+	trADC_ = nullptr;
+	trfC_ = nullptr;
 }
 
 void
@@ -108,11 +120,31 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 		auto fSum  = fs->mkdir("SumGain");
 		for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
 			if ( cname.find( (uint32_t)(*it) ) != cname.end() ) {
-				hADC[uint32_t(*it)] = fADC.make<TH1D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";TS;ADC").c_str(), 10, 0, 10);
-				hfC[uint32_t(*it)]  = ffC.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";TS;fC").c_str(), 10, 0, 10);
-				hHigh[uint32_t(*it)]=fHigh.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 1100, -100, 1000);
-				hLow[uint32_t(*it)] = fLow.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 1100, -100, 1000);
-				hSum[uint32_t(*it)] = fSum.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 1100, -100, 1000);
+				hADC[uint32_t(*it)] = fADC.make<TH2D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";TS;ADC").c_str(), 10, 0, 10, 256, 0, 256);
+				hfC[uint32_t(*it)]  = ffC. make<TH2D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";TS;fC").c_str(), 10, 0, 10, 110, -100, 1000);
+				hHigh[uint32_t(*it)]=fHigh.make<TH1D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 110, -100, 1000);
+				hLow[uint32_t(*it)] = fLow.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 110, -100, 1000);
+				hSum[uint32_t(*it)] = fSum.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 110, -100, 1000);
+			}
+		}
+
+		if ( bTree_ ) {
+			trADC_ = fADC.make<TTree>("trV", "trV");
+			trfC_  = ffC .make<TTree>("trV", "trV");
+
+			for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
+				if ( cname.find( (uint32_t)(*it) ) != cname.end() ) {
+					mapADC_[(uint32_t)(*it)] = new double[10];
+					mapfC_ [(uint32_t)(*it)] = new double[10];
+
+					trADC_->Branch(cname[uint32_t(*it)].c_str(), mapADC_[(uint32_t)(*it)], (cname[uint32_t(*it)]+"[10]/D").c_str() );
+					trfC_ ->Branch(cname[uint32_t(*it)].c_str(), mapfC_ [(uint32_t)(*it)], (cname[uint32_t(*it)]+"[10]/D").c_str() );
+
+					for ( int i = 0; i < 10; i++ ) {
+						mapADC_[(uint32_t)(*it)][i] = 0.;
+						mapfC_ [(uint32_t)(*it)][i] = 0.;
+					}
+				}
 			}
 		}
 
@@ -136,6 +168,19 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 		idx++;
 	}
 
+	if ( bTree_ ) {
+		idx = 0;
+		for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
+			for ( int ts = 0; ts < NS_; ts++ ) {
+				mapADC_[(uint32_t)(*it)][ts] = (*hadc)[idx];
+				mapfC_ [(uint32_t)(*it)][ts] = (*hfc) [idx];
+				idx++;
+			}
+		}
+		trADC_->Fill();
+		trfC_ ->Fill();
+	}
+
 	Nevent_++;
 	return;
 }
@@ -143,10 +188,20 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 void
 QWZDC2018Analyzer::endJob() {
 	if ( bNorm_ ) {
+		std::cout << "\033[1;31mNormalize of " << Nevent_ << " events." << "\033[0m\n";
 		for ( auto it = hfC.begin(); it != hfC.end(); it++ ) {
 			it->second->Scale(1./Nevent_);
 		}
 		for ( auto it = hADC.begin(); it != hADC.end(); it++ ) {
+			it->second->Scale(1./Nevent_);
+		}
+		for ( auto it = hHigh.begin(); it != hHigh.end(); it++ ) {
+			it->second->Scale(1./Nevent_);
+		}
+		for ( auto it = hLow.begin(); it != hLow.end(); it++ ) {
+			it->second->Scale(1./Nevent_);
+		}
+		for ( auto it = hSum.begin(); it != hSum.end(); it++ ) {
 			it->second->Scale(1./Nevent_);
 		}
 	}
