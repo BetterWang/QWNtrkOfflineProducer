@@ -95,6 +95,7 @@ else:
 _emap = {
     'mockup': "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ZDCRPD_mockup.txt",
     'real'  : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data.txt",
+    'ext'   : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ext.txt",
     'FCD'   : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_FCD.txt",
 }
 
@@ -209,7 +210,7 @@ process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # path
 process.digiPath = cms.Path(
-#    process.hltRND *
+    process.hltRND *
     process.hcalDigis 
     * process.zdcdigi
     * process.QWInfo

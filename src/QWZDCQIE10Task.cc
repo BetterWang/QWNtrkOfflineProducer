@@ -292,7 +292,7 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		for ( auto it = hDid->begin() ; it != hDid->end(); it++ ) {
 			if ( _cADC_EChannel.find(uint32_t(*it)) == _cADC_EChannel.end() ) continue;
 			for ( int ts = 0; ts < NS_; ts++ ) {
-				_cADC_EChannel[uint32_t(*it)]->Fill(ts, (*hadc)[idx]);
+				_cADC_EChannel[uint32_t(*it)]->Fill((*hadc)[idx]);
 				_cADC_vs_TS_EChannel[uint32_t(*it)]->Fill(ts, (*hadc)[idx]);
 				_cfC_vs_TS_EChannel[uint32_t(*it)]->Fill(ts, (*hadc)[idx]);
 				idx++;

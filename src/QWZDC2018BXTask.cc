@@ -68,7 +68,7 @@ void QWZDC2018BXTask::bookHistograms(DQMStore::IBooker &ib,
 
 	ib.cd();
 	ib.setCurrentFolder("Hcal/ZDC_BX_timein");
-	hc = ib.book1D("fC_vs_BX", "fC_vs_BX", 4000, 0, 4000);
+	hc = ib.book1D("fC_vs_BX", "fC_vs_BX", 4000, -100, 3900);
 	hc->setAxisTitle("BX", 1);
 	hc->setAxisTitle("sum fC", 2);
 
@@ -79,42 +79,42 @@ void QWZDC2018BXTask::bookHistograms(DQMStore::IBooker &ib,
 		// EM Pos
 		HcalZDCDetId did(HcalZDCDetId::EM, true, channel);
 		histoname = std::string("hZDCP_EM") + std::to_string(channel);
-		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, -100, 3900);
 		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
 		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
 
 		// EM Minus
 		did = HcalZDCDetId(HcalZDCDetId::EM, false, channel);
 		histoname = std::string("hZDCM_EM") + std::to_string(channel);
-		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, -100, 3900);
 		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
 		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
 
 		// HAD Pos
 		did = HcalZDCDetId(HcalZDCDetId::HAD, true, channel);
 		histoname = std::string("hZDCP_HAD") + std::to_string(channel);
-		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, -100, 3900);
 		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
 		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
 
 		// HAD Minus
 		did = HcalZDCDetId(HcalZDCDetId::HAD, false, channel);
 		histoname = std::string("hZDCM_HAD") + std::to_string(channel);
-		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, -100, 3900);
 		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
 		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
 
 		// RPD Pos
 		did = HcalZDCDetId(HcalZDCDetId::RPD, true, channel+1);
 		histoname = std::string("hZDCP_RPD") + std::to_string(channel);
-		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, -100, 3900);
 		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
 		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
 
 		// RPD Minus
 		did = HcalZDCDetId(HcalZDCDetId::RPD, false, channel+1);
 		histoname = std::string("hZDCM_RPD") + std::to_string(channel);
-		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, 0, 4000);
+		_fC_BX_perChannel[did()] = ib.book1D( histoname, histoname, 4000, -100, 3900);
 		_fC_BX_perChannel[did()]->setAxisTitle("BX", 1);
 		_fC_BX_perChannel[did()]->setAxisTitle("sum fC", 2);
 	}

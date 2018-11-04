@@ -37,6 +37,12 @@ options.register('outputTag',
 		VarParsing.VarParsing.varType.string,
                 "Output file name tag.")
 
+options.register('hlt',
+		'',
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+                "HLT path")
+
 options.register('source',
 		'Streamer', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
@@ -92,6 +98,7 @@ process.GlobalTag.globaltag = GT
 #-----------------------------------
 if options.source=='PoolSource':
     filedir = options.runInputDir+runNumber[:3]+'/'+runNumber[3:]+'/00000'
+    print filedir
     infile    = cms.untracked.vstring()
     for f in reversed(os.listdir(filedir)):
     	if f[-5:] == '.root' :
@@ -100,7 +107,7 @@ if options.source=='PoolSource':
         fileNames = infile,
 	skipEvents=cms.untracked.uint32(options.skipEvents)
         )
-if options.source=='HcalTBSource':
+elif options.source=='HcalTBSource':
     infile    = 'file:'+options.runInputDir+'/run'+runNumber+'/USC_'+runNumber+'.root'
     process.source = cms.Source(
         'HcalTBSource',
@@ -168,12 +175,12 @@ process.maxEvents = cms.untracked.PSet(
 
 import HLTrigger.HLTfilters.hltHighLevel_cfi
 
-process.hltRND = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
-process.hltRND.HLTPaths = [
-		"HLT_Random_v*",
+process.hltSelect = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
+process.hltSelect.HLTPaths = [
+		options.hlt+"*",
 		]
-process.hltRND.andOr = cms.bool(True)
-process.hltRND.throw = cms.bool(False)
+process.hltSelect.andOr = cms.bool(True)
+process.hltSelect.throw = cms.bool(False)
 
 
 #-----------------------------------------
@@ -206,6 +213,7 @@ process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		)
 
 process.digiPath = cms.Path(
+    process.hltSelect *
     process.hcalDigis *
     process.zdcdigi *
     process.zdcana
