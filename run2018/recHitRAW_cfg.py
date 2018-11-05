@@ -101,12 +101,19 @@ if options.source=='PoolSource':
         fileNames = infile,
 	skipEvents=cms.untracked.uint32(options.skipEvents)
         )
+elif options.source=='B904':
+    infile = "file:"+options.runInputDir+"/run"+runNumber+"/B904_Integration_"+runNumber+'.root'
+    print infile
+    process.source = cms.Source('HcalTBSource',
+        fileNames = cms.untracked.vstring(infile),
+        skipEvents=cms.untracked.uint32(options.skipEvents)
+        )
 elif options.source=='HcalTBSource':
     infile    = 'file:'+options.runInputDir+'/run'+runNumber+'/USC_'+runNumber+'.root'
     process.source = cms.Source(
         'HcalTBSource',
         fileNames = cms.untracked.vstring(infile),
-	skipEvents=cms.untracked.uint32(options.skipEvents)
+        skipEvents=cms.untracked.uint32(options.skipEvents)
         )
 else:
     filedir = options.runInputDir+'000/'+runNumber[:3]+'/'+runNumber[3:]
@@ -121,10 +128,11 @@ else:
 
 #----------
 _emap = {
-    'mockup': "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ZDCRPD_mockup.txt",
-    'real'  : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data.txt",
-    'ext'   : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ext.txt",
-    'FCD'   : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_FCD.txt",
+    'mockup'     : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ZDCRPD_mockup.txt",
+    'real'       : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data.txt",
+    'ext'        : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ext.txt",
+    'FCD'        : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_FCD.txt",
+    '904ext12'   : "QWAna/QWNtrkOfflineProducer/run2018/ZDC904_emap_ext12.txt",
 }
 
 
