@@ -210,6 +210,7 @@ process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
 		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
 		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
+		srcCapId = cms.untracked.InputTag('zdcdigi', 'CapId'),
 		srcHigh = cms.untracked.InputTag('zdcdigi', 'chargeHigh'),
 		srcLow = cms.untracked.InputTag('zdcdigi', 'chargeLow'),
 		srcSum = cms.untracked.InputTag('zdcdigi', 'chargeSum'),
@@ -224,10 +225,17 @@ process.zdcBX = cms.EDAnalyzer('QWZDC2018BXAnalyzer',
 		SOI = cms.untracked.int32(4)
 		)
 
+process.zdcADCFilter = cms.EDFilter('QWZDC2018ADCFilter',
+		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
+		srcCapId = cms.untracked.InputTag('zdcdigi', 'CapId'),
+		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
+		)
+
 process.digiPath = cms.Path(
     process.hltSelect *
     process.digis *
     process.zdcdigi *
+    process.zdcADCFilter *
     process.QWInfo *
     process.zdcBX *
     process.zdcana
