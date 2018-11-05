@@ -215,7 +215,7 @@ process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
     splitLevel = cms.untracked.int32(0)
 )
 
-process.dqmoffline_step = cms.EndPath(process.dqm)
+#process.dqmoffline_step = cms.EndPath(process.dqm)
 process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # file
