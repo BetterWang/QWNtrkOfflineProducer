@@ -196,7 +196,13 @@ process.QWBXTask = DQMEDAnalyzer('QWZDC2018BXTask',
 		BXShift = cms.untracked.int32(0),
 		)
 
-process.dqm = cms.Sequence(process.QWBXTask )
+process.zdcADCFilter = cms.EDFilter('QWZDC2018ADCFilter',
+		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
+		srcCapId = cms.untracked.InputTag('zdcdigi', 'CapId'),
+		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
+		)
+
+#process.dqm = cms.Sequence(process.QWBXTask )
 #process.dqm = cms.Sequence(process.QWzdcQIE10Task)
 
 process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
@@ -222,6 +228,7 @@ process.digiPath = cms.Path(
     process.hltSelect *
     process.digis
     * process.zdcdigi
+    * process.zdcADCFilter
     * process.QWInfo
     * process.QWBXTask
     * process.QWzdcQIE10Task
