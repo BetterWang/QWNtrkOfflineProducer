@@ -70,4 +70,6 @@
 6. 325906 local Pedestal run with ZDC HV 1500V, RPD HV 750V. After tunnel work Saturday. Taking off LV control limo connector for P side.
 7. 325915 local Pedestal run with ZDC HV 0V, RPD HV 0V. After tunnel work Saturday. P side HV is disconnected.
 8. 325921 local Pedestal run with ZDC HV 0V, RPD HV 0V. After tunnel work Saturday. P side HV is connected.
+9. 325988 glbal run with ZDC HV 1500V, RPD HV 600V, initial time in by Dick. Before this run, the RPD HV is 750V, not timed in.
+10. 326000 glbal run with ZDC HV 1500V, RPD HV 600V, pp VdM.
 

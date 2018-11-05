@@ -19,12 +19,6 @@ options.register('skipEvents',
 		VarParsing.VarParsing.varType.int,
 		"Skip first N events.")
 
-#options.register('maxEvents',
-#		-1,
-#		VarParsing.VarParsing.multiplicity.singleton,
-#		VarParsing.VarParsing.varType.int,
-#		"Number of Events to run.")
-
 options.register('runInputDir',
 		'/eos/cms/store/express/Run2018D/ExpressPhysics/FEVT/Express-v1/000/',
 		VarParsing.VarParsing.multiplicity.singleton,
@@ -175,13 +169,15 @@ process.maxEvents = cms.untracked.PSet(
 
 import HLTrigger.HLTfilters.hltHighLevel_cfi
 
-process.hltSelect = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
-process.hltSelect.HLTPaths = [
-		options.hlt+"*",
-		]
-process.hltSelect.andOr = cms.bool(True)
-process.hltSelect.throw = cms.bool(False)
-
+if options.hlt!='':
+    process.hltSelect = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
+    process.hltSelect.HLTPaths = [
+        options.hlt+"*",
+    ]
+    process.hltSelect.andOr = cms.bool(True)
+    process.hltSelect.throw = cms.bool(False)
+else:
+    process.hltSelect = cms.Sequence()
 
 #-----------------------------------------
 # CMSSW/Hcal Related Module import
@@ -193,8 +189,17 @@ process.load("EventFilter.HcalRawToDigi.HcalRawToDigi_cfi")
 #set digi and analyzer
 process.hcalDigis.InputLabel = rawTag
 
+if options.rawTag == '':
+    process.digis = cms.Sequence()
+else:
+    process.digis = cms.Sequence(process.hcalDigis)
+
 # event info
 process.QWInfo = cms.EDProducer('QWEventInfoProducer')
+process.QWBXTree = cms.EDAnalyzer('QWDTagTreeMaker',
+		vTag = cms.untracked.VInputTag( cms.untracked.InputTag('QWInfo', 'BX') )
+	)
+process.BXTree = cms.Sequence( process.QWInfo * process.QWBXTree )
 
 # ZDC info
 process.load('QWZDC2018Producer_cfi')
@@ -212,12 +217,24 @@ process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		bTree = cms.untracked.bool(options.bTree)
 		)
 
+process.zdcBX = cms.EDAnalyzer('QWZDC2018BXAnalyzer',
+		BX = cms.untracked.InputTag('QWInfo', 'BX'),
+		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
+		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
+		SOI = cms.untracked.int32(4)
+		)
+
 process.digiPath = cms.Path(
     process.hltSelect *
-    process.hcalDigis *
+    process.digis *
     process.zdcdigi *
+    process.QWInfo *
+    process.zdcBX *
     process.zdcana
 )
+
+if options.bTree:
+	process.digiPath += process.BXTree
 
 process.TFileService = cms.Service("TFileService",
 		fileName = cms.string('zdc_'+runNumber+options.outputTag+'.root')

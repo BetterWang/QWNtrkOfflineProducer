@@ -20,6 +20,12 @@ options.register('runInputDir',
 		VarParsing.VarParsing.varType.string,
 		"Directory where the DQM files will appear. P5: /fff/BU0/output/lookarea or /fff/production_bu")
 
+options.register('hlt',
+		'',
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+                "HLT path")
+
 options.register('source',
 		'Streamer', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
@@ -140,13 +146,12 @@ process.maxEvents = cms.untracked.PSet(
 
 import HLTrigger.HLTfilters.hltHighLevel_cfi
 
-process.hltRND = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
-process.hltRND.HLTPaths = [
-		"HLT_Random_v*",
+process.hltSelect = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
+process.hltSelect.HLTPaths = [
+		options.hlt+"*",
 		]
-process.hltRND.andOr = cms.bool(True)
-process.hltRND.throw = cms.bool(False)
-
+process.hltSelect.andOr = cms.bool(True)
+process.hltSelect.throw = cms.bool(False)
 
 #-----------------------------------------
 # CMSSW/Hcal Related Module import
@@ -158,6 +163,10 @@ process.load("EventFilter.HcalRawToDigi.HcalRawToDigi_cfi")
 #set digi and analyzer
 process.hcalDigis.InputLabel = rawTag
 
+if options.rawTag == '':
+    process.digis = cms.Sequence()
+else:
+    process.digis = cms.Sequence(process.hcalDigis)
 
 # event info
 process.QWInfo = cms.EDProducer('QWEventInfoProducer')
@@ -210,8 +219,8 @@ process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # path
 process.digiPath = cms.Path(
-    process.hltRND *
-    process.hcalDigis 
+    process.hltSelect *
+    process.digis
     * process.zdcdigi
     * process.QWInfo
     * process.QWBXTask
