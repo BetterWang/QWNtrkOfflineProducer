@@ -90,9 +90,9 @@ QWZDC2018CalibAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		auto fSum  = fs->mkdir("SumGain");
 		for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
 			if ( cname.find( (uint32_t)(*it) ) != cname.end() ) {
-				hHigh[uint32_t(*it)]=fHigh.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";ratio;Count").c_str(), 1000, 0., 1.);
-				hLow[uint32_t(*it)] = fLow.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";ratio;Count").c_str(), 1000, 0., 1.);
-				hSum[uint32_t(*it)] = fSum.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";ratio;Count").c_str(), 1000, 0., 1.);
+				hHigh[uint32_t(*it)]=fHigh.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";ratio;Count").c_str(), 1000, 0., 10.);
+				hLow[uint32_t(*it)] = fLow.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";ratio;Count").c_str(), 1000, 0., 10.);
+				hSum[uint32_t(*it)] = fSum.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";ratio;Count").c_str(), 1000, 0., 10.);
 			}
 		}
 
@@ -118,6 +118,7 @@ QWZDC2018CalibAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		idx++;
 	}
 
+	idx = 0;
 	for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
 		if ( HcalZDCDetId(uint32_t(*it)).zside() == 1 ) {
 			hHigh[uint32_t(*it)]->Fill( (*hChargeHigh)[idx] / qHAD1P_high );
