@@ -98,15 +98,15 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_vs_TS_EChannel[did()]->setAxisTitle("sum fC", 2);
 
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_HighGain_perChannel");
-		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_LowGain_perChannel");
-		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_SumGain_perChannel");
-		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
 
@@ -127,15 +127,15 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_vs_TS_EChannel[did()]->setAxisTitle("sum fC", 2);
 
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_HighGain_perChannel");
-		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_LowGain_perChannel");
-		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_SumGain_perChannel");
-		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
 
@@ -156,15 +156,15 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_vs_TS_EChannel[did()]->setAxisTitle("sum fC", 2);
 
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_HighGain_perChannel");
-		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_LowGain_perChannel");
-		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_SumGain_perChannel");
-		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
 
@@ -185,15 +185,15 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_vs_TS_EChannel[did()]->setAxisTitle("sum fC", 2);
 
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_HighGain_perChannel");
-		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_LowGain_perChannel");
-		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_SumGain_perChannel");
-		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
 
@@ -214,15 +214,15 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_vs_TS_EChannel[did()]->setAxisTitle("sum fC", 2);
 
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_HighGain_perChannel");
-		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_LowGain_perChannel");
-		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_SumGain_perChannel");
-		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
 
@@ -243,15 +243,15 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_vs_TS_EChannel[did()]->setAxisTitle("sum fC", 2);
 
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_HighGain_perChannel");
-		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_HighGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_HighGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_LowGain_perChannel");
-		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_LowGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_LowGain_EChannel[did()]->setAxisTitle("Count", 2);
 		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/fC_SumGain_perChannel");
-		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 350000);
+		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
 	}
