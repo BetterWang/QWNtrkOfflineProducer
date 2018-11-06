@@ -47,6 +47,7 @@ class QWZDCQIE10Task : public DQMEDAnalyzer
 
 		std::map<uint32_t,MonitorElement*>   _cADC_EChannel;
 		std::map<uint32_t,MonitorElement*>   _cADC_vs_TS_EChannel;
+		std::map<uint32_t,MonitorElement*>   _cADC_vs_TS_1D;
 		std::map<uint32_t,MonitorElement*>   _cfC_vs_TS_EChannel;
 
 		std::map<uint32_t,MonitorElement*>   _cfC_HighGain_EChannel;
@@ -109,6 +110,10 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
+		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/ADC_vs_TS_perChannel1D");
+		_cADC_vs_TS_1D[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 10, 0, 10);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("TS", 1);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("Sum ADC", 2);
 
 		// EM Minus
 		did = HcalZDCDetId(HcalZDCDetId::EM, false, channel);
@@ -138,6 +143,10 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
+		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/ADC_vs_TS_perChannel1D");
+		_cADC_vs_TS_1D[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 10, 0, 10);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("TS", 1);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("Sum ADC", 2);
 
 		// HAD Pos
 		did = HcalZDCDetId(HcalZDCDetId::HAD, true, channel);
@@ -167,6 +176,10 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
+		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/ADC_vs_TS_perChannel1D");
+		_cADC_vs_TS_1D[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 10, 0, 10);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("TS", 1);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("Sum ADC", 2);
 
 		// HAD Minus
 		did = HcalZDCDetId(HcalZDCDetId::HAD, false, channel);
@@ -196,6 +209,10 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
+		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/ADC_vs_TS_perChannel1D");
+		_cADC_vs_TS_1D[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 10, 0, 10);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("TS", 1);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("Sum ADC", 2);
 
 		// RPD Pos
 		did = HcalZDCDetId(HcalZDCDetId::RPD, true, channel+1);
@@ -225,6 +242,10 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
+		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/ADC_vs_TS_perChannel1D");
+		_cADC_vs_TS_1D[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 10, 0, 10);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("TS", 1);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("Sum ADC", 2);
 
 		// RPD Minus
 		did = HcalZDCDetId(HcalZDCDetId::RPD, false, channel+1);
@@ -254,6 +275,10 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 		_cfC_SumGain_EChannel[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 3500, 0, 35000);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("fC", 1);
 		_cfC_SumGain_EChannel[did()]->setAxisTitle("Count", 2);
+		ib.setCurrentFolder("Hcal/QWZDCQIE10Task/ADC_vs_TS_perChannel1D");
+		_cADC_vs_TS_1D[did()] = ib.book1D( histoname.c_str(), histoname.c_str(), 10, 0, 10);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("TS", 1);
+		_cADC_vs_TS_1D[did()]->setAxisTitle("Sum ADC", 2);
 	}
 
 }
@@ -294,6 +319,7 @@ void QWZDCQIE10Task::bookHistograms(DQMStore::IBooker &ib,
 			for ( int ts = 0; ts < NS_; ts++ ) {
 				_cADC_EChannel[uint32_t(*it)]->Fill((*hadc)[idx]);
 				_cADC_vs_TS_EChannel[uint32_t(*it)]->Fill(ts, (*hadc)[idx]);
+				_cADC_vs_TS_1D[uint32_t(*it)]->Fill(ts, (*hadc)[idx]);
 				_cfC_vs_TS_EChannel[uint32_t(*it)]->Fill(ts, (*hadc)[idx]);
 				idx++;
 			}
