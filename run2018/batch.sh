@@ -15,4 +15,8 @@
 #cmsRun recHitRAW_cfg.py runNumber=326000 runInputDir=/eos/cms/store/express/HIRun2018/HIExpressPhysics/FEVT/Express-v1/000/ source=PoolSource rawTag='' outputTag=_normedRandomTree hlt=HLT_HIRandom_v emap=ext normed=True bTree=True
 #cmsRun recHitRAW_cfg.py runNumber=325994 runInputDir=/eos/cms/store/express/HIRun2018/HIExpressPhysics/FEVT/Express-v1/000/ source=PoolSource rawTag='' outputTag=_normedRandomTree hlt=HLT_HIRandom_v emap=ext normed=True bTree=True
 #cmsRun recHitRAW_cfg.py runNumber=324980 runInputDir=/eos/cms/store/data/Run2018D/ZeroBias/RAW/v1/000/ source=PoolSource rawTag='rawDataCollector' outputTag=_normedRandomTree hlt=HLT_Random_v emap=ext normed=True
-cmsRun recHitRAW_cfg.py runNumber=325774 runInputDir=/eos/cms/store/group/dpg_hcal/comm_hcal/USC source=HcalTBSource rawTag=source outputTag=_normed emap=ext normed=True
+#cmsRun recHitRAW_cfg.py runNumber=325774 runInputDir=/eos/cms/store/group/dpg_hcal/comm_hcal/USC source=HcalTBSource rawTag=source outputTag=_normed emap=ext normed=True
+#cmsRun recHitRAW_cfg.py runNumber=326151 runInputDir=/eos/cms/store/express/HIRun2018/ExpressCosmics/FEVT/Express-v1/000/ source=PoolSource rawTag=rawDataCollector outputTag=_normedRandom emap=ext normed=True
+#cmsRun recHitRAW_cfg.py runNumber=326189 runInputDir=/eos/cms/store/express/HIRun2018/HIExpressPhysics/FEVT/Express-v1/000/ source=PoolSource rawTag='' outputTag=_normedRandom hlt=HLT_HIRandom_v normed=True
+#cmsRun recHitRAW_cfg.py runNumber=326175 runInputDir=/eos/cms/store/express/HIRun2018/HIExpressPhysics/FEVT/Express-v1/000/ source=PoolSource rawTag='' outputTag=_normedZB hlt=HLT_HIZeroBias_v emap=ext normed=True
+cmsRun recHitRAW_cfg.py runNumber=326175 runInputDir=/eos/cms/store/hidata/HIRun2018/HIForward/RAW/v1/000/ source=PoolSource rawTag='rawDataRepacker' outputTag=_normedZB_calib hlt=HLT_HIZeroBias_v emap=reduced normed=True

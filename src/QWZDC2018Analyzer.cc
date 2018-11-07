@@ -127,10 +127,10 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 		for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
 			if ( cname.find( (uint32_t)(*it) ) != cname.end() ) {
 				hADC[uint32_t(*it)] = fADC.make<TH2D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";TS;ADC").c_str(), 10, 0, 10, 256, 0, 256);
-				hfC[uint32_t(*it)]  = ffC. make<TH2D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";TS;fC").c_str(), 10, 0, 10, 110, -100, 1000);
-				hHigh[uint32_t(*it)]=fHigh.make<TH1D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 110, -100, 1000);
-				hLow[uint32_t(*it)] = fLow.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 110, -100, 1000);
-				hSum[uint32_t(*it)] = fSum.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 110, -100, 1000);
+				hfC[uint32_t(*it)]  = ffC. make<TH2D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";TS;fC").c_str(), 10, 0, 10, 3500, 0, 35000);
+				hHigh[uint32_t(*it)]=fHigh.make<TH1D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 3500, 0, 35000);
+				hLow[uint32_t(*it)] = fLow.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 3500, 0, 35000);
+				hSum[uint32_t(*it)] = fSum.make<TH1D> (cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";fC;Count").c_str(), 3500, 0, 35000);
 			}
 		}
 

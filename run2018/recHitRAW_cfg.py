@@ -130,11 +130,11 @@ else:
 _emap = {
     'mockup'     : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ZDCRPD_mockup.txt",
     'real'       : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data.txt",
+    'reduced'    : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_reduced.txt",
     'ext'        : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ext.txt",
     'FCD'        : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_FCD.txt",
     '904ext12'   : "QWAna/QWNtrkOfflineProducer/run2018/ZDC904_emap_ext12.txt",
 }
-
 
 if options.emap != '':
     process.es_ascii = cms.ESSource(
@@ -212,7 +212,7 @@ process.BXTree = cms.Sequence( process.QWInfo * process.QWBXTree )
 # ZDC info
 process.load('QWZDC2018Producer_cfi')
 #process.load('ZDC2018Pedestal_cfg')
-process.zdcdigi.SOI = cms.untracked.int32(4)
+process.zdcdigi.SOI = cms.untracked.int32(6)
 
 process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
@@ -224,6 +224,13 @@ process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcSum = cms.untracked.InputTag('zdcdigi', 'chargeSum'),
 		Norm = cms.untracked.bool(options.normed),
 		bTree = cms.untracked.bool(options.bTree)
+		)
+
+process.zdccalibana = cms.EDAnalyzer('QWZDC2018CalibAnalyzer',
+		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
+		srcHigh = cms.untracked.InputTag('zdcdigi', 'chargeHigh'),
+		srcLow = cms.untracked.InputTag('zdcdigi', 'chargeLow'),
+		srcSum = cms.untracked.InputTag('zdcdigi', 'chargeSum'),
 		)
 
 process.zdcBX = cms.EDAnalyzer('QWZDC2018BXAnalyzer',
@@ -246,6 +253,7 @@ process.digiPath = cms.Path(
     process.zdcADCFilter *
     process.QWInfo *
     process.zdcBX *
+    process.zdccalibana *
     process.zdcana
 )
 
