@@ -212,7 +212,7 @@ process.BXTree = cms.Sequence( process.QWInfo * process.QWBXTree )
 # ZDC info
 process.load('QWZDC2018Producer_cfi')
 #process.load('ZDC2018Pedestal_cfg')
-process.zdcdigi.SOI = cms.untracked.int32(6)
+process.zdcdigi.SOI = cms.untracked.int32(4)
 
 process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
