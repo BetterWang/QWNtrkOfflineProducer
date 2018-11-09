@@ -1,5 +1,6 @@
 {
 	TChain * trV = new TChain("trV");
+	/*
 	trV->AddFile("zdc_326237_normedMB1Tree.root/zdcana/fC/trV");
 	trV->AddFile("zdc_326237_normedMB2Tree.root/zdcana/fC/trV");
 	trV->AddFile("zdc_326237_normedMB3Tree.root/zdcana/fC/trV");
@@ -21,6 +22,25 @@
 	trV->AddFile("zdc_326238_normedMB7Tree.root/zdcana/fC/trV");
 	trV->AddFile("zdc_326238_normedMB8Tree.root/zdcana/fC/trV");
 	trV->AddFile("zdc_326238_normedMB9Tree.root/zdcana/fC/trV");
+	*/
+	trV->AddFile("zdc_326381_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326381_normedMB1Tree.root/zdcana/fC/trV");
+
+	trV->AddFile("zdc_326382_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326382_normedMB1Tree.root/zdcana/fC/trV");
+
+	trV->AddFile("zdc_326383_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB1Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB2Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB3Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB4Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB5Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB6Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB7Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB8Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326383_normedMB9Tree.root/zdcana/fC/trV");
+
+
 	TH1D * hHad = new TH1D("hHad", "hHad", 1500,0, 1500000);
 
 
@@ -89,8 +109,35 @@
 	trV->SetAlias("P_NpeakOpt", "0.1*1.27*(P_EM1/0.42+P_EM2/0.67+P_EM3+P_EM4/1.42+P_EM5/1.15)+P_Npeak_NOEM");
 
 //	trV->Draw("P_NpeakOrg>>hHad", P_select);
-	trV->Draw("P_NpeakOpt>>hHad", P_select);
+//	trV->Draw("P_NpeakOpt>>hHad", P_select);
 //	trV->Draw("P_EM3/P_HAD1>>(1000,1,10)", P_select);
 
 //	trV->Draw("M_NpeakOpt-M_Npeak_NOEM:M_NpeakOpt", M_select);
+
+
+	/* Draw stuff */
+//	trV->Draw("P_HAD2/P_HAD1>>(1000, 0, 10)", P_select);
+//	trV->Draw("P_HAD3/P_HAD1>>(1000, 0, 10)", P_select);
+//	trV->Draw("P_HAD4/P_HAD1>>(1000, 0, 10)", P_select);
+//
+//	trV->Draw("M_HAD2/M_HAD1>>(1000, 0, 10)", M_select);
+//	trV->Draw("M_HAD3/M_HAD1>>(1000, 0, 10)", M_select);
+//	trV->Draw("M_HAD4/M_HAD1>>(1000, 0, 10)", M_select);
+//
+//	trV->Draw("M_HAD1/M_EM1>>(1000, 0, 10)", M1nT);
+
+//	trV->Draw("0.81*P_HAD4+0.67*P_HAD3 + 0.81*P_HAD2 + P_HAD1 + 0.1*(P_EM1+P_EM2+P_EM3+P_EM4+P_EM5)", P_select);
+//	trV->SetAlias("P_NpeakT", "0.81*P_HAD4+0.67*P_HAD3 + 0.81*P_HAD2 + P_HAD1 + 0.1*(P_EM1+P_EM2+P_EM3+P_EM4+P_EM5)");
+//	trV->SetAlias("M_NpeakT", "0.87*M_HAD4+0.67*M_HAD3 + 0.62*M_HAD2 + M_HAD1 + 0.1*(M_EM1+M_EM2+M_EM3+M_EM4+M_EM5)");
+//
+//	TCut M1nT = "M_NpeakT>10000 && M_NpeakT<29000";
+//	TCut P1nT = "P_NpeakT>8000 && P_NpeakT<18000";
+
+	trV->SetAlias("M_NpeakOpt", "0.87*M_HAD4+0.67*M_HAD3 + 0.62*M_HAD2 + M_HAD1 + 0.1*(M_EM1+M_EM2+M_EM3+0.8*M_EM4+0.6*M_EM5)");
+
+	trV->SetAlias("P_NpeakOpt", "1.5*(0.81*P_HAD4+0.67*P_HAD3 + 0.81*P_HAD2 + P_HAD1 + 0.1*(P_EM1+P_EM2+0.7*P_EM3+0.8*P_EM4+0.6*P_EM5))");
+
+
+
+
 }
