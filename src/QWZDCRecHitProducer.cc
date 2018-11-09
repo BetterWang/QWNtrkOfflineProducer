@@ -15,6 +15,7 @@
 #include "CalibCalorimetry/HcalAlgos/interface/HcalPulseShapes.h"
 
 #include "DataFormats/HcalDigi/interface/HcalDigiCollections.h"
+#include "DataFormats/HcalRecHit/interface/HcalRecHitDefs.h"
 #include "iostream"
 
 using namespace std;
@@ -69,7 +70,7 @@ void QWZDCRecHitProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	double sumPlow = 0.;
 	double sumMlow = 0.;
 
-	for ( auto it = hits->begin(); it != hits->end(); hits++ ) {
+	for ( auto it = hits->begin(); it != hits->end(); it++ ) {
 		auto rechit = (*it);
 		if ( rechit.id().zside() > 0 ) {
 			sumP += rechit.energy();

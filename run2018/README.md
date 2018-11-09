@@ -79,4 +79,5 @@
 15. Stable beam Fill 7427, HV setting1, http://cmsonline.cern.ch/cms-elog/1072239
 16. Phase change will take effect starting from run 326435. http://cmsonline.cern.ch/cms-elog/1072707
 17. ZDC HV changed from run 326449. http://cmsonline.cern.ch/cms-elog/1072784
+18. RPD HV changed from run 326472. http://cmsonline.cern.ch/cms-elog/1072843
 
