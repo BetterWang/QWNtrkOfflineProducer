@@ -76,4 +76,7 @@
 12. Fill 7413 has ~1h collisions, at BX=1,1786 (guess from ZB). Run 326175,  with ZDC HV 1500V, RPD HV 600V.
 13. Fill 7415 has collisions, at BX=??  (guess from ZB). Run 326217,18..., (lot)  with ZDC HV 1500V, RPD HV 600V.
 14. Since run 326237, lower ZDC HV to 1400V, RPD HV 600V. Fill 7416, BX=1,5,9,13...
+15. Stable beam Fill 7427, HV setting1, http://cmsonline.cern.ch/cms-elog/1072239
+16. Phase change will take effect starting from run 326435. http://cmsonline.cern.ch/cms-elog/1072707
+17. ZDC HV changed from run 326449. http://cmsonline.cern.ch/cms-elog/1072784
 

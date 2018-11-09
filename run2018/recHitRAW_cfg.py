@@ -251,14 +251,14 @@ process.digiPath = cms.Path(
     process.digis *
     process.zdcdigi *
     process.zdcADCFilter *
-    process.QWInfo *
-    process.zdcBX *
-    process.zdccalibana *
+#    process.QWInfo *
+#    process.zdcBX *
+#    process.zdccalibana *
     process.zdcana
 )
 
-if options.bTree:
-	process.digiPath += process.BXTree
+#if options.bTree:
+#	process.digiPath += process.BXTree
 
 process.TFileService = cms.Service("TFileService",
 		fileName = cms.string('zdc_'+runNumber+options.outputTag+'.root')
