@@ -193,17 +193,67 @@ process.zdcADCFilter = cms.EDFilter('QWZDC2018ADCFilter',
 		)
 
 process.load('QWAna.QWZDC2018RecHit.QWZDC2018RecHit_cfi')
+process.QWzdcreco.bFilter = cms.untracked.bool(True)
 
-process.digiPath = cms.Path(
+process.QWRecHitAna = cms.EDProducer('QWZDCRecHitProducer',
+        Src = cms.untracked.InputTag('QWzdcreco')
+        )
+
+process.Pside = cms.EDFilter('QWDoubleFilter',
+        src = cms.untracked.InputTag('QWRecHitAna', 'NpeakP'),
+        dmin = cms.untracked.double(0.9),
+        dmax = cms.untracked.double(1.1)
+        )
+
+process.Mside = cms.EDFilter('QWDoubleFilter',
+        src = cms.untracked.InputTag('QWRecHitAna', 'NpeakM'),
+        dmin = cms.untracked.double(0.9),
+        dmax = cms.untracked.double(1.1)
+        )
+
+process.ZDCEnergyM = cms.EDProducer('QWDouble2VectorProducer',
+        src = cms.untracked.InputTag('QWRecHitAna', 'sumMlow')
+        )
+
+process.ZDCEnergyP = cms.EDProducer('QWDouble2VectorProducer',
+        src = cms.untracked.InputTag('QWRecHitAna', 'sumPlow')
+        )
+
+process.ZDCNSpecM = cms.EDAnalyzer('QWVectorAnalyzer',
+        src = cms.untracked.InputTag('ZDCEnergyM'),
+        hNbins = cms.untracked.int32(1500),
+        hstart = cms.untracked.double(0),
+        hend = cms.untracked.double(1500000)
+        cNbins = cms.untracked.int32(1),
+        cstart = cms.untracked.double(0),
+        cend = cms.untracked.double(2)
+        )
+
+process.ZDCNSpecP = process.ZDCNSpecM.clone( src = cms.untracked.InputTag('ZDCEnergyP') )
+
+process.DRPath = cms.Sequence(
     process.hltSelect *
     process.digis *
     process.zdcdigi *
     process.zdcADCFilter *
     process.QWzdcreco
-#    process.QWInfo *
-#    process.zdcBX *
-#    process.zdccalibana *
-#    process.zdcana
+)
+
+
+process.NpeakM = cms.Path(
+    process.DRPath *
+    process.Mside *
+    process.QWRecHitAna *
+    process.ZDCEnergyM *
+    process.ZDCNSpecM
+)
+
+process.NpeakP = cms.Path(
+    process.DRPath *
+    process.Pside *
+    process.QWRecHitAna *
+    process.ZDCEnergyP *
+    process.ZDCNSpecP
 )
 
 #if options.bTree:
@@ -227,3 +277,5 @@ process.output = cms.OutputModule(
 		)
 
 #process.outpath = cms.EndPath(process.output)
+
+process.schedule = cms.Schedule(process.NpeakP, process.NpeakM)
