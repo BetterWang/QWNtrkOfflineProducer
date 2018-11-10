@@ -167,24 +167,7 @@ process.load('QWZDC2018Producer_cfi')
 #process.load('ZDC2018Pedestal_cfg')
 process.zdcdigi.SOI = cms.untracked.int32(4)
 
-process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
-		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
-		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
-		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
-		srcCapId = cms.untracked.InputTag('zdcdigi', 'CapId'),
-		srcHigh = cms.untracked.InputTag('zdcdigi', 'chargeHigh'),
-		srcLow = cms.untracked.InputTag('zdcdigi', 'chargeLow'),
-		srcSum = cms.untracked.InputTag('zdcdigi', 'chargeSum'),
-		Norm = cms.untracked.bool(options.normed),
-		bTree = cms.untracked.bool(options.bTree)
-		)
 
-process.zdcBX = cms.EDAnalyzer('QWZDC2018BXAnalyzer',
-		BX = cms.untracked.InputTag('QWInfo', 'BX'),
-		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
-		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
-		SOI = cms.untracked.int32(4)
-		)
 
 process.zdcADCFilter = cms.EDFilter('QWZDC2018ADCFilter',
 		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
@@ -200,13 +183,13 @@ process.QWRecHitAna = cms.EDProducer('QWZDCRecHitProducer',
         )
 
 process.Pside = cms.EDFilter('QWDoubleFilter',
-        src = cms.untracked.InputTag('QWRecHitAna', 'NpeakP'),
+        src = cms.untracked.InputTag('QWzdcreco', 'NpeakP'),
         dmin = cms.untracked.double(0.9),
         dmax = cms.untracked.double(1.1)
         )
 
 process.Mside = cms.EDFilter('QWDoubleFilter',
-        src = cms.untracked.InputTag('QWRecHitAna', 'NpeakM'),
+        src = cms.untracked.InputTag('QWzdcreco', 'NpeakM'),
         dmin = cms.untracked.double(0.9),
         dmax = cms.untracked.double(1.1)
         )
@@ -221,12 +204,12 @@ process.ZDCEnergyP = cms.EDProducer('QWDouble2VectorProducer',
 
 process.ZDCNSpecM = cms.EDAnalyzer('QWVectorAnalyzer',
         src = cms.untracked.InputTag('ZDCEnergyM'),
-        hNbins = cms.untracked.int32(1500),
-        hstart = cms.untracked.double(0),
-        hend = cms.untracked.double(1500000)
-        cNbins = cms.untracked.int32(1),
+        cNbins = cms.untracked.int32(2000),
         cstart = cms.untracked.double(0),
-        cend = cms.untracked.double(2)
+        cend = cms.untracked.double(200000),
+        hNbins = cms.untracked.int32(1),
+        hstart = cms.untracked.double(0),
+        hend = cms.untracked.double(2)
         )
 
 process.ZDCNSpecP = process.ZDCNSpecM.clone( src = cms.untracked.InputTag('ZDCEnergyP') )
@@ -260,22 +243,21 @@ process.NpeakP = cms.Path(
 #	process.digiPath += process.BXTree
 
 process.TFileService = cms.Service("TFileService",
-		fileName = cms.string('zdc_'+runNumber+options.outputTag+'.root')
+		fileName = cms.string('zdcRecHit_'+runNumber+options.outputTag+'.root')
 		)
 
 process.output = cms.OutputModule(
 		'PoolOutputModule',
 		outputCommands = cms.untracked.vstring("drop *",
-			"keep *_zdcdigi_*_MyTree",
-			"keep *_*_ZDC_MyTree",
-			"keep *_TriggerResults_*_MyTree",
+			"keep *_*_*_MyTree",
 			),
 		SelectEvents = cms.untracked.PSet(
-			SelectEvents = cms.vstring('digiPath')
+			SelectEvents = cms.vstring('NpeakP')
 			),
 		fileName = cms.untracked.string('digisRAW_'+runNumber+'.root')
 		)
 
-#process.outpath = cms.EndPath(process.output)
+process.outpath = cms.EndPath(process.output)
 
+#process.schedule = cms.Schedule(process.NpeakP, process.NpeakM, process.outpath)
 process.schedule = cms.Schedule(process.NpeakP, process.NpeakM)

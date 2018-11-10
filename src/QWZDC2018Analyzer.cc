@@ -145,7 +145,7 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 					mapCid_ [(uint32_t)(*it)] = new unsigned char[10];
 
 					trADC_->Branch(cname[uint32_t(*it)].c_str(), mapADC_[(uint32_t)(*it)], (cname[uint32_t(*it)]+"[10]/D").c_str() );
-					trADC_->Branch((cname[uint32_t(*it)]+"_CapId").c_str(), mapCid_[(uint32_t)(*it)], (cname[uint32_t(*it)]+"_CapId[10]/b").c_str() );
+//					trADC_->Branch((cname[uint32_t(*it)]+"_CapId").c_str(), mapCid_[(uint32_t)(*it)], (cname[uint32_t(*it)]+"_CapId[10]/b").c_str() );
 					trfC_ ->Branch(cname[uint32_t(*it)].c_str(), mapfC_ [(uint32_t)(*it)], (cname[uint32_t(*it)]+"[10]/D").c_str() );
 
 					for ( int i = 0; i < 10; i++ ) {
