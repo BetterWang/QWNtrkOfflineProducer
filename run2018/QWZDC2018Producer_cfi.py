@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-from ZDC2018Pedestal_cfg import ZDC2018Pedestal_0
+from ZDC2018Pedestal_cfg import ZDC2018Pedestal_0,ZDC2018Pedestal_run326537
 
 
 zdcdigi = cms.EDProducer('QWZDC2018Producer',

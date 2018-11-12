@@ -61,6 +61,12 @@ options.register('bTree',
 		VarParsing.VarParsing.varType.bool,
 		"Generate TTree.")
 
+options.register('bPedestal',
+		False, # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.bool,
+		"Run pedestal calibratoin.")
+
 options.register('emap',
 		'', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
@@ -211,8 +217,9 @@ process.BXTree = cms.Sequence( process.QWInfo * process.QWBXTree )
 
 # ZDC info
 process.load('QWZDC2018Producer_cfi')
-#process.load('ZDC2018Pedestal_cfg')
+process.load('ZDC2018Pedestal_cfg')
 process.zdcdigi.SOI = cms.untracked.int32(4)
+process.zdcdigi.Pedestal = process.ZDC2018Pedestal_run326537
 
 process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
@@ -246,6 +253,14 @@ process.zdcADCFilter = cms.EDFilter('QWZDC2018ADCFilter',
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
 		)
 
+process.zdcped = cms.EDAnalyzer('QWZDC2018Calib',
+                srcCapId = cms.untracked.InputTag('zdcdigi', 'CapId'),
+                srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
+                srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId')
+                )
+
+process.ped = cms.Sequence(process.zdcped)
+
 process.digiPath = cms.Path(
     process.hltSelect *
     process.digis *
@@ -259,6 +274,9 @@ process.digiPath = cms.Path(
 
 #if options.bTree:
 #	process.digiPath += process.BXTree
+
+if options.bPedestal:
+	process.digiPath += process.ped
 
 process.TFileService = cms.Service("TFileService",
 		fileName = cms.string('zdc_'+runNumber+options.outputTag+'.root')

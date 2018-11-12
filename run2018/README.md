@@ -80,4 +80,5 @@
 16. Phase change will take effect starting from run 326435. http://cmsonline.cern.ch/cms-elog/1072707
 17. ZDC HV changed from run 326449. http://cmsonline.cern.ch/cms-elog/1072784
 18. RPD HV changed from run 326472. http://cmsonline.cern.ch/cms-elog/1072843
+19. During run 326571, ZDC M side was lost, reading 255 all the time. Seems LV is lost. http://cmsonline.cern.ch/cms-elog/1073182
 
