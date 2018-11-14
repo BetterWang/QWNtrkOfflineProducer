@@ -1,79 +1,41 @@
 {
 	TChain * trV = new TChain("trV");
+	TFile * f = new TFile("Npeak_Study.root", "recreate");
 
-	trV->AddFile("zdc_326476_normedMB0PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB1PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB2PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB3PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB4PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB5PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB6PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB7PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB8PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326476_normedMB9PedTree.root/zdcana/fC/trV");
 
-	trV->AddFile("zdc_326477_normedMB0PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB1PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB2PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB3PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB4PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB5PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB6PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB7PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB8PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB9PedTree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB1Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB2Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB3Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB4Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB5Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB6Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB7Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB8Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326477_normedMB9Tree.root/zdcana/fC/trV");
 
-	trV->AddFile("zdc_326478_normedMB0PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB1PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB2PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB3PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB4PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB5PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB6PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB7PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB8PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326478_normedMB9PedTree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB1Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB2Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB3Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB4Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB5Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB6Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB7Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB8Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326479_normedMB9Tree.root/zdcana/fC/trV");
 
-	trV->AddFile("zdc_326479_normedMB0PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB1PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB2PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB3PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB4PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB5PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB6PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB7PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB8PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB9PedTree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB1Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB2Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB3Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB4Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB5Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB6Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB7Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB8Tree.root/zdcana/fC/trV");
+	trV->AddFile("zdc_326480_normedMB9Tree.root/zdcana/fC/trV");
 
-	trV->AddFile("zdc_326480_normedMB0PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB1PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB2PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB3PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB4PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB5PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB6PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB7PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB8PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB9PedTree.root/zdcana/fC/trV");
-
-	trV->AddFile("zdc_326482_normedMB0PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB1PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB2PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB3PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB4PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB5PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB6PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB7PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB8PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326482_normedMB9PedTree.root/zdcana/fC/trV");
-
-	trV->AddFile("zdc_326483_normedMB0PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326483_normedMB1PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326483_normedMB2PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326483_normedMB3PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326483_normedMB4PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326483_normedMB5PedTree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326483_normedMB6PedTree.root/zdcana/fC/trV");
 
 	TH1D * hHad  = new TH1D("hHad",  "hHad", 1000, 0, 1000000);
 	TH1D * hHadR = new TH1D("hHadR", "hHad", 1000, 0, 1000000);
@@ -268,39 +230,38 @@
 	TCut P1nT = "P_NpeakT<12000";
 	TCut M1nT = "M_NpeakT>5000 && M_NpeakT<18000";
 
-	TFile * f = new TFile("Npeak_Study.root", "recreate");
-	trV->Draw("P_NpeakT>>hHad", P_select, "Goff");
-	hHad->Write("P_NpeakT");
-	trV->Draw("M_NpeakT>>hHadR", M_select, "Goff");
-	hHadR->Write("M_NpeakT");
-
-	trV->Draw("P_EM1>>hEM", P_select&&P1nT, "Goff");
-	hEM->Write("hP_EM1");
-
-	trV->Draw("P_EM2>>hEM", P_select&&P1nT, "Goff");
-	hEM->Write("hP_EM2");
-
-	trV->Draw("P_EM3>>hEM", P_select&&P1nT, "Goff");
-	hEM->Write("hP_EM3");
-
-	trV->Draw("P_EM4>>hEM", P_select&&P1nT, "Goff");
-	hEM->Write("hP_EM4");
-
-	trV->Draw("P_EM5>>hEM", P_select&&P1nT, "Goff");
-	hEM->Write("hP_EM5");
-
-	trV->Draw("M_EM1>>hEM", M_select&&M1nT, "Goff");
-	hEM->Write("hM_EM1");
-
-	trV->Draw("M_EM2>>hEM", M_select&&M1nT, "Goff");
-	hEM->Write("hM_EM2");
-
-	trV->Draw("M_EM3>>hEM", M_select&&M1nT, "Goff");
-	hEM->Write("hM_EM3");
-
-	trV->Draw("M_EM4>>hEM", M_select&&M1nT, "Goff");
-	hEM->Write("hM_EM4");
-
-	trV->Draw("M_EM5>>hEM", M_select&&M1nT, "Goff");
-	hEM->Write("hM_EM5");
+//	trV->Draw("P_NpeakT>>hHad", P_select, "Goff");
+//	hHad->Write("P_NpeakT");
+//	trV->Draw("M_NpeakT>>hHad", M_select, "Goff");
+//	hHad->Write("M_NpeakT");
+//
+//	trV->Draw("P_EM1>>hEM", P_select&&P1nT, "Goff");
+//	hEM->Write("hP_EM1");
+//
+//	trV->Draw("P_EM2>>hEM", P_select&&P1nT, "Goff");
+//	hEM->Write("hP_EM2");
+//
+//	trV->Draw("P_EM3>>hEM", P_select&&P1nT, "Goff");
+//	hEM->Write("hP_EM3");
+//
+//	trV->Draw("P_EM4>>hEM", P_select&&P1nT, "Goff");
+//	hEM->Write("hP_EM4");
+//
+//	trV->Draw("P_EM5>>hEM", P_select&&P1nT, "Goff");
+//	hEM->Write("hP_EM5");
+//
+//	trV->Draw("M_EM1>>hEM", M_select&&M1nT, "Goff");
+//	hEM->Write("hM_EM1");
+//
+//	trV->Draw("M_EM2>>hEM", M_select&&M1nT, "Goff");
+//	hEM->Write("hM_EM2");
+//
+//	trV->Draw("M_EM3>>hEM", M_select&&M1nT, "Goff");
+//	hEM->Write("hM_EM3");
+//
+//	trV->Draw("M_EM4>>hEM", M_select&&M1nT, "Goff");
+//	hEM->Write("hM_EM4");
+//
+//	trV->Draw("M_EM5>>hEM", M_select&&M1nT, "Goff");
+//	hEM->Write("hM_EM5");
 }

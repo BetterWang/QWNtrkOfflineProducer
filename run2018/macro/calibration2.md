@@ -1,4 +1,4 @@
-# Calibration for TS4,5
+# Calibration for TS 4,5, w/o Pedestal Subtraction
 
 ## Had
 ### P side
