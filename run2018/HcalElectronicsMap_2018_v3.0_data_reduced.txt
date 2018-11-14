@@ -1,5 +1,4 @@
 #       i  cr  sl  tb  dcc  spigot  fiber/slb  fibcha/slbcha  subdet  ieta  iphi  depth
- 49108405  22   1   u    0       0          0              0      HF   -33     5      1
 54000080    38    7        u    0    0     0    0    ZDC_RPD   -4    1    -99
 54000081    38    7        u    0    0     0    1    ZDC_RPD   -4    2    -99
 54000082    38    7        u    0    0     0    2    ZDC_RPD   -4    3    -99
