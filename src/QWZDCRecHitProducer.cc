@@ -50,6 +50,11 @@ QWZDCRecHitProducer::QWZDCRecHitProducer(const edm::ParameterSet& pset) :
 	produces<double>("sumM");
 	produces<double>("sumPlow");
 	produces<double>("sumMlow");
+
+	produces<vector<double>>("Pos");
+	produces<vector<double>>("PosLow");
+	produces<vector<double>>("Neg");
+	produces<vector<double>>("NegLow");
 }
 
 QWZDCRecHitProducer::~QWZDCRecHitProducer()
@@ -61,6 +66,11 @@ void QWZDCRecHitProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 {
 	using namespace edm;
 
+	std::unique_ptr<std::vector<double> > ppos( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pneg( new std::vector<double> );
+
+	std::unique_ptr<std::vector<double> > pposlow( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pneglow( new std::vector<double> );
 
 	Handle<ZDCRecHitCollection> hits;
 	iEvent.getByLabel(Src_, hits);
@@ -75,9 +85,13 @@ void QWZDCRecHitProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 		if ( rechit.id().zside() > 0 ) {
 			sumP += rechit.energy();
 			sumPlow += rechit.lowGainEnergy();
+			ppos->push_back(rechit.energy());
+			pposlow->push_back(rechit.lowGainEnergy());
 		} else {
 			sumM += rechit.energy();
 			sumMlow += rechit.lowGainEnergy();
+			pneg->push_back(rechit.energy());
+			pneglow->push_back(rechit.lowGainEnergy());
 		}
 	}
 
@@ -85,6 +99,11 @@ void QWZDCRecHitProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	iEvent.put(make_unique<double>(sumM), std::string("sumM"));
 	iEvent.put(make_unique<double>(sumPlow), std::string("sumPlow"));
 	iEvent.put(make_unique<double>(sumMlow), std::string("sumMlow"));
+
+	iEvent.put(move(ppos), std::string("Pos"));
+	iEvent.put(move(pneg), std::string("Neg"));
+	iEvent.put(move(pposlow), std::string("PosLow"));
+	iEvent.put(move(pneglow), std::string("NegLow"));
 }
 
 
