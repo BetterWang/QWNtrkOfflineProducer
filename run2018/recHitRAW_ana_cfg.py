@@ -74,16 +74,23 @@ process.GlobalTag.globaltag = GT
 # Input source
 #-----------------------------------
 if options.source=='PoolSource':
-    filedir = options.runInputDir+runNumber[:3]+'/'+runNumber[3:]+'/00000'
-    print filedir
-    infile    = cms.untracked.vstring()
-    for f in reversed(os.listdir(filedir)):
-    	if f[-5:] == '.root' :
-    		infile.append('file:'+filedir+'/'+f)
-    process.source = cms.Source('PoolSource',
-        fileNames = infile,
-	skipEvents=cms.untracked.uint32(options.skipEvents)
-        )
+    if options.runInputDir[-5:] == '.root':
+        print options.runInputDir
+        process.source = cms.Source('PoolSource',
+            fileNames = cms.untracked.vstring("file:"+options.runInputDir),
+            skipEvents=cms.untracked.uint32(options.skipEvents)
+            )
+    else:
+        filedir = options.runInputDir+runNumber[:3]+'/'+runNumber[3:]+'/00000'
+        print filedir
+        infile    = cms.untracked.vstring()
+        for f in reversed(os.listdir(filedir)):
+            if f[-5:] == '.root' :
+                infile.append('file:'+filedir+'/'+f)
+            process.source = cms.Source('PoolSource',
+                fileNames = infile,
+                skipEvents=cms.untracked.uint32(options.skipEvents)
+            )
 elif options.source=='B904':
     infile = "file:"+options.runInputDir+"/run"+runNumber+"/B904_Integration_"+runNumber+'.root'
     print infile
@@ -163,10 +170,8 @@ else:
 
 
 # ZDC info
-process.load('QWZDC2018Producer_cfi')
-#process.load('ZDC2018Pedestal_cfg')
-process.zdcdigi.SOI = cms.untracked.int32(4)
-
+process.load('QWAna.QWZDC2018RecHit.QWZDC2018Producer_cfi')
+process.load('QWAna.QWZDC2018RecHit.QWZDC2018RecHit_cfi')
 
 
 process.zdcADCFilter = cms.EDFilter('QWZDC2018ADCFilter',
@@ -203,16 +208,16 @@ process.ZDCEnergyP = cms.EDProducer('QWDouble2VectorProducer',
         )
 
 process.ZDCNSpecM = cms.EDAnalyzer('QWVectorAnalyzer',
-        src = cms.untracked.InputTag('ZDCEnergyM'),
-        cNbins = cms.untracked.int32(2000),
+        src = cms.untracked.InputTag('QWRecHitAna', 'NegLow'),
+        cNbins = cms.untracked.int32(80),
         cstart = cms.untracked.double(0),
-        cend = cms.untracked.double(200000),
-        hNbins = cms.untracked.int32(1),
+        cend = cms.untracked.double(800),
+        hNbins = cms.untracked.int32(50),
         hstart = cms.untracked.double(0),
-        hend = cms.untracked.double(2)
+        hend = cms.untracked.double(50)
         )
 
-process.ZDCNSpecP = process.ZDCNSpecM.clone( src = cms.untracked.InputTag('ZDCEnergyP') )
+process.ZDCNSpecP = process.ZDCNSpecM.clone( src = cms.untracked.InputTag('QWRecHitAna', 'PosLow') )
 
 process.DRPath = cms.Sequence(
     process.hltSelect *
@@ -225,7 +230,7 @@ process.DRPath = cms.Sequence(
 
 process.NpeakM = cms.Path(
     process.DRPath *
-    process.Mside *
+#    process.Mside *
     process.QWRecHitAna *
     process.ZDCEnergyM *
     process.ZDCNSpecM
@@ -233,7 +238,7 @@ process.NpeakM = cms.Path(
 
 process.NpeakP = cms.Path(
     process.DRPath *
-    process.Pside *
+#    process.Pside *
     process.QWRecHitAna *
     process.ZDCEnergyP *
     process.ZDCNSpecP

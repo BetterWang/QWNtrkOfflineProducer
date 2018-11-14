@@ -73,6 +73,12 @@ options.register('emap',
 		VarParsing.VarParsing.varType.string,
 		"Emap used for ZDC. Can be 'mockup', 'real', or 'FCD'")
 
+options.register('Pedest',
+		'', # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+		"Pedestal subtraction, Can be 'ZDC2018Pedestal_run326537'.")
+
 options.parseArguments()
 
 
@@ -137,6 +143,8 @@ _emap = {
     'mockup'     : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ZDCRPD_mockup.txt",
     'real'       : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data.txt",
     'reduced'    : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_reduced.txt",
+    'real2'      : "QWAna/QWNtrkOfflineProducer/run2018/ZDCemap_13-nov-2018.txt",
+    'real2mirror': "QWAna/QWNtrkOfflineProducer/run2018/ZDCemap_13-nov-2018-mirror.txt",
     'ext'        : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_ext.txt",
     'FCD'        : "QWAna/QWNtrkOfflineProducer/run2018/HcalElectronicsMap_2018_v3.0_data_FCD.txt",
     '904ext12'   : "QWAna/QWNtrkOfflineProducer/run2018/ZDC904_emap_ext12.txt",
@@ -219,7 +227,9 @@ process.BXTree = cms.Sequence( process.QWInfo * process.QWBXTree )
 process.load('QWZDC2018Producer_cfi')
 process.load('ZDC2018Pedestal_cfg')
 process.zdcdigi.SOI = cms.untracked.int32(4)
-process.zdcdigi.Pedestal = process.ZDC2018Pedestal_run326537
+
+if options.Pedest=='ZDC2018Pedestal_run326537':
+	process.zdcdigi.Pedestal = process.ZDC2018Pedestal_run326537
 
 process.zdcana = cms.EDAnalyzer('QWZDC2018Analyzer',
 		srcADC = cms.untracked.InputTag('zdcdigi', 'ADC'),
