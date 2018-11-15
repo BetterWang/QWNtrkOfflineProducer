@@ -11,7 +11,6 @@
 #include "TTree.h"
 #include <iostream>
 
-using namespace std;
 class QWZDC2018Analyzer : public edm::EDAnalyzer {
 public:
 	explicit QWZDC2018Analyzer(const edm::ParameterSet&);
@@ -68,7 +67,6 @@ QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
 	consumes<std::vector<double> >(srcLow_);
 	consumes<std::vector<double> >(srcSum_);
 
-	cout << __LINE__ << endl;
 	for ( int channel = 0; channel < 16; channel++ ) {
 		HcalZDCDetId did(HcalZDCDetId::EM, true, channel);
 		cname[did()] = std::string("hZDCP_EM") + std::to_string(channel);
@@ -88,18 +86,15 @@ QWZDC2018Analyzer::QWZDC2018Analyzer(const edm::ParameterSet& pset) :
 		did = HcalZDCDetId(HcalZDCDetId::RPD, false, channel+1);
 		cname[did()] = std::string("hZDCM_RPD") + std::to_string(channel);
 	}
-	cout << __LINE__ << endl;
 
 	Nevent_ = 0;
 	trADC_ = nullptr;
 	trfC_ = nullptr;
-	cout << __LINE__ << endl;
 }
 
 void
 QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-	cout << __LINE__ << endl;
 	using namespace edm;
 	Handle<std::vector<double> > hadc;
 	Handle<std::vector<double> > hfc;
@@ -119,7 +114,6 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
 	int sz = hadc->size();
 
-	cout << __LINE__ << endl;
 	int NS_ = sz / hDid->size();
 	if ( firstEvent_ ) {
 		firstEvent_ = false;
@@ -130,7 +124,6 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 		auto fHigh = fs->mkdir("HighGain");
 		auto fLow  = fs->mkdir("LowGain");
 		auto fSum  = fs->mkdir("SumGain");
-	cout << __LINE__ << endl;
 		for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
 			if ( cname.find( (uint32_t)(*it) ) != cname.end() ) {
 				hADC[uint32_t(*it)] = fADC.make<TH2D>(cname[(uint32_t)(*it)].c_str(), (cname[(uint32_t)(*it)]+";TS;ADC").c_str(), 10, 0, 10, 256, 0, 256);
@@ -141,16 +134,11 @@ QWZDC2018Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 			}
 		}
 
-	cout << __LINE__ << endl;
 		if ( bTree_ ) {
-	cout << __LINE__ << endl;
 			trADC_ = fADC.make<TTree>("trV", "trV");
-	cout << __LINE__ << endl;
 			trfC_  = ffC .make<TTree>("trV", "trV");
-	cout << __LINE__ << endl;
 
 			for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
-	cout << __LINE__ << endl;
 				if ( cname.find( (uint32_t)(*it) ) != cname.end() ) {
 					mapADC_[(uint32_t)(*it)] = new double[10];
 					mapfC_ [(uint32_t)(*it)] = new double[10];

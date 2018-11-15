@@ -5,6 +5,7 @@
 #include <TFile.h>
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -48,7 +49,7 @@ void loadTree(TChain* trV);
 int peakTS(double* ch);
 
 void
-ZDCTreeAna(string s = "ana.root")
+ZDCTreeAna(string s = "ana_ZB.root")
 {
 	TChain * trV = new TChain("trV");
 	loadTree(trV);
@@ -89,6 +90,13 @@ ZDCTreeAna(string s = "ana.root")
 	TH1D* hP3NHAD[4];
 	TH1D* hM3NHAD[4];
 
+	TH1D* hP1NHADInc[4];
+	TH1D* hM1NHADInc[4];
+	TH1D* hP2NHADInc[4];
+	TH1D* hM2NHADInc[4];
+	TH1D* hP3NHADInc[4];
+	TH1D* hM3NHADInc[4];
+
 	TH1D* hPAllHAD[4];
 	TH1D* hMAllHAD[4];
 	TH1D* hPIncHAD[4];
@@ -108,6 +116,24 @@ ZDCTreeAna(string s = "ana.root")
 		hP3NHAD[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
 		t = string("hM3NHAD")+to_string(i+1);
 		hM3NHAD[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
+
+		t = string("hP1NHADInc")+to_string(i+1);
+		hP1NHADInc[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
+		t = string("hM1NHADInc")+to_string(i+1);
+		hM1NHADInc[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
+
+		t = string("hP2NHADInc")+to_string(i+1);
+		hP2NHADInc[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
+		t = string("hM2NHADInc")+to_string(i+1);
+		hM2NHADInc[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
+
+		t = string("hP3NHADInc")+to_string(i+1);
+		hP3NHADInc[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
+		t = string("hM3NHADInc")+to_string(i+1);
+		hM3NHADInc[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
+
+
+
 
 		t = string("hPAllHAD")+to_string(i+1);
 		hPAllHAD[i] = new TH1D( t.c_str(), t.c_str(), 1000, 0, 100000);
@@ -335,6 +361,7 @@ ZDCTreeAna(string s = "ana.root")
 		bool bP3nT = (P_NpeakT > P3nT1) and (P_NpeakT < P3nT2);
 		bool bM3nT = (M_NpeakT > M3nT1) and (M_NpeakT < M3nT2);
 
+
 		hNpeakPAll->Fill(P_NpeakT);
 		hNpeakMAll->Fill(P_NpeakT);
 		if ( P_select ) hNpeakP->Fill(P_NpeakT);
@@ -348,7 +375,7 @@ ZDCTreeAna(string s = "ana.root")
 				hP1NHAD[i]->Fill(P_HAD[i+1]);
 			}
 			for ( int i = 0; i < 16; i++ ) {
-				hP1NRPD[i]->Fill(P_RPD[i+1]);
+				hP1NRPD[i]->Fill(P_RPD[i]);
 			}
 		}
 		if ( P_select and bP2nT ) {
@@ -361,6 +388,21 @@ ZDCTreeAna(string s = "ana.root")
 				hP3NHAD[i]->Fill(P_HAD[i+1]);
 			}
 		}
+		if ( bP1nT ) {
+			for ( int i = 0; i < 4; i++ ) {
+				hP1NHADInc[i]->Fill(P_HAD[i+1]);
+			}
+		}
+		if ( bP2nT ) {
+			for ( int i = 0; i < 4; i++ ) {
+				hP2NHADInc[i]->Fill(P_HAD[i+1]);
+			}
+		}
+		if ( bP3nT ) {
+			for ( int i = 0; i < 4; i++ ) {
+				hP3NHADInc[i]->Fill(P_HAD[i+1]);
+			}
+		}
 
 		if ( P_select ) {
 			for ( int i = 0; i < 5; i++ ) {
@@ -370,7 +412,7 @@ ZDCTreeAna(string s = "ana.root")
 				hPAllHAD[i]->Fill(P_HAD[i+1]);
 			}
 			for ( int i = 0; i < 16; i++ ) {
-				hPAllRPD[i]->Fill(P_RPD[i+1]);
+				hPAllRPD[i]->Fill(P_RPD[i]);
 			}
 		}
 		for ( int i = 0; i < 5; i++ ) {
@@ -380,7 +422,7 @@ ZDCTreeAna(string s = "ana.root")
 			hPIncHAD[i]->Fill(P_HAD[i+1]);
 		}
 		for ( int i = 0; i < 16; i++ ) {
-			hPIncRPD[i]->Fill(P_RPD[i+1]);
+			hPIncRPD[i]->Fill(P_RPD[i]);
 		}
 
 		if ( M_select and bM1nT ) {
@@ -391,7 +433,7 @@ ZDCTreeAna(string s = "ana.root")
 				hM1NHAD[i]->Fill(M_HAD[i+1]);
 			}
 			for ( int i = 0; i < 16; i++ ) {
-				hM1NRPD[i]->Fill(M_RPD[i+1]);
+				hM1NRPD[i]->Fill(M_RPD[i]);
 			}
 		}
 		if ( M_select and bM2nT ) {
@@ -404,6 +446,21 @@ ZDCTreeAna(string s = "ana.root")
 				hM3NHAD[i]->Fill(M_HAD[i+1]);
 			}
 		}
+		if ( bM1nT ) {
+			for ( int i = 0; i < 4; i++ ) {
+				hM1NHADInc[i]->Fill(M_HAD[i+1]);
+			}
+		}
+		if ( bM2nT ) {
+			for ( int i = 0; i < 4; i++ ) {
+				hM2NHADInc[i]->Fill(M_HAD[i+1]);
+			}
+		}
+		if ( bM3nT ) {
+			for ( int i = 0; i < 4; i++ ) {
+				hM3NHADInc[i]->Fill(M_HAD[i+1]);
+			}
+		}
 
 		if ( M_select ) {
 			for ( int i = 0; i < 5; i++ ) {
@@ -413,7 +470,7 @@ ZDCTreeAna(string s = "ana.root")
 				hMAllHAD[i]->Fill(M_HAD[i+1]);
 			}
 			for ( int i = 0; i < 16; i++ ) {
-				hMAllRPD[i]->Fill(M_RPD[i+1]);
+				hMAllRPD[i]->Fill(M_RPD[i]);
 			}
 		}
 		for ( int i = 0; i < 5; i++ ) {
@@ -423,28 +480,18 @@ ZDCTreeAna(string s = "ana.root")
 			hMIncHAD[i]->Fill(M_HAD[i+1]);
 		}
 		for ( int i = 0; i < 16; i++ ) {
-			hMIncRPD[i]->Fill(M_RPD[i+1]);
+			hMIncRPD[i]->Fill(M_RPD[i]);
 		}
 		idx++;
 	}
 
 
 	TFile * fsave = new TFile(s.c_str(), "recreate");
-	hNpeakP->Scale(1./hNpeakP->GetEntries());
 	hNpeakP->Write();
-	hNpeakM->Scale(1./hNpeakM->GetEntries());
 	hNpeakM->Write();
-	hNpeakPAll->Scale(1./hNpeakPAll->GetEntries());
 	hNpeakPAll->Write();
 	hNpeakMAll->Write();
-	hNpeakMAll->Scale(1./hNpeakMAll->GetEntries());
 	for ( int i = 0; i < 5; i++ ) {
-		hP1NEM[i] ->Scale(hP1NEM[i] ->GetEntries());
-		hM1NEM[i] ->Scale(hM1NEM[i] ->GetEntries());
-		hPAllEM[i]->Scale(hPAllEM[i]->GetEntries());
-		hMAllEM[i]->Scale(hMAllEM[i]->GetEntries());
-		hPIncEM[i]->Scale(hPIncEM[i]->GetEntries());
-		hMIncEM[i]->Scale(hMIncEM[i]->GetEntries());
 
 		hP1NEM[i] ->Write();
 		hM1NEM[i] ->Write();
@@ -454,18 +501,6 @@ ZDCTreeAna(string s = "ana.root")
 		hMIncEM[i]->Write();
 	}
 	for ( int i = 0; i < 4; i++ ) {
-		hP1NHAD[i] ->Scale(hP1NHAD[i] ->GetEntries());
-		hM1NHAD[i] ->Scale(hM1NHAD[i] ->GetEntries());
-		hP2NHAD[i] ->Scale(hP2NHAD[i] ->GetEntries());
-		hM2NHAD[i] ->Scale(hM2NHAD[i] ->GetEntries());
-		hP3NHAD[i] ->Scale(hP2NHAD[i] ->GetEntries());
-		hM3NHAD[i] ->Scale(hM2NHAD[i] ->GetEntries());
-
-		hPAllHAD[i]->Scale(hPAllHAD[i]->GetEntries());
-		hMAllHAD[i]->Scale(hMAllHAD[i]->GetEntries());
-		hPIncHAD[i]->Scale(hPIncHAD[i]->GetEntries());
-		hMIncHAD[i]->Scale(hMIncHAD[i]->GetEntries());
-
 		hP1NHAD[i] ->Write();
 		hM1NHAD[i] ->Write();
 		hP2NHAD[i] ->Write();
@@ -473,19 +508,19 @@ ZDCTreeAna(string s = "ana.root")
 		hP3NHAD[i] ->Write();
 		hM3NHAD[i] ->Write();
 
+		hP1NHADInc[i] ->Write();
+		hM1NHADInc[i] ->Write();
+		hP2NHADInc[i] ->Write();
+		hM2NHADInc[i] ->Write();
+		hP3NHADInc[i] ->Write();
+		hM3NHADInc[i] ->Write();
+
 		hPAllHAD[i]->Write();
 		hMAllHAD[i]->Write();
 		hPIncHAD[i]->Write();
 		hMIncHAD[i]->Write();
 	}
 	for ( int i = 0; i < 16; i++ ) {
-		hP1NRPD[i] ->Scale(hP1NRPD[i] ->GetEntries());
-		hM1NRPD[i] ->Scale(hM1NRPD[i] ->GetEntries());
-		hPAllRPD[i]->Scale(hPAllRPD[i]->GetEntries());
-		hMAllRPD[i]->Scale(hMAllRPD[i]->GetEntries());
-		hPIncRPD[i]->Scale(hPIncRPD[i]->GetEntries());
-		hMIncRPD[i]->Scale(hMIncRPD[i]->GetEntries());
-
 		hP1NRPD[i] ->Write();
 		hM1NRPD[i] ->Write();
 		hPAllRPD[i]->Write();
@@ -564,7 +599,8 @@ void loadTree(TChain* trV)
 	trV->AddFile("ZDCTree/zdc_326482_normedMB8Tree.root/zdcana/fC/trV");
 	trV->AddFile("ZDCTree/zdc_326482_normedMB9Tree.root/zdcana/fC/trV");
 	*/
-	trV->AddFile("/eos/cms/store/group/phys_heavyions/qwang/ZDC2018/ZDCPedTree/zdc_326537_normedTree.root/zdcana/fC/trV");
+	//trV->AddFile("/eos/cms/store/group/phys_heavyions/qwang/ZDC2018/ZDCPedTree/zdc_326537_normedTree.root/zdcana/fC/trV");
+	trV->Add("ZDC2018/ZDCZBTree/*.root/zdcana/fC/trV");
 
 //	trV->SetMakeClass(1);
 }

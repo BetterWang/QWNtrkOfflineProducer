@@ -4,8 +4,6 @@ import os
 import sys
 import FWCore.ParameterSet.VarParsing as VarParsing
 
-#jsonfile = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/HI/DCSOnly/json_DCSONLY_HI.txt'
-
 
 options = VarParsing.VarParsing('analysis')
 
@@ -69,12 +67,6 @@ options.register('bPedestal',
 		VarParsing.VarParsing.varType.bool,
 		"Run pedestal calibratoin.")
 
-options.register('Json',
-		'', # default value
-		VarParsing.VarParsing.multiplicity.singleton,
-		VarParsing.VarParsing.varType.string,
-		"Json.")
-
 options.register('emap',
 		'', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
@@ -86,6 +78,12 @@ options.register('Pedest',
 		VarParsing.VarParsing.multiplicity.singleton,
 		VarParsing.VarParsing.varType.string,
 		"Pedestal subtraction, Can be 'ZDC2018Pedestal_run326537'.")
+
+options.register('BX',
+		'', # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+		"BX selection")
 
 options.parseArguments()
 
@@ -121,9 +119,6 @@ if options.source=='PoolSource':
         fileNames = infile,
 	skipEvents=cms.untracked.uint32(options.skipEvents)
         )
-    if options.Json != '':
-       process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange(options.Json)
-    #   import PhysicsTools.PythonAnalysis.LumiList as LumiList
 elif options.source=='B904':
     infile = "file:"+options.runInputDir+"/run"+runNumber+"/B904_Integration_"+runNumber+'.root'
     print infile
@@ -232,7 +227,19 @@ process.QWInfo = cms.EDProducer('QWEventInfoProducer')
 process.QWBXTree = cms.EDAnalyzer('QWDTagTreeMaker',
 		vTag = cms.untracked.VInputTag( cms.untracked.InputTag('QWInfo', 'BX') )
 	)
-process.BXTree = cms.Sequence( process.QWInfo * process.QWBXTree )
+process.BXTree = cms.Sequence( process.QWBXTree )
+
+LeadingBX = [
+1, 87, 105, 123, 159, 177, 316, 334, 352, 370, 388, 406, 586, 604, 622, 640, 978, 990, 996, 1014, 1032, 1050, 1068, 1207, 1225, 1243, 1261, 1279, 1297, 1477, 1495, 1513, 1531, 1869, 1887, 1905, 1923, 1941, 1959, 2098, 2116, 2134, 2152, 2170, 2188, 2760, 2778, 2796, 2814, 2832, 2850, 2989, 3025, 3043, 3061, 3079, 3262, 3280, 3298, 3316
+]
+
+TrailingBX = [
+13, 99, 117, 135, 153, 171, 189, 328, 346, 364, 382, 400, 418, 598, 616, 634, 652, 990, 1008, 1026, 1044, 1062, 1080, 1219, 1237, 1255, 1273, 1291, 1309, 1489, 1507, 1525, 1543, 1881, 1899, 1917, 1935, 1953, 1971, 2110, 2128, 2146, 2164, 2182, 2200, 2772, 2790, 2808, 2826, 2844, 2862, 3001, 3019, 3037, 3055, 3073, 3091, 3274, 3292, 3310, 3328
+]
+
+for bx in LeadingBX + TrailingBX:
+	setattr(process, 'filterBX'+str(bx), cms.EDFilter('QWDoubleFilter', src= cms.untracked.InputTag('QWInfo', 'BX'), dmin=cms.untracked.double(bx-0.1), dmax=cms.untracked.double(bx+0.1)))
+
 
 # ZDC info
 process.load('QWZDC2018Producer_cfi')
@@ -282,16 +289,40 @@ process.zdcped = cms.EDAnalyzer('QWZDC2018Calib',
 
 process.ped = cms.Sequence(process.zdcped)
 
-process.digiPath = cms.Path(
-    process.hltSelect *
-    process.digis *
-    process.zdcdigi *
-    process.zdcADCFilter *
-#    process.QWInfo *
-#    process.zdcBX *
-#    process.zdccalibana *
-    process.zdcana
-)
+process.BXSelect = cms.Sequence()
+
+if options.BX=='Leading':
+	for bx in LeadingBX:
+		setattr(process, 'p'+str(bx), cms.Path(process.hltSelect *
+			process.QWInfo *
+			process.digis *
+			getattr(process, 'filterBX'+str(bx)) *
+			process.zdcdigi *
+			process.BXTree *
+			process.zdcana)
+			)
+if options.BX=='Trailing':
+	for bx in TrailingBX:
+		setattr(process, 'p'+str(bx), cms.Path(process.hltSelect *
+			process.QWInfo *
+			process.digis *
+			getattr(process, 'filterBX'+str(bx)) *
+			process.zdcdigi *
+			process.BXTree *
+			process.zdcana)
+			)
+
+
+#process.digiPath = cms.Path(
+#    process.hltSelect *
+#    process.digis *
+#    process.zdcdigi *
+##    process.zdcADCFilter *
+##    process.QWInfo *
+##    process.zdcBX *
+##    process.zdccalibana *
+#    process.zdcana
+#)
 
 #if options.bTree:
 #	process.digiPath += process.BXTree
