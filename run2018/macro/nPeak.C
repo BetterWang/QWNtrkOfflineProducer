@@ -1,41 +1,51 @@
 {
 	TChain * trV = new TChain("trV");
-	TFile * f = new TFile("Npeak_Study.root", "recreate");
+//	TFile * f = new TFile("Npeak_Study.root", "recreate");
 
 
-	trV->AddFile("zdc_326477_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326477_normedMB9Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB1Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB2Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB3Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB4Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB5Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB6Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB7Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB8Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326477_normedMB9Tree.root/zdcana/fC/trV");
 
-	trV->AddFile("zdc_326479_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326479_normedMB9Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB1Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB2Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB3Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB4Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB5Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB6Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB7Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB8Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326479_normedMB9Tree.root/zdcana/fC/trV");
 
-	trV->AddFile("zdc_326480_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("zdc_326480_normedMB9Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB1Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB2Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB3Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB4Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB5Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB6Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB7Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB8Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326480_normedMB9Tree.root/zdcana/fC/trV");
 
+	trV->AddFile("ZDCTree/zdc_326482_normedMB0Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB1Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB2Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB3Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB4Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB5Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB6Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB7Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB8Tree.root/zdcana/fC/trV");
+	trV->AddFile("ZDCTree/zdc_326482_normedMB9Tree.root/zdcana/fC/trV");
 
 	TH1D * hHad  = new TH1D("hHad",  "hHad", 1000, 0, 1000000);
 	TH1D * hHadR = new TH1D("hHadR", "hHad", 1000, 0, 1000000);
@@ -117,7 +127,7 @@
 //	trV->SetAlias("M_NpeakOrg", "0.1*(M_EM1+M_EM2+M_EM3+M_EM4+M_EM5)+0.65*M_HAD4+0.6*M_HAD3+0.6*M_HAD2+M_HAD1");
 
 //	trV->SetAlias("M_Npeak_NOEM", "0.65*(hZDCM_HAD4[4]+hZDCM_HAD4[5]+hZDCM_HAD4[6])+0.6*(hZDCM_HAD3[4]+hZDCM_HAD3[5]+hZDCM_HAD3[6])+0.6*(hZDCM_HAD2[4]+hZDCM_HAD2[5]+hZDCM_HAD2[6])+(hZDCM_HAD1[4]+hZDCM_HAD1[5]+hZDCM_HAD1[6])");
-	TCut M_select = "(hZDCM_HAD1[4]>500 || hZDCM_HAD1[5]>500 ) && (hZDCM_HAD2[4]>500 || hZDCM_HAD2[5]>500 ) && (hZDCM_HAD1[4]==Max$(hZDCM_HAD1) || hZDCM_HAD1[5]==Max$(hZDCM_HAD1)) && (hZDCM_HAD2[4]==Max$(hZDCM_HAD2) || hZDCM_HAD2[5]==Max$(hZDCM_HAD2))";
+//	TCut M_select = "(hZDCM_HAD1[4]>500 || hZDCM_HAD1[5]>500 ) && (hZDCM_HAD2[4]>500 || hZDCM_HAD2[5]>500 ) && (hZDCM_HAD1[4]==Max$(hZDCM_HAD1) || hZDCM_HAD1[5]==Max$(hZDCM_HAD1)) && (hZDCM_HAD2[4]==Max$(hZDCM_HAD2) || hZDCM_HAD2[5]==Max$(hZDCM_HAD2))";
 
 //	trV->Draw("M_NpeakOrg>>hHad", M_select);
 
@@ -136,16 +146,16 @@
 //	trV->Draw("M_EM3/M_HAD1>>(1000,1,10)", M_select);
 //	trV->Draw("M_Npeak_NOEM>>hHad", M_select);
 
-	trV->SetAlias("M_NpeakOpt", "M_Npeak_NOEM + 0.1*(M_EM1/0.78 + M_EM2/0.75 + M_EM3 + M_EM4/1.29 + M_EM5/2.2)");
+//	trV->SetAlias("M_NpeakOpt", "M_Npeak_NOEM + 0.1*(M_EM1/0.78 + M_EM2/0.75 + M_EM3 + M_EM4/1.29 + M_EM5/2.2)");
 //	trV->Draw("M_NpeakOpt>>hHad", M_select);
 
 	// P side
-	trV->SetAlias("P_Npeak_NOEM", "1.3*P_HAD4+1.2*P_HAD3+1.22*P_HAD2+P_HAD1");
-	trV->SetAlias("P_NpeakOrg", "0.1*(P_EM1+P_EM2+P_EM3+P_EM4+P_EM5)+P_Npeak_NOEM");
+//	trV->SetAlias("P_Npeak_NOEM", "1.3*P_HAD4+1.2*P_HAD3+1.22*P_HAD2+P_HAD1");
+//	trV->SetAlias("P_NpeakOrg", "0.1*(P_EM1+P_EM2+P_EM3+P_EM4+P_EM5)+P_Npeak_NOEM");
 //	TCut P_select = "(hZDCP_HAD1[4]>500 || hZDCP_HAD1[5]>500 || hZDCP_HAD1[6]>500) && (hZDCP_HAD2[4]>500 || hZDCP_HAD2[5]>500 || hZDCP_HAD2[6]>500) && (hZDCP_HAD1[4]==Max$(hZDCP_HAD1) || hZDCP_HAD1[5]==Max$(hZDCP_HAD1)) && (hZDCP_HAD2[4]==Max$(hZDCP_HAD2) || hZDCP_HAD2[5]==Max$(hZDCP_HAD2))";
-	TCut P_select = "(hZDCP_HAD1[4]>500 || hZDCP_HAD1[5]>500 ) && (hZDCP_HAD2[4]>500 || hZDCP_HAD2[5]>500 ) && (hZDCP_HAD1[4]==Max$(hZDCP_HAD1) || hZDCP_HAD1[5]==Max$(hZDCP_HAD1)) && (hZDCP_HAD2[4]==Max$(hZDCP_HAD2) || hZDCP_HAD2[5]==Max$(hZDCP_HAD2))";
+//	TCut P_select = "(hZDCP_HAD1[4]>500 || hZDCP_HAD1[5]>500 ) && (hZDCP_HAD2[4]>500 || hZDCP_HAD2[5]>500 ) && (hZDCP_HAD1[4]==Max$(hZDCP_HAD1) || hZDCP_HAD1[5]==Max$(hZDCP_HAD1)) && (hZDCP_HAD2[4]==Max$(hZDCP_HAD2) || hZDCP_HAD2[5]==Max$(hZDCP_HAD2))";
 
-	TCut Pcut1n = "P_NpeakOrg<32000";
+//	TCut Pcut1n = "P_NpeakOrg<32000";
 
 //	trV->Draw("P_EM1>>hHad",  Pcut1n); // mean 1192   , 0.42
 //	trV->Draw("P_EM2>>hHad",  Pcut1n); // mean 1906   , 0.67
@@ -224,11 +234,53 @@
 
 	// 6700
 
+	TCut P_select = "(hZDCP_HAD1[4]==Max$(hZDCP_HAD1) || hZDCP_HAD1[5]==Max$(hZDCP_HAD1)) && (hZDCP_HAD2[4]==Max$(hZDCP_HAD2) || hZDCP_HAD2[5]==Max$(hZDCP_HAD2))";
+	TCut M_select = "(hZDCM_HAD1[4]==Max$(hZDCM_HAD1) || hZDCM_HAD1[5]==Max$(hZDCM_HAD1)) && (hZDCM_HAD2[4]==Max$(hZDCM_HAD2) || hZDCM_HAD2[5]==Max$(hZDCM_HAD2))";
 	trV->SetAlias("P_NpeakT", "0.52*P_HAD4+0.46*P_HAD3 + 0.61*P_HAD2 + P_HAD1 + 0.1*(P_EM1+P_EM2+P_EM3+P_EM4+P_EM5)");
 	trV->SetAlias("M_NpeakT", "(0.58*M_HAD4+0.46*M_HAD3 + 0.72*M_HAD2 + M_HAD1 + 0.1*(M_EM1+M_EM2+M_EM3+M_EM4+M_EM5))");
 
-	TCut P1nT = "P_NpeakT<12000";
+	TCut P1nT = "P_NpeakT>2000 && P_NpeakT<12000";
+	TCut P2nT = "P_NpeakT>12000 && P_NpeakT<18000";
 	TCut M1nT = "M_NpeakT>5000 && M_NpeakT<18000";
+	TCut M2nT = "M_NpeakT>18000 && M_NpeakT<30000";
+
+	trV->Draw("P_NpeakT>>hHad", P_select);
+	trV->Draw("M_NpeakT>>hHadR", M_select);
+
+	TH1D * hP1 = new TH1D("hP1", "hP1", 1000,0,20000);
+	TH1D * hP2 = new TH1D("hP2", "hP2", 1000,0,20000);
+	TH1D * hM1 = new TH1D("hM1", "hM1", 1000,0,20000);
+	TH1D * hM2 = new TH1D("hM2", "hM2", 1000,0,20000);
+
+	TH1D * h2P1 = new TH1D("h2P1", "h2P1", 1000,0,20000);
+	TH1D * h2P2 = new TH1D("h2P2", "h2P2", 1000,0,20000);
+	TH1D * h2M1 = new TH1D("h2M1", "h2M1", 1000,0,20000);
+	TH1D * h2M2 = new TH1D("h2M2", "h2M2", 1000,0,20000);
+
+	trV->Draw("hZDCP_HAD1[4]>>hP1(1000,0,20000)", P_select&&P1nT);
+	trV->Draw("hZDCP_HAD2[4]>>hP2(1000,0,20000)", P_select&&P1nT);
+
+	trV->Draw("hZDCM_HAD1[4]>>hM1(1000,0,20000)", M_select&&M1nT);
+	trV->Draw("hZDCM_HAD2[4]>>hM2(1000,0,20000)", M_select&&M1nT);
+
+	trV->Draw("hZDCP_HAD1[4]>>h2P1(1000,0,20000)", P_select&&P1nT);
+	trV->Draw("hZDCP_HAD2[4]>>h2P2(1000,0,20000)", P_select&&P1nT);
+
+	trV->Draw("hZDCM_HAD1[4]>>h2M1(1000,0,20000)", M_select&&M1nT);
+	trV->Draw("hZDCM_HAD2[4]>>h2M2(1000,0,20000)", M_select&&M1nT);
+
+	TFile * fsave = new TFile("test.root", "recreate");
+	hHad->Write();
+	hHadR->Write();
+	hP1->Write();
+	hP2->Write();
+	hM1->Write();
+	hM2->Write();
+
+	h2P1->Write();
+	h2P2->Write();
+	h2M1->Write();
+	h2M2->Write();
 
 //	trV->Draw("P_NpeakT>>hHad", P_select, "Goff");
 //	hHad->Write("P_NpeakT");

@@ -4,6 +4,9 @@ import os
 import sys
 import FWCore.ParameterSet.VarParsing as VarParsing
 
+import PhysicsTools.PythonAnalysis.LumiList as LumiList
+myLumis = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/HI/DCSOnly/json_DCSONLY_HI.txt').getCMSSWString().split(',')
+
 
 options = VarParsing.VarParsing('analysis')
 
@@ -67,6 +70,12 @@ options.register('bPedestal',
 		VarParsing.VarParsing.varType.bool,
 		"Run pedestal calibratoin.")
 
+options.register('bJson',
+		True, # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.bool,
+		"Run pedestal calibratoin.")
+
 options.register('emap',
 		'', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
@@ -113,6 +122,9 @@ if options.source=='PoolSource':
         fileNames = infile,
 	skipEvents=cms.untracked.uint32(options.skipEvents)
         )
+    if options.bJson:
+       process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
+       process.source.lumisToProcess.extend(myLumis)
 elif options.source=='B904':
     infile = "file:"+options.runInputDir+"/run"+runNumber+"/B904_Integration_"+runNumber+'.root'
     print infile
@@ -289,7 +301,7 @@ if options.bPedestal:
 	process.digiPath += process.ped
 
 process.TFileService = cms.Service("TFileService",
-		fileName = cms.string('zdc_'+runNumber+options.outputTag+'.root')
+		fileName = cms.string('ZDC2018/zdc_'+runNumber+options.outputTag+'.root')
 		)
 
 process.output = cms.OutputModule(

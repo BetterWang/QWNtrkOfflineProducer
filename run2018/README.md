@@ -83,6 +83,8 @@
 19. During run 326571, ZDC M side was lost, reading 255 all the time. Seems LV is lost. http://cmsonline.cern.ch/cms-elog/1073182
 20. ZDC M side power supply is replaced. The ngFEC connection is restored. http://cmsonline.cern.ch/cms-elog/1073500, http://cmsonline.cern.ch/cms-elog/1073487
 21. Fill 7442 VdM scan, run 326676
-22. Fiber splitter, http://cmsonline.cern.ch/cms-elog/1073581, http://cmsonline.cern.ch/cms-elog/1073581, http://cmsonline.cern.ch/cms-elog/1073454, Emap is then changed to `ZDCemap_13-nov-2018.txt`. From run 326700 onward.
+22. Fiber splitter, http://cmsonline.cern.ch/cms-elog/1073581, http://cmsonline.cern.ch/cms-elog/1073581, http://cmsonline.cern.ch/cms-elog/1073454, Emap is then changed to `ZDCemap_13-nov-2018.txt`. From run 326700 onward. The SOI then shifted to TS5.
+23. RPD HV changed from 750 to 800, between Fill 7443 and 7444. Effective run 326722 onward. http://cmsonline.cern.ch/cms-elog/1073685
+24. SOI shifted back to TS4 after run 326722. http://cmsonline.cern.ch/cms-elog/1073730
 
 
