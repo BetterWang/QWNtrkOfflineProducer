@@ -35,35 +35,35 @@ QWCentrality2018Producer::QWCentrality2018Producer(const edm::ParameterSet& pset
 {
 	consumes<reco::Centrality>(Src_);
 
-	produce<double>("etHFhitSum");
-	produce<double>("etHFhitSumPlus");
-	produce<double>("etHFhitSumMinus");
-	produce<double>("etHFtowerSum");
-	produce<double>("etHFtowerSumPlus");
-	produce<double>("etHFtowerSumMinus");
-	produce<double>("etHFtruncated");
-	produce<double>("etHFtruncatedPlus");
-	produce<double>("etHFtruncatedMinus");
-	produce<double>("etEESum");
-	produce<double>("etEESumPlus");
-	produce<double>("etEESumMinus");
-	produce<double>("etEEtruncated");
-	produce<double>("etEEtruncatedPlus");
-	produce<double>("etEEtruncatedMinus");
-	produce<double>("etEBSum");
-	produce<double>("etEcalSum");
-	produce<double>("etEBtruncated");
-	produce<double>("etEcalTrancated");
-	produce<double>("zdcSum");
-	produce<double>("zdcSumPlus");
-	produce<double>("zdcSumMinus");
-	produce<double>("pixelMultiplicity");
-	produce<double>("trackMultiplicity");
-	produce<double>("ntracksPtCut");
-	produce<double>("ntracksEtaCut");
-	produce<double>("ntracksEtaPtCut");
-	produce<double>("nPixelTracks");
-	produce<double>("etMidRapiditySum");
+	produces<double>("etHFhitSum");
+	produces<double>("etHFhitSumPlus");
+	produces<double>("etHFhitSumMinus");
+	produces<double>("etHFtowerSum");
+	produces<double>("etHFtowerSumPlus");
+	produces<double>("etHFtowerSumMinus");
+	produces<double>("etHFtruncated");
+	produces<double>("etHFtruncatedPlus");
+	produces<double>("etHFtruncatedMinus");
+	produces<double>("etEESum");
+	produces<double>("etEESumPlus");
+	produces<double>("etEESumMinus");
+	produces<double>("etEEtruncated");
+	produces<double>("etEEtruncatedPlus");
+	produces<double>("etEEtruncatedMinus");
+	produces<double>("etEBSum");
+	produces<double>("etEcalSum");
+	produces<double>("etEBtruncated");
+	produces<double>("etEcalTrancated");
+	produces<double>("zdcSum");
+	produces<double>("zdcSumPlus");
+	produces<double>("zdcSumMinus");
+	produces<double>("pixelMultiplicity");
+	produces<double>("trackMultiplicity");
+	produces<double>("ntracksPtCut");
+	produces<double>("ntracksEtaCut");
+	produces<double>("ntracksEtaPtCut");
+	produces<double>("nPixelTracks");
+	produces<double>("etMidRapiditySum");
 
 }
 
