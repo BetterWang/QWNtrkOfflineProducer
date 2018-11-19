@@ -1,51 +1,13 @@
 {
 	TChain * trV = new TChain("trV");
+	TChain * trC = new TChain("trC");
 //	TFile * f = new TFile("Npeak_Study.root", "recreate");
 
 
-	trV->AddFile("ZDCTree/zdc_326477_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB9Tree.root/zdcana/fC/trV");
+	trV->Add("ZDC2018/ZDCMBCentTree/*.root/zdcana/fC/trV");
+	trC->Add("ZDC2018/ZDCMBCentTree/*.root/centTree/trV");
 
-	trV->AddFile("ZDCTree/zdc_326479_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB9Tree.root/zdcana/fC/trV");
-
-	trV->AddFile("ZDCTree/zdc_326480_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB9Tree.root/zdcana/fC/trV");
-
-	trV->AddFile("ZDCTree/zdc_326482_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB9Tree.root/zdcana/fC/trV");
+	trV->AddFriend(trC);
 
 	TH1D * hHad  = new TH1D("hHad",  "hHad", 1000, 0, 1000000);
 	TH1D * hHadR = new TH1D("hHadR", "hHad", 1000, 0, 1000000);
@@ -76,6 +38,7 @@
 	hRatioB->SetLineColor(kBlue);
 	hRatioC->SetLineColor(kCyan);
 
+	TH2D * hHad2  = new TH2D("hHad2",  "hHad2", 1000, 0, 1000000, 1000, 0, 1000000);
 
 	trV->SetAlias("M_HAD1", "hZDCM_HAD1[4]+hZDCM_HAD1[5]");
 	trV->SetAlias("M_HAD2", "hZDCM_HAD2[4]+hZDCM_HAD2[5]");
@@ -244,43 +207,43 @@
 	TCut M1nT = "M_NpeakT>5000 && M_NpeakT<18000";
 	TCut M2nT = "M_NpeakT>18000 && M_NpeakT<30000";
 
-	trV->Draw("P_NpeakT>>hHad", P_select);
-	trV->Draw("M_NpeakT>>hHadR", M_select);
+//	trV->Draw("P_NpeakT>>hHad", P_select);
+//	trV->Draw("M_NpeakT>>hHadR", M_select);
+//
+//	TH1D * hP1 = new TH1D("hP1", "hP1", 1000,0,20000);
+//	TH1D * hP2 = new TH1D("hP2", "hP2", 1000,0,20000);
+//	TH1D * hM1 = new TH1D("hM1", "hM1", 1000,0,20000);
+//	TH1D * hM2 = new TH1D("hM2", "hM2", 1000,0,20000);
+//
+//	TH1D * h2P1 = new TH1D("h2P1", "h2P1", 1000,0,20000);
+//	TH1D * h2P2 = new TH1D("h2P2", "h2P2", 1000,0,20000);
+//	TH1D * h2M1 = new TH1D("h2M1", "h2M1", 1000,0,20000);
+//	TH1D * h2M2 = new TH1D("h2M2", "h2M2", 1000,0,20000);
 
-	TH1D * hP1 = new TH1D("hP1", "hP1", 1000,0,20000);
-	TH1D * hP2 = new TH1D("hP2", "hP2", 1000,0,20000);
-	TH1D * hM1 = new TH1D("hM1", "hM1", 1000,0,20000);
-	TH1D * hM2 = new TH1D("hM2", "hM2", 1000,0,20000);
-
-	TH1D * h2P1 = new TH1D("h2P1", "h2P1", 1000,0,20000);
-	TH1D * h2P2 = new TH1D("h2P2", "h2P2", 1000,0,20000);
-	TH1D * h2M1 = new TH1D("h2M1", "h2M1", 1000,0,20000);
-	TH1D * h2M2 = new TH1D("h2M2", "h2M2", 1000,0,20000);
-
-	trV->Draw("hZDCP_HAD1[4]>>hP1(1000,0,20000)", P_select&&P1nT);
-	trV->Draw("hZDCP_HAD2[4]>>hP2(1000,0,20000)", P_select&&P1nT);
-
-	trV->Draw("hZDCM_HAD1[4]>>hM1(1000,0,20000)", M_select&&M1nT);
-	trV->Draw("hZDCM_HAD2[4]>>hM2(1000,0,20000)", M_select&&M1nT);
-
-	trV->Draw("hZDCP_HAD1[4]>>h2P1(1000,0,20000)", P_select&&P1nT);
-	trV->Draw("hZDCP_HAD2[4]>>h2P2(1000,0,20000)", P_select&&P1nT);
-
-	trV->Draw("hZDCM_HAD1[4]>>h2M1(1000,0,20000)", M_select&&M1nT);
-	trV->Draw("hZDCM_HAD2[4]>>h2M2(1000,0,20000)", M_select&&M1nT);
-
-	TFile * fsave = new TFile("test.root", "recreate");
-	hHad->Write();
-	hHadR->Write();
-	hP1->Write();
-	hP2->Write();
-	hM1->Write();
-	hM2->Write();
-
-	h2P1->Write();
-	h2P2->Write();
-	h2M1->Write();
-	h2M2->Write();
+//	trV->Draw("hZDCP_HAD1[4]>>hP1(1000,0,20000)", P_select&&P1nT);
+//	trV->Draw("hZDCP_HAD2[4]>>hP2(1000,0,20000)", P_select&&P1nT);
+//
+//	trV->Draw("hZDCM_HAD1[4]>>hM1(1000,0,20000)", M_select&&M1nT);
+//	trV->Draw("hZDCM_HAD2[4]>>hM2(1000,0,20000)", M_select&&M1nT);
+//
+//	trV->Draw("hZDCP_HAD1[4]>>h2P1(1000,0,20000)", P_select&&P1nT);
+//	trV->Draw("hZDCP_HAD2[4]>>h2P2(1000,0,20000)", P_select&&P1nT);
+//
+//	trV->Draw("hZDCM_HAD1[4]>>h2M1(1000,0,20000)", M_select&&M1nT);
+//	trV->Draw("hZDCM_HAD2[4]>>h2M2(1000,0,20000)", M_select&&M1nT);
+//
+//	TFile * fsave = new TFile("test.root", "recreate");
+//	hHad->Write();
+//	hHadR->Write();
+//	hP1->Write();
+//	hP2->Write();
+//	hM1->Write();
+//	hM2->Write();
+//
+//	h2P1->Write();
+//	h2P2->Write();
+//	h2M1->Write();
+//	h2M2->Write();
 
 //	trV->Draw("P_NpeakT>>hHad", P_select, "Goff");
 //	hHad->Write("P_NpeakT");

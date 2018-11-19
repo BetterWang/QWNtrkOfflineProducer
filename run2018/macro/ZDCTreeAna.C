@@ -45,19 +45,22 @@ double P3nT2 = 24000.;
 double M3nT1 = 30000.;
 double M3nT2 = 42000.;
 
-void loadTree(TChain* trV);
+void loadTree(TChain* trV, string input);
 int peakTS(double* ch);
 
 void
-ZDCTreeAna(string s = "ana_ZB.root")
+ZDCTreeAna(string input, string s = "test.root")
 {
 	TChain * trV = new TChain("trV");
-	loadTree(trV);
+	loadTree(trV, input);
 
 	TH1D* hNpeakP = new TH1D("hNpeakP", "hNpeakP", 1000, 0, 1000000);
 	TH1D* hNpeakM = new TH1D("hNpeakM", "hNpeakM", 1000, 0, 1000000);
 	TH1D* hNpeakPAll = new TH1D("hNpeakPAll", "hNpeakPAll", 1000, 0, 1000000);
 	TH1D* hNpeakMAll = new TH1D("hNpeakMAll", "hNpeakMAll", 1000, 0, 1000000);
+
+	TH2D* hNpeakPM = new TH2D("hNpeakPM", "hNpeakPM", 1000, 0, 1000000, 1000, 0, 1000000);
+	TH2D* hNpeakPMAll = new TH2D("hNpeakPMAll", "hNpeakPMAll", 1000, 0, 1000000, 1000, 0, 1000000);
 
 	TH1D* hP1NEM[5];
 	TH1D* hM1NEM[5];
@@ -363,9 +366,15 @@ ZDCTreeAna(string s = "ana_ZB.root")
 
 
 		hNpeakPAll->Fill(P_NpeakT);
-		hNpeakMAll->Fill(P_NpeakT);
+		hNpeakMAll->Fill(M_NpeakT);
+		hNpeakPMAll->Fill(P_NpeakT, M_NpeakT);
+
 		if ( P_select ) hNpeakP->Fill(P_NpeakT);
 		if ( M_select ) hNpeakM->Fill(M_NpeakT);
+
+		if ( P_select and M_select ) {
+			hNpeakPM->Fill(P_NpeakT, M_NpeakT);
+		}
 
 		if ( P_select and bP1nT ) {
 			for ( int i = 0; i < 5; i++ ) {
@@ -489,10 +498,13 @@ ZDCTreeAna(string s = "ana_ZB.root")
 	TFile * fsave = new TFile(s.c_str(), "recreate");
 	hNpeakP->Write();
 	hNpeakM->Write();
+	hNpeakPM->Write();
 	hNpeakPAll->Write();
 	hNpeakMAll->Write();
+	hNpeakPMAll->Write();
+	auto fEM = fsave->mkdir("EM");
+	fEM->cd();
 	for ( int i = 0; i < 5; i++ ) {
-
 		hP1NEM[i] ->Write();
 		hM1NEM[i] ->Write();
 		hPAllEM[i]->Write();
@@ -500,6 +512,8 @@ ZDCTreeAna(string s = "ana_ZB.root")
 		hPIncEM[i]->Write();
 		hMIncEM[i]->Write();
 	}
+	auto fHad = fsave->mkdir("HAD");
+	fHad->cd();
 	for ( int i = 0; i < 4; i++ ) {
 		hP1NHAD[i] ->Write();
 		hM1NHAD[i] ->Write();
@@ -520,6 +534,8 @@ ZDCTreeAna(string s = "ana_ZB.root")
 		hPIncHAD[i]->Write();
 		hMIncHAD[i]->Write();
 	}
+	auto fRPD = fsave->mkdir("RPD");
+	fRPD->cd();
 	for ( int i = 0; i < 16; i++ ) {
 		hP1NRPD[i] ->Write();
 		hM1NRPD[i] ->Write();
@@ -531,76 +547,9 @@ ZDCTreeAna(string s = "ana_ZB.root")
 }
 
 
-void loadTree(TChain* trV)
+void loadTree(TChain* trV, string input)
 {
-	/*
-	trV->AddFile("ZDCTree/zdc_326477_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326477_normedMB9Tree.root/zdcana/fC/trV");
-
-	trV->AddFile("ZDCTree/zdc_326478_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB9Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB10Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB11Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB12Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB13Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB14Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB15Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB16Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB17Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB18Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326478_normedMB19Tree.root/zdcana/fC/trV");
-
-	trV->AddFile("ZDCTree/zdc_326479_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326479_normedMB9Tree.root/zdcana/fC/trV");
-
-	trV->AddFile("ZDCTree/zdc_326480_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326480_normedMB9Tree.root/zdcana/fC/trV");
-
-	trV->AddFile("ZDCTree/zdc_326482_normedMB0Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB1Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB2Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB3Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB4Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB5Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB6Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB7Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB8Tree.root/zdcana/fC/trV");
-	trV->AddFile("ZDCTree/zdc_326482_normedMB9Tree.root/zdcana/fC/trV");
-	*/
-	//trV->AddFile("/eos/cms/store/group/phys_heavyions/qwang/ZDC2018/ZDCPedTree/zdc_326537_normedTree.root/zdcana/fC/trV");
-	trV->Add("ZDC2018/ZDCZBTree/*.root/zdcana/fC/trV");
+	trV->Add( (string("ZDC2018/") + input + "/*.root/zdcana/fC/trV").c_str() );
 
 //	trV->SetMakeClass(1);
 }

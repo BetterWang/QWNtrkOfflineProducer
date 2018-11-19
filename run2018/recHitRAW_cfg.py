@@ -69,8 +69,14 @@ options.register('bPedestal',
 		VarParsing.VarParsing.varType.bool,
 		"Run pedestal calibratoin.")
 
+options.register('bCent',
+		False, # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.bool,
+		"Do Centrality Tree.")
+
 options.register('Json',
-		'', # default value
+		'/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/HI/DCSOnly/json_DCSONLY_HI.txt', # default value
 		VarParsing.VarParsing.multiplicity.singleton,
 		VarParsing.VarParsing.varType.string,
 		"Json.")
@@ -122,8 +128,8 @@ if options.source=='PoolSource':
 	skipEvents=cms.untracked.uint32(options.skipEvents)
         )
     if options.Json != '':
-       process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange(options.Json)
-    #   import PhysicsTools.PythonAnalysis.LumiList as LumiList
+       import FWCore.PythonUtilities.LumiList as LumiList
+       process.source.lumisToProcess = LumiList.LumiList(filename = options.Json).getVLuminosityBlockRange()
 elif options.source=='B904':
     infile = "file:"+options.runInputDir+"/run"+runNumber+"/B904_Integration_"+runNumber+'.root'
     print infile
@@ -226,6 +232,9 @@ if options.rawTag == '':
     process.digis = cms.Sequence()
 else:
     process.digis = cms.Sequence(process.hcalDigis)
+    if options.bCent:
+	    options.bCent = False
+	    print ' --> Turning off bCent. It is not there.'
 
 # event info
 process.QWInfo = cms.EDProducer('QWEventInfoProducer')
@@ -279,8 +288,46 @@ process.zdcped = cms.EDAnalyzer('QWZDC2018Calib',
                 srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
                 srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId')
                 )
-
 process.ped = cms.Sequence(process.zdcped)
+
+process.QWcent = cms.EDProducer('QWCentrality2018Producer',
+		Src = cms.untracked.InputTag('hiCentrality')
+		)
+process.centTree = cms.EDAnalyzer('QWDoubleTreeMaker',
+		src = cms.untracked.InputTag('QWcent'),
+		vTag = cms.untracked.vstring(
+			"etHFhitSum",
+			"etHFhitSumPlus",
+			"etHFhitSumMinus",
+			"etHFtowerSum",
+			"etHFtowerSumPlus",
+			"etHFtowerSumMinus",
+			"etHFtruncated",
+			"etHFtruncatedPlus",
+			"etHFtruncatedMinus",
+			"etEESum",
+			"etEESumPlus",
+			"etEESumMinus",
+			"etEEtruncated",
+			"etEEtruncatedPlus",
+			"etEEtruncatedMinus",
+			"etEBSum",
+			"etEcalSum",
+			"etEBtruncated",
+			"etEcalTrancated",
+			"zdcSum",
+			"zdcSumPlus",
+			"zdcSumMinus",
+			"pixelMultiplicity",
+			"trackMultiplicity",
+			"ntracksPtCut",
+			"ntracksEtaCut",
+			"ntracksEtaPtCut",
+			"nPixelTracks",
+			"etMidRapiditySum")
+		)
+process.cent = cms.Sequence( process.QWcent * process.centTree )
+
 
 process.digiPath = cms.Path(
     process.hltSelect *
@@ -295,6 +342,9 @@ process.digiPath = cms.Path(
 
 #if options.bTree:
 #	process.digiPath += process.BXTree
+
+if options.bTree and options.bCent:
+	process.digiPath += process.cent
 
 if options.bPedestal:
 	process.digiPath += process.ped

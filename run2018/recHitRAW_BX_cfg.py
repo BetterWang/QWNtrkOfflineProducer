@@ -85,6 +85,12 @@ options.register('BX',
 		VarParsing.VarParsing.varType.string,
 		"BX selection")
 
+options.register('Json',
+		'/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/HI/DCSOnly/json_DCSONLY_HI.txt', # default value
+		VarParsing.VarParsing.multiplicity.singleton,
+		VarParsing.VarParsing.varType.string,
+		"Json.")
+
 options.parseArguments()
 
 
@@ -119,6 +125,9 @@ if options.source=='PoolSource':
         fileNames = infile,
 	skipEvents=cms.untracked.uint32(options.skipEvents)
         )
+    if options.Json != '':
+       import FWCore.PythonUtilities.LumiList as LumiList
+       process.source.lumisToProcess = LumiList.LumiList(filename = options.Json).getVLuminosityBlockRange()
 elif options.source=='B904':
     infile = "file:"+options.runInputDir+"/run"+runNumber+"/B904_Integration_"+runNumber+'.root'
     print infile
