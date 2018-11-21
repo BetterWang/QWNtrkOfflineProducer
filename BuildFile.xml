@@ -9,6 +9,7 @@
 <use name="DataFormats/TrackReco"/>
 <use name="DataFormats/L1Trigger"/>
 <use name="DataFormats/L1TGlobal"/>
+<use name="L1Trigger/L1TGlobal"/>
 <use name="DataFormats/ParticleFlowCandidate"/>
 <use name="DataFormats/HepMCCandidate"/>
 <use name="DataFormats/CaloTowers"/>

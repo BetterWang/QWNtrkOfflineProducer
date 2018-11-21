@@ -239,7 +239,7 @@ else:
 # event info
 process.QWInfo = cms.EDProducer('QWEventInfoProducer')
 process.QWBXTree = cms.EDAnalyzer('QWDTagTreeMaker',
-		vTag = cms.untracked.VInputTag( cms.untracked.InputTag('QWInfo', 'BX') )
+		vTag = cms.untracked.VInputTag( cms.untracked.InputTag('QWInfo', 'BX'), cms.untracked.InputTag('QWInfo', 'EventId'), cms.untracked.InputTag('QWInfo', 'RunId') )
 	)
 process.BXTree = cms.Sequence( process.QWInfo * process.QWBXTree )
 
@@ -340,8 +340,8 @@ process.digiPath = cms.Path(
     process.zdcana
 )
 
-#if options.bTree:
-#	process.digiPath += process.BXTree
+if options.bTree:
+	process.digiPath += process.BXTree
 
 if options.bTree and options.bCent:
 	process.digiPath += process.cent
