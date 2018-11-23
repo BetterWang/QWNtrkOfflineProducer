@@ -102,7 +102,7 @@ options.parseArguments()
 
 rawTag    = cms.InputTag(options.rawTag)
 runNumber = str(options.runNumber)
-GT        = "103X_dataRun2_Prompt_v2"
+GT        = "103X_dataRun2_HLT_v1"
 
 
 #-----------------------------------
@@ -112,21 +112,6 @@ process = cms.Process('MyTree',eras.Run2_2018_pp_on_AA)
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = GT
-process.GlobalTag.snapshotTime = cms.string("9999-12-31 23:59:59.000")
-process.GlobalTag.toGet.extend([
-    cms.PSet(record = cms.string("HeavyIonRcd"),
-        tag = cms.string("CentralityTable_HFtowers200_DataPbPb_periHYDJETshape_run2v1031x02_offline"),
-        connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-        label = cms.untracked.string("HFtowers")
-        ),
-    ])
-
-process.load("RecoHI.HiCentralityAlgos.CentralityBin_cfi")
-process.centralityBin.Centrality = cms.InputTag("hiCentrality")
-process.centralityBin.centralityVariable = cms.string("HFtowers")
-process.dbCentBin = cms.EDProducer('QWInt2Double',
-		src = cms.untracked.InputTag('centralityBin', 'HFtowers')
-	)
 
 #-----------------------------------
 # Input source
@@ -238,14 +223,10 @@ else:
 #-----------------------------------------
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load("EventFilter.HcalRawToDigi.HcalRawToDigi_cfi")
-process.load('Configuration.StandardSequences.MagneticField_38T_cff')
-
 
 
 #set digi and analyzer
 process.hcalDigis.InputLabel = rawTag
-
-process.eventSelection = cms.Sequence()
 
 if options.rawTag == '':
     process.digis = cms.Sequence()
@@ -255,22 +236,12 @@ else:
 	    options.bCent = False
 	    print ' --> Turning off bCent. It is not there.'
 
-
-
 # event info
 process.QWInfo = cms.EDProducer('QWEventInfoProducer')
 process.QWBXTree = cms.EDAnalyzer('QWDTagTreeMaker',
-		vTag = cms.untracked.VInputTag(
-			cms.untracked.InputTag('QWInfo', 'BX'),
-			cms.untracked.InputTag('QWInfo', 'EventId'),
-			cms.untracked.InputTag('QWInfo', 'RunId')
-			)
+		vTag = cms.untracked.VInputTag( cms.untracked.InputTag('QWInfo', 'BX'), cms.untracked.InputTag('QWInfo', 'EventId'), cms.untracked.InputTag('QWInfo', 'RunId') )
 	)
-
-process.BXTree = cms.Sequence( process.centralityBin * process.dbCentBin * process.QWInfo * process.QWBXTree )
-
-if options.rawTag == '':
-	process.QWBXTree.vTag.append(cms.untracked.InputTag('dbCentBin'))
+process.BXTree = cms.Sequence( process.QWInfo * process.QWBXTree )
 
 # ZDC info
 process.load('QWZDC2018Producer_cfi')
@@ -357,16 +328,43 @@ process.centTree = cms.EDAnalyzer('QWDoubleTreeMaker',
 		)
 process.cent = cms.Sequence( process.QWcent * process.centTree )
 
+process.QWL1 = cms.EDAnalyzer('QWL1TAnalyzer',
+		l1tStage2uGtSource = cms.untracked.InputTag('gtStage2Digis')
+		)
+process.gtStage2Digis = cms.EDProducer("L1TRawToDigi",
+    InputLabel = cms.InputTag(options.rawTag),
+    FedIds = cms.vint32(1404),
+    MinFeds = cms.uint32(1),
+    Setup = cms.string('stage2::GTSetup')
+)
+
+process.hltanalysis = cms.EDAnalyzer('HLTBitAnalyzer',
+    HLTProcessName = cms.string('HLT'),
+    hltresults = cms.InputTag('TriggerResults::HLT'),
+    l1results = cms.InputTag('gtStage2Digis'),
+    UseTFileService = cms.untracked.bool(True),
+    RunParameters = cms.PSet(
+        isData = cms.untracked.bool(True)),
+    dummyBranches = cms.untracked.vstring(),
+
+    mctruth = cms.InputTag(''),
+    genEventInfo = cms.InputTag(''),
+    OfflinePrimaryVertices0 = cms.InputTag(''),
+    simhits = cms.InputTag(''),
+)
 
 process.digiPath = cms.Path(
     process.hltSelect *
-    process.digis *
-    process.zdcdigi *
+#    process.digis *
+#    process.zdcdigi *
 #    process.zdcADCFilter *
 #    process.QWInfo *
 #    process.zdcBX *
 #    process.zdccalibana *
-    process.zdcana
+#    process.zdcana *
+    process.gtStage2Digis *
+#    process.hltanalysis *
+    process.QWL1
 )
 
 if options.bTree:
@@ -382,24 +380,10 @@ process.TFileService = cms.Service("TFileService",
 		fileName = cms.string('zdc_'+runNumber+options.outputTag+'.root')
 		)
 
-if options.rawTag == '':
-	process.load('HeavyIonsAnalysis.Configuration.collisionEventSelection_cff')
-	process.load('HeavyIonsAnalysis.Configuration.hfCoincFilter_cff')
-	process.pprimaryVertexFilter = cms.Path(process.primaryVertexFilter)
-	process.phfCoincFilter2Th4 = cms.Path(process.hfCoincFilter2Th4)
-	process.pclusterCompatibilityFilter = cms.Path(process.clusterCompatibilityFilter)
-	process.QWfilter = cms.EDAnalyzer('QWFilterAnalyzer',
-			hltresults = cms.InputTag("TriggerResults","","MyTree"),
-			superFilters = cms.vstring('digiPath')
-		)
-	process.pAna = cms.EndPath(process.QWfilter)
-
 process.output = cms.OutputModule(
 		'PoolOutputModule',
 		outputCommands = cms.untracked.vstring("drop *",
-			"keep *_zdcdigi_*_MyTree",
-			"keep *_*_ZDC_MyTree",
-			"keep *_TriggerResults_*_MyTree",
+			"keep *_*_*_MyTree",
 			),
 		SelectEvents = cms.untracked.PSet(
 			SelectEvents = cms.vstring('digiPath')
