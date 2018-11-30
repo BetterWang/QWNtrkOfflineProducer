@@ -1,13 +1,16 @@
 {
 	TChain * trV = new TChain("trV");
+	TChain * trADC = new TChain("trADC");
 	TChain * trC = new TChain("trC");
 //	TFile * f = new TFile("Npeak_Study.root", "recreate");
 
 
-	trV->Add("ZDC2018/ZDCMBCentTree/*.root/zdcana/fC/trV");
-	trC->Add("ZDC2018/ZDCMBCentTree/*.root/centTree/trV");
+	trV->  Add("zdc_326790_MBCent*.root/zdcana/fC/trV");
+	trADC->Add("zdc_326790_MBCent*.root/zdcana/ADC/trV");
+	trC->  Add("zdc_326790_MBCent*.root/centTree/trV");
 
 	trV->AddFriend(trC);
+	trV->AddFriend(trADC);
 
 	TH1D * hHad  = new TH1D("hHad",  "hHad", 1000, 0, 1000000);
 	TH1D * hHadR = new TH1D("hHadR", "hHad", 1000, 0, 1000000);

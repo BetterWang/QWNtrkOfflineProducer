@@ -45,14 +45,59 @@ double P3nT2 = 24000.;
 double M3nT1 = 30000.;
 double M3nT2 = 42000.;
 
+/*
+double calib_PEM1 = 0.63303993;
+double calib_PEM2 = 0.70174452;
+double calib_PEM3 = 1.;
+double calib_PEM4 = 0.76402055;
+double calib_PEM5 = 0.67015023;
+
+double calib_MEM1 = 0.57976449;
+double calib_MEM2 = 0.68429638;
+double calib_MEM3 = 1.;
+double calib_MEM4 = 0.77988718;
+double calib_MEM5 = 0.68628745;
+*/
+double calib_PEM1 = 1.;
+double calib_PEM2 = 1.;
+double calib_PEM3 = 1.;
+double calib_PEM4 = 1.;
+double calib_PEM5 = 1.;
+
+double calib_MEM1 = 1.;
+double calib_MEM2 = 1.;
+double calib_MEM3 = 1.;
+double calib_MEM4 = 1.;
+double calib_MEM5 = 1.;
+
+double calib_PEM[6] = {0, calib_PEM1, calib_PEM2, calib_PEM3, calib_PEM4, calib_PEM5};
+double calib_MEM[6] = {0, calib_MEM1, calib_MEM2, calib_MEM3, calib_MEM4, calib_MEM5};
+
 void loadTree(TChain* trV, string input);
 int peakTS(double* ch);
 
 void
-ZDCTreeAna(string input, string s = "test.root")
+ZDCTreeAna(string input = "", string s = "test.root")
 {
 	TChain * trV = new TChain("trV");
-	loadTree(trV, input);
+	TChain * trF = new TChain("trF");
+//	loadTree(trV, input);
+//
+	trV->Add( (input + "/zdcana/fC/trV").c_str() );
+	trF->Add( (input + "/QWfilter/trV").c_str() );
+	trV->AddFriend(trF);
+
+	Int_t           digiPath;
+	Int_t           pprimaryVertexFilter;
+	Int_t           phfCoincFilter2Th4;
+	Int_t           pclusterCompatibilityFilter;
+
+	trF->SetBranchAddress("digiPath", &digiPath);
+	trF->SetBranchAddress("pprimaryVertexFilter", &pprimaryVertexFilter);
+	trF->SetBranchAddress("phfCoincFilter2Th4", &phfCoincFilter2Th4);
+	trV->SetBranchAddress("pclusterCompatibilityFilter", &pclusterCompatibilityFilter);
+
+
 
 	TH1D* hNpeakP = new TH1D("hNpeakP", "hNpeakP", 1000, 0, 1000000);
 	TH1D* hNpeakM = new TH1D("hNpeakM", "hNpeakM", 1000, 0, 1000000);
@@ -318,6 +363,10 @@ ZDCTreeAna(string input, string s = "test.root")
 	int idx = 0;
 	while ( trV->GetEntry(idx) ) {
 		if (idx%1000 == 0) cout << " --> idx = " << idx << endl;
+		//if ( (!pprimaryVertexFilter) or (!phfCoincFilter2Th4) or (!pclusterCompatibilityFilter) ) {
+		//	idx++;
+		//	continue;
+		//}
 		double P_HAD[5] = { 0,
 			hZDCP_HAD1[4] + hZDCP_HAD1[5],
 			hZDCP_HAD2[4] + hZDCP_HAD2[5],
@@ -378,7 +427,7 @@ ZDCTreeAna(string input, string s = "test.root")
 
 		if ( P_select and bP1nT ) {
 			for ( int i = 0; i < 5; i++ ) {
-				hP1NEM[i]->Fill(P_EM[i+1]);
+				hP1NEM[i]->Fill(P_EM[i+1] * calib_PEM[i+1]);
 			}
 			for ( int i = 0; i < 4; i++ ) {
 				hP1NHAD[i]->Fill(P_HAD[i+1]);
@@ -415,7 +464,7 @@ ZDCTreeAna(string input, string s = "test.root")
 
 		if ( P_select ) {
 			for ( int i = 0; i < 5; i++ ) {
-				hPAllEM[i]->Fill(P_EM[i+1]);
+				hPAllEM[i]->Fill(P_EM[i+1] * calib_PEM[i+1]);
 			}
 			for ( int i = 0; i < 4; i++ ) {
 				hPAllHAD[i]->Fill(P_HAD[i+1]);
@@ -425,7 +474,7 @@ ZDCTreeAna(string input, string s = "test.root")
 			}
 		}
 		for ( int i = 0; i < 5; i++ ) {
-			hPIncEM[i]->Fill(P_EM[i+1]);
+			hPIncEM[i]->Fill(P_EM[i+1] * calib_PEM[i+1]);
 		}
 		for ( int i = 0; i < 4; i++ ) {
 			hPIncHAD[i]->Fill(P_HAD[i+1]);
@@ -436,7 +485,7 @@ ZDCTreeAna(string input, string s = "test.root")
 
 		if ( M_select and bM1nT ) {
 			for ( int i = 0; i < 5; i++ ) {
-				hM1NEM[i]->Fill(M_EM[i+1]);
+				hM1NEM[i]->Fill(M_EM[i+1] * calib_MEM[i+1]);
 			}
 			for ( int i = 0; i < 4; i++ ) {
 				hM1NHAD[i]->Fill(M_HAD[i+1]);
@@ -473,7 +522,7 @@ ZDCTreeAna(string input, string s = "test.root")
 
 		if ( M_select ) {
 			for ( int i = 0; i < 5; i++ ) {
-				hMAllEM[i]->Fill(M_EM[i+1]);
+				hMAllEM[i]->Fill(M_EM[i+1] * calib_MEM[i+1]);
 			}
 			for ( int i = 0; i < 4; i++ ) {
 				hMAllHAD[i]->Fill(M_HAD[i+1]);
@@ -483,7 +532,7 @@ ZDCTreeAna(string input, string s = "test.root")
 			}
 		}
 		for ( int i = 0; i < 5; i++ ) {
-			hMIncEM[i]->Fill(M_EM[i+1]);
+			hMIncEM[i]->Fill(M_EM[i+1] * calib_MEM[i+1]);
 		}
 		for ( int i = 0; i < 4; i++ ) {
 			hMIncHAD[i]->Fill(M_HAD[i+1]);
