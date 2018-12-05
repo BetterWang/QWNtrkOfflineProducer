@@ -25,9 +25,8 @@ private:
 	///
 
 	edm::InputTag   srcDid_;
-	edm::InputTag	srcfC_;
+	edm::InputTag	srcChargeSum_;
 
-	int		SOI_;
 	double		dPHad1_;
 	double		dPHad2_;
 	double		dPHad3_;
@@ -48,14 +47,13 @@ private:
 	double		dMEM4_;
 	double		dMEM5_;
 
-	map<HcalZDCDetId, double&>	calib_;
+	map<uint32_t, double>	calib_;
 };
 
 
 QWZDC2018CalibProducer::QWZDC2018CalibProducer(const edm::ParameterSet& pset) :
 	srcDid_(pset.getUntrackedParameter<edm::InputTag>("srcDetId")),
 	srcChargeSum_(pset.getUntrackedParameter<edm::InputTag>("srcChargeSum")),
-	SOI_(pset.getUntrackedParameter<int>("SOI")),
 	dPHad1_(pset.getUntrackedParameter<double>("PHad1")),
 	dPHad2_(pset.getUntrackedParameter<double>("PHad2")),
 	dPHad3_(pset.getUntrackedParameter<double>("PHad3")),
@@ -76,29 +74,29 @@ QWZDC2018CalibProducer::QWZDC2018CalibProducer(const edm::ParameterSet& pset) :
 	dMEM5_(pset.getUntrackedParameter<double>("MEM5"))
 {
 	consumes<std::vector<double>>(srcDid_);
-	consumes<std::vector<double>>(srcfC_);
+	consumes<std::vector<double>>(srcChargeSum_);
 
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, true, 1)] = dPEM1_;
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, true, 2)] = dPEM2_;
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, true, 3)] = dPEM3_;
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, true, 4)] = dPEM4_;
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, true, 5)] = dPEM5_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, true, 1))()] = dPEM1_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, true, 2))()] = dPEM2_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, true, 3))()] = dPEM3_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, true, 4))()] = dPEM4_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, true, 5))()] = dPEM5_;
 
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, false, 1)] = dMEM1_;
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, false, 2)] = dMEM2_;
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, false, 3)] = dMEM3_;
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, false, 4)] = dMEM4_;
-	calib_[HcalZDCDetId(HcalZDCDetId::EM, false, 5)] = dMEM5_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, false, 1))()] = dMEM1_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, false, 2))()] = dMEM2_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, false, 3))()] = dMEM3_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, false, 4))()] = dMEM4_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::EM, false, 5))()] = dMEM5_;
 
-	calib_[HcalZDCDetId(HcalZDCDetId::HAD, true, 1)] = dPHad1_;
-	calib_[HcalZDCDetId(HcalZDCDetId::HAD, true, 2)] = dPHad2_;
-	calib_[HcalZDCDetId(HcalZDCDetId::HAD, true, 3)] = dPHad3_;
-	calib_[HcalZDCDetId(HcalZDCDetId::HAD, true, 4)] = dPHad4_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::HAD, true, 1))()] = dPHad1_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::HAD, true, 2))()] = dPHad2_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::HAD, true, 3))()] = dPHad3_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::HAD, true, 4))()] = dPHad4_;
 
-	calib_[HcalZDCDetId(HcalZDCDetId::HAD, false, 1)] = dPHad1_;
-	calib_[HcalZDCDetId(HcalZDCDetId::HAD, false, 2)] = dPHad2_;
-	calib_[HcalZDCDetId(HcalZDCDetId::HAD, false, 3)] = dPHad3_;
-	calib_[HcalZDCDetId(HcalZDCDetId::HAD, false, 4)] = dPHad4_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::HAD, false, 1))()] = dPHad1_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::HAD, false, 2))()] = dPHad2_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::HAD, false, 3))()] = dPHad3_;
+	calib_[(HcalZDCDetId(HcalZDCDetId::HAD, false, 4))()] = dPHad4_;
 
 	produces<double>("sumP");
 	produces<double>("sumM");
@@ -116,17 +114,20 @@ void QWZDC2018CalibProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
 	Handle<std::vector<double> > hDid;
 	Handle<std::vector<double>> hChargeSum;
 
+	iEvent.getByLabel(srcDid_, hDid);
+	iEvent.getByLabel(srcChargeSum_, hChargeSum);
+
 	double sumP = 0.;
 	double sumM = 0.;
 
 	int idx = 0;
 	for ( auto it = hDid->begin(); it != hDid->end(); it++ ) {
-		HcalDetId did(uint32_t(*it));
-		if ( (calib_.find(did) != calib_.end()) and (did.section() == HcalZDCDetId::EM or did.section() == HcalZDCDetId::HAD) ) {
+		HcalZDCDetId did = HcalZDCDetId( uint32_t(*it) );
+		if ( (calib_.find(did()) != calib_.end()) and (did.section() == HcalZDCDetId::EM or did.section() == HcalZDCDetId::HAD) ) {
 			if ( did.zside() > 0 ) {
-				sumP += (*hChargeSum)[idx] * calib_[did];
+				sumP += (*hChargeSum)[idx] * calib_[did()];
 			} else {
-				sumM += (*hChargeSum)[idx] * calib_[did];
+				sumM += (*hChargeSum)[idx] * calib_[did()];
 			}
 		}
 		idx++;

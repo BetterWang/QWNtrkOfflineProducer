@@ -355,13 +355,13 @@ process.hltanalysis = cms.EDAnalyzer('HLTBitAnalyzer',
 
 process.digiPath = cms.Path(
     process.hltSelect *
-#    process.digis *
-#    process.zdcdigi *
-#    process.zdcADCFilter *
+    process.digis *
+    process.zdcdigi *
+    process.zdcADCFilter *
 #    process.QWInfo *
 #    process.zdcBX *
 #    process.zdccalibana *
-#    process.zdcana *
+    process.zdcana *
     process.gtStage2Digis *
 #    process.hltanalysis *
     process.QWL1

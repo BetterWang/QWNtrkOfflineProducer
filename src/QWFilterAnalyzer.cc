@@ -120,6 +120,7 @@ QWFilterAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
   }
   bool saveEvent = 1;
 
+  bool pathA = false;
   for (int itrig = 0; itrig != ntrigs; ++itrig){
     std::string trigName=triggerNames.triggerName(itrig);
     bool accept = hltresults->accept(itrig);
@@ -127,8 +128,8 @@ QWFilterAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     for(unsigned int ifilter = 0; ifilter<superFilters_.size(); ++ifilter){
       if(_Debug) cout<<"trigName "<<trigName.data()
 		     <<"    superFilters_[ifilter] "
-		     <<superFilters_[ifilter]<<endl;
-      if(trigName == superFilters_[ifilter]) saveEvent = saveEvent && accept;
+		     <<superFilters_[ifilter] << " accept = " << accept <<endl;
+      if(trigName == superFilters_[ifilter]) pathA = pathA or accept;
     }
 
     if (accept){trigflag[itrig] = 1;}
@@ -141,7 +142,7 @@ QWFilterAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 		<< trigName << " = " << accept << std::endl;
     }
   }
-  if(saveEvent) HltTree->Fill();
+  if(saveEvent and pathA) HltTree->Fill();
 }
 
 
