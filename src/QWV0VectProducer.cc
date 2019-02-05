@@ -22,7 +22,7 @@
 #include "DataFormats/Candidate/interface/VertexCompositeCandidateFwd.h"
 #include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
 
-#include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
+#include "CommonTools/CandUtils/interface/CenterOfMassBooster.h"
 
 #include "TFile.h"
 #include "TH2.h"
@@ -276,12 +276,6 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			and recoVertices[primaryvtx].position().Rho() <= 2.0
 			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
 	}
-	for ( primaryvtx = 0; primaryvtx < recoVertices.size(); primaryvtx++ ) {
-		if ( (!recoVertices[primaryvtx].isFake())
-			and fabs(recoVertices[primaryvtx].z()) <= 25.
-			and recoVertices[primaryvtx].position().Rho() <= 2.0
-			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
-	}
 	if ( primaryvtx == recoVertices.size() ) {
 		iEvent.put(std::move(pphi), std::string("phi"));
 		iEvent.put(std::move(peta), std::string("eta"));
@@ -469,9 +463,9 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 				}
 			}
 			// boostToCM
-			std::cout << " ---> " << __LINE__ << " v0.pdgId() = " << v0.pdgId() << " v0.p4() = " << v0.p4() << std::endl;
-			std::cout << " -> " << __LINE__ << " d0.p4() = " << v0.daughter(0)->p4() << std::endl;
-			std::cout << " -> " << __LINE__ << " d1.p4() = " << v0.daughter(1)->p4() << std::endl;
+			//std::cout << " ---> " << __LINE__ << " v0.pdgId() = " << v0.pdgId() << " v0.p4() = " << v0.p4() << std::endl;
+			//std::cout << " -> " << __LINE__ << " d0.p4() = " << v0.daughter(0)->p4() << std::endl;
+			//std::cout << " -> " << __LINE__ << " d1.p4() = " << v0.daughter(1)->p4() << std::endl;
 			CenterOfMassBooster b(dynamic_cast<reco::Candidate&>(v0));
 			b.set(dynamic_cast<reco::Candidate&>(v0));
 			if ( v0.daughter(0)->charge() > 0 ) {

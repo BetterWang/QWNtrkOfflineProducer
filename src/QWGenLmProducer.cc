@@ -10,7 +10,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 
-#include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
+#include "CommonTools/CandUtils/interface/CenterOfMassBooster.h"
 
 #include "TFile.h"
 #include "TH2.h"
