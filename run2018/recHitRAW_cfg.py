@@ -263,14 +263,25 @@ process.QWBXTree = cms.EDAnalyzer('QWDTagTreeMaker',
 		vTag = cms.untracked.VInputTag(
 			cms.untracked.InputTag('QWInfo', 'BX'),
 			cms.untracked.InputTag('QWInfo', 'EventId'),
-			cms.untracked.InputTag('QWInfo', 'RunId')
+			cms.untracked.InputTag('QWInfo', 'RunId'),
+			cms.untracked.InputTag('dbCentBin'),
+			cms.untracked.InputTag('HFQ2', 'abs'),
+			cms.untracked.InputTag('HFQ2', 'absp'),
+			cms.untracked.InputTag('HFQ2', 'absm'),
+			cms.untracked.InputTag('HFQ2', 'arg'),
+			cms.untracked.InputTag('HFQ2', 'argp'),
+			cms.untracked.InputTag('HFQ2', 'argm')
 			)
 	)
 
-process.BXTree = cms.Sequence( process.centralityBin * process.dbCentBin * process.QWInfo * process.QWBXTree )
+process.HFQ2 = cms.EDProducer('QWCaloQProducer',
+		caloSrc = cms.untracked.InputTag('towerMaker'),
+		etaMin = cms.untracked.double(3.),
+		etaMax = cms.untracked.double(5.),
+		N = cms.untracked.int32(2)
+	)
 
-if options.rawTag == '':
-	process.QWBXTree.vTag.append(cms.untracked.InputTag('dbCentBin'))
+process.BXTree = cms.Sequence( process.centralityBin * process.dbCentBin * process.QWInfo * process.HFQ2 * process.QWBXTree )
 
 # ZDC info
 process.load('QWZDC2018Producer_cfi')
