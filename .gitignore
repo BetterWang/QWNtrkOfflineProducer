@@ -4,3 +4,9 @@ test/test*.py
 *.pyc
 bin/*
 Tracking
+run2018/*
+!run2018/*.py
+!run2018/README.md
+!run2018/*.txt
+!run2018/*.sh
+!run2018/macro/*.C

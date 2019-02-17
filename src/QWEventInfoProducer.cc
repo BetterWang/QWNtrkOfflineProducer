@@ -52,12 +52,6 @@ void QWEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	double lumi = iEvent.luminosityBlock();
 	double orbit = iEvent.orbitNumber();
 
-	(double(runid));
-	(double(eventid));
-	(double(bx));
-	(double(lumi));
-	(double(orbit));
-
 	iEvent.put(make_unique<double>(double(runid))  , std::string("RunId"));
 	iEvent.put(make_unique<double>(double(eventid)), std::string("EventId"));
 	iEvent.put(make_unique<double>(double(bx))     , std::string("BX"));
