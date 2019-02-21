@@ -67,7 +67,7 @@ QWTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		*(pV_[it]) = *handle;
 	}
 	for ( auto it : Dnames_ ) {
-		Handle<std::vector<double> > handle;
+		Handle<double> handle;
 		iEvent.getByLabel(pDInput_[it], handle);
 		*(pD_[it]) = *handle;
 	}
