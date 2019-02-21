@@ -10,3 +10,6 @@ run2018/*
 !run2018/*.txt
 !run2018/*.sh
 !run2018/macro/*.C
+!run2018/crab
+run2018/crab/*
+!run2018/crab/*.py
