@@ -35,7 +35,8 @@ process.dbCentBin = cms.EDProducer('QWInt2Double',
 # Input source
 #-----------------------------------
 process.source = cms.Source('PoolSource',
-        fileNames = cms.untracked.vstring('file:/eos/cms/store/express/HIRun2018A/HIExpressPhysics/FEVT/Express-v1/000/327/560/00000/4D679B7F-DF95-8843-A904-4C3151DCBD6E.root')
+#        fileNames = cms.untracked.vstring('file:/eos/cms/store/express/HIRun2018A/HIExpressPhysics/FEVT/Express-v1/000/327/560/00000/4D679B7F-DF95-8843-A904-4C3151DCBD6E.root')
+        fileNames = cms.untracked.vstring('/store/hidata/HIRun2018A/HIEmptyBX/AOD/27Feb2019-v1/110000/1F08C08A-E6BB-454F-9E65-90929D0E7224.root')
     )
 
 #-----------
@@ -177,7 +178,7 @@ process.cent = cms.Sequence( process.QWcent * process.centTree )
 
 process.digiPath = cms.Path(
     process.hltSelect *
-    process.eventSelection *
+#    process.eventSelection *
     process.zdcdigi *
     process.zdcana *
     process.seqHFTree *

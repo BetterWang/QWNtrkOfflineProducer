@@ -119,14 +119,41 @@ ZDCTree1NAna(string input = "", string s = "test.root")
 	TH1D* hEM4toHadAM = new TH1D("hEM4toHadAM", "hEM4toHadAM", 1000, 0, 1);
 	TH1D* hEM5toHadAM = new TH1D("hEM5toHadAM", "hEM5toHadAM", 1000, 0, 1);
 
+	TH1D* hEM1_1NP = new TH1D("hEM1_1NP", "hEM1_1NP", 10000, 0, 50000);
+	TH1D* hEM2_1NP = new TH1D("hEM2_1NP", "hEM2_1NP", 10000, 0, 50000);
+	TH1D* hEM3_1NP = new TH1D("hEM3_1NP", "hEM3_1NP", 10000, 0, 50000);
+	TH1D* hEM4_1NP = new TH1D("hEM4_1NP", "hEM4_1NP", 10000, 0, 50000);
+	TH1D* hEM5_1NP = new TH1D("hEM5_1NP", "hEM5_1NP", 10000, 0, 50000);
+
+	TH1D* hEM1_1NM = new TH1D("hEM1_1NM", "hEM1_1NM", 10000, 0, 50000);
+	TH1D* hEM2_1NM = new TH1D("hEM2_1NM", "hEM2_1NM", 10000, 0, 50000);
+	TH1D* hEM3_1NM = new TH1D("hEM3_1NM", "hEM3_1NM", 10000, 0, 50000);
+	TH1D* hEM4_1NM = new TH1D("hEM4_1NM", "hEM4_1NM", 10000, 0, 50000);
+	TH1D* hEM5_1NM = new TH1D("hEM5_1NM", "hEM5_1NM", 10000, 0, 50000);
+
+	TH1D* hEM1NCount200P = new TH1D("hEM1NCount200P", "hEM1NCount200P", 6, 0, 6);
+	TH1D* hEM1NCount200M = new TH1D("hEM1NCount200M", "hEM1NCount200M", 6, 0, 6);
+	TH1D* hEM1NCount1000P = new TH1D("hEM1NCount1000P", "hEM1NCount1000P", 6, 0, 6);
+	TH1D* hEM1NCount1000M = new TH1D("hEM1NCount1000M", "hEM1NCount1000M", 6, 0, 6);
+	TH1D* hEM1NCount2000P = new TH1D("hEM1NCount2000P", "hEM1NCount2000P", 6, 0, 6);
+	TH1D* hEM1NCount2000M = new TH1D("hEM1NCount2000M", "hEM1NCount2000M", 6, 0, 6);
+
 	TH1D* hRPDP[16];
 	TH1D* hRPDM[16];
+	TH1D* hRPDP456[16];
+	TH1D* hRPDM456[16];
+	TH1D* hRPDP4[16];
+	TH1D* hRPDM4[16];
 
 	TH1D* hRPDtoZDCP[16];
 	TH1D* hRPDtoZDCM[16];
 	for ( int i = 0; i < 16; i++ ) {
 		hRPDP[i] = new TH1D(Form("hRPDP_%i", i), Form("hRPDP_%i", i), 10000, 0, 50000);
 		hRPDM[i] = new TH1D(Form("hRPDM_%i", i), Form("hRPDM_%i", i), 10000, 0, 50000);
+		hRPDP456[i] = new TH1D(Form("hRPDP456_%i", i), Form("hRPDP456_%i", i), 10000, 0, 50000);
+		hRPDM456[i] = new TH1D(Form("hRPDM456_%i", i), Form("hRPDM456_%i", i), 10000, 0, 50000);
+		hRPDP4[i] = new TH1D(Form("hRPDP4_%i", i), Form("hRPDP4_%i", i), 10000, 0, 50000);
+		hRPDM4[i] = new TH1D(Form("hRPDM4_%i", i), Form("hRPDM4_%i", i), 10000, 0, 50000);
 
 		hRPDtoZDCP[i] = new TH1D(Form("hRPDtoZDCP_%i", i), Form("hRPDtoZDCP_%i", i), 1000, 0, 1);
 		hRPDtoZDCM[i] = new TH1D(Form("hRPDtoZDCM_%i", i), Form("hRPDtoZDCM_%i", i), 1000, 0, 1);
@@ -310,9 +337,12 @@ ZDCTree1NAna(string input = "", string s = "test.root")
 			hZDCM_EM5[4] + hZDCM_EM5[5] };
 
 		double P_RPD[16], M_RPD[16];
+		double P_RPD456[16], M_RPD456[16];
 		for ( int i = 0; i < 16; i++ ) {
 			P_RPD[i] = lZDCP_RPD[i][4] + lZDCP_RPD[i][5];
 			M_RPD[i] = lZDCM_RPD[i][4] + lZDCM_RPD[i][5];
+			P_RPD456[i] = lZDCP_RPD[i][4] + lZDCP_RPD[i][5] + lZDCP_RPD[i][6];
+			M_RPD456[i] = lZDCM_RPD[i][4] + lZDCM_RPD[i][5] + lZDCM_RPD[i][6];
 		}
 
 
@@ -349,8 +379,38 @@ ZDCTree1NAna(string input = "", string s = "test.root")
 
 			for ( int i = 0; i < 16; i++ ) {
 				hRPDP[i]->Fill(P_RPD[i]);
+				hRPDP456[i]->Fill(P_RPD456[i]);
+				hRPDP4[i]->Fill(lZDCP_RPD[i][4]);
 				hRPDtoZDCP[i]->Fill( P_RPD[i] / P_NpeakT );
 			}
+
+			if ( P_HAD[1] > 2000. ) hEM1_1NP->Fill(P_EM[1]);
+			if ( P_HAD[1] > 2000. ) hEM2_1NP->Fill(P_EM[2]);
+			if ( P_HAD[1] > 2000. ) hEM3_1NP->Fill(P_EM[3]);
+			if ( P_HAD[1] > 2000. ) hEM4_1NP->Fill(P_EM[4]);
+			if ( P_HAD[1] > 2000. ) hEM5_1NP->Fill(P_EM[5]);
+
+			hEM1NCount1000P->Fill(
+					int( P_EM[1] > 1000 ) +
+					int( P_EM[2] > 1000 ) +
+					int( P_EM[3] > 1000 ) +
+					int( P_EM[4] > 1000 ) +
+					int( P_EM[5] > 1000 )
+					);
+			hEM1NCount200P->Fill(
+					int( P_EM[1] > 200 ) +
+					int( P_EM[2] > 200 ) +
+					int( P_EM[3] > 200 ) +
+					int( P_EM[4] > 200 ) +
+					int( P_EM[5] > 200 )
+					);
+			hEM1NCount2000P->Fill(
+					int( P_EM[1] > 2000 ) +
+					int( P_EM[2] > 2000 ) +
+					int( P_EM[3] > 2000 ) +
+					int( P_EM[4] > 2000 ) +
+					int( P_EM[5] > 2000 )
+					);
 		}
 
 		if ( M_select and bM1nT ) {
@@ -370,8 +430,37 @@ ZDCTree1NAna(string input = "", string s = "test.root")
 
 			for ( int i = 0; i < 16; i++ ) {
 				hRPDM[i]->Fill(M_RPD[i]);
+				hRPDM456[i]->Fill(M_RPD456[i]);
+				hRPDM4[i]->Fill(lZDCM_RPD[i][4]);
 				hRPDtoZDCM[i]->Fill( M_RPD[i] / M_NpeakT );
 			}
+			if ( M_HAD[1] > 2000. ) hEM1_1NM->Fill(M_EM[1]);
+			if ( M_HAD[1] > 2000. ) hEM2_1NM->Fill(M_EM[2]);
+			if ( M_HAD[1] > 2000. ) hEM3_1NM->Fill(M_EM[3]);
+			if ( M_HAD[1] > 2000. ) hEM4_1NM->Fill(M_EM[4]);
+			if ( M_HAD[1] > 2000. ) hEM5_1NM->Fill(M_EM[5]);
+
+			hEM1NCount1000M->Fill(
+					int( M_EM[1] > 1000 ) +
+					int( M_EM[2] > 1000 ) +
+					int( M_EM[3] > 1000 ) +
+					int( M_EM[4] > 1000 ) +
+					int( M_EM[5] > 1000 )
+					);
+			hEM1NCount200M->Fill(
+					int( M_EM[1] > 200 ) +
+					int( M_EM[2] > 200 ) +
+					int( M_EM[3] > 200 ) +
+					int( M_EM[4] > 200 ) +
+					int( M_EM[5] > 200 )
+					);
+			hEM1NCount2000M->Fill(
+					int( M_EM[1] > 2000 ) +
+					int( M_EM[2] > 2000 ) +
+					int( M_EM[3] > 2000 ) +
+					int( M_EM[4] > 2000 ) +
+					int( M_EM[5] > 2000 )
+					);
 		}
 
 		idx++;
@@ -413,12 +502,43 @@ ZDCTree1NAna(string input = "", string s = "test.root")
 		hRPDP[i]->Write();
 		hRPDM[i]->Write();
 	}
+	auto fRPD4 = fsave->mkdir("RPD4");
+	fRPD4->cd();
+	for ( int i = 0 ; i < 16; i++ ) {
+		hRPDP4[i]->Write();
+		hRPDM4[i]->Write();
+	}
+	auto fRPD456 = fsave->mkdir("RPD456");
+	fRPD456->cd();
+	for ( int i = 0 ; i < 16; i++ ) {
+		hRPDP456[i]->Write();
+		hRPDM456[i]->Write();
+	}
 	auto fRPDtoZDC = fsave->mkdir("RPDtoZDC");
 	fRPDtoZDC->cd();
 	for ( int i = 0 ; i < 16; i++ ) {
 		hRPDtoZDCP[i]->Write();
 		hRPDtoZDCM[i]->Write();
 	}
+	auto fEM1N = fsave->mkdir("EM1N");
+	fEM1N->cd();
+	hEM1_1NP->Write();
+	hEM2_1NP->Write();
+	hEM3_1NP->Write();
+	hEM4_1NP->Write();
+	hEM5_1NP->Write();
+	hEM1_1NM->Write();
+	hEM2_1NM->Write();
+	hEM3_1NM->Write();
+	hEM4_1NM->Write();
+	hEM5_1NM->Write();
+
+	hEM1NCount200P->Write();
+	hEM1NCount200M->Write();
+	hEM1NCount1000P->Write();
+	hEM1NCount1000M->Write();
+	hEM1NCount2000P->Write();
+	hEM1NCount2000M->Write();
 }
 
 
