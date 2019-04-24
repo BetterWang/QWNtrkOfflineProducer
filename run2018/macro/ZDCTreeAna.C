@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include "RPDEP.h"
 
 using namespace std;
 
@@ -111,9 +112,9 @@ ZDCTreeAna(string input = "", string s = "test.root")
 	TH2D* hEMtoHF2xM[10];
 	TH2D* hEMPtoEMM[10];
 	for ( int c = 0; c < 10; c++ ) {
-		hEMtoHF2xP[c] = new TH2D(Form("hEMtoHF2xP_%i", c), "hEMtoHF2xP", 100, -4, 4, 100, -3.1416, 3.1416);
-		hEMtoHF2xM[c] = new TH2D(Form("hEMtoHF2xM_%i", c), "hEMtoHF2xM", 100, -4, 4, 100, -3.1416, 3.1416);
-		hEMPtoEMM[c]  = new TH2D(Form("hEMPtoEMM_%i", c), "hEMPtoEMM", 100, -4, 4, 100, -4, 4);
+		hEMtoHF2xP[c] = new TH2D(Form("hEMtoHF2xP_%i", c), "hEMtoHF2xP;EM_P;HF2EP_P", 100, -4, 4, 100, -3.1416, 3.1416);
+		hEMtoHF2xM[c] = new TH2D(Form("hEMtoHF2xM_%i", c), "hEMtoHF2xM;EM_P;HF2EP_M", 100, -4, 4, 100, -3.1416, 3.1416);
+		hEMPtoEMM[c]  = new TH2D(Form("hEMPtoEMM_%i", c), "hEMPtoEMM;EM_P;EM_M", 100, -4, 4, 100, -4, 4);
 	}
 
 	TH1D* hNpeakP[10];
@@ -412,6 +413,60 @@ ZDCTreeAna(string input = "", string s = "test.root")
         }
     }
 
+    TH2D * hRPDvsRPD1NP[16][16] = {};
+    TH2D * hRPDvsRPD1NM[16][16] = {};
+    for ( int i = 0; i < 16; i++ ) {
+        for ( int j = i+1; j < 16; j++ ) {
+                hRPDvsRPD1NP[j][i] = new TH2D(Form("hRPDvsRPD1NP_%i_%i", j, i), Form(";PRPD%i;PRPD%i", j, i), 200, 0, 20000, 200, 0, 20000);
+                hRPDvsRPD1NM[j][i] = new TH2D(Form("hRPDvsRPD1NM_%i_%i", j, i), Form(";PRPD%i;PRPD%i", j, i), 200, 0, 20000, 200, 0, 20000);
+        }
+    }
+
+    TH2D * hRPDEP1vsHFEP2P[10];
+    TH2D * hRPDEP1vsHFEP2M[10];
+    TH2D * hRPDEP[10];
+    for ( int c = 0; c < 10; c++ ) {
+        hRPDEP1vsHFEP2P[c] = new TH2D(Form("hRPDEP1vsHFEP2P_%i",c), Form("hRPDEP1vsHFEP2P_%i;RPDEP1P;HFEP2P", c), 100, -3.1416, 3.1416, 100, -3.1416, 3.1416 );
+        hRPDEP1vsHFEP2M[c] = new TH2D(Form("hRPDEP1vsHFEP2M_%i",c), Form("hRPDEP1vsHFEP2M_%i;RPDEP1M;HFEP2M", c), 100, -3.1416, 3.1416, 100, -3.1416, 3.1416 );
+        hRPDEP[c] = new TH2D(Form("hRPDEP_%i",c), Form("hRPDEP_%i;RPDEP1M;RPDEP1P", c), 100, -3.1416, 3.1416, 100, -3.1416, 3.1416 );
+    }
+
+    TH2D * hRPDvsEMP[5][16];
+    TH2D * hRPDvsEMM[5][16];
+    for ( int i = 0; i < 16; i++ ) {
+        for ( int j = 0; j < 5; j++ ) {
+            hRPDvsEMP[j][i] = new TH2D(Form("hRPDvsEMP_%i_%i", j, i), Form("hRPDvsEMP;EMP%i;RPDP%i", j+1, i), 200, 0, 200000, 200, 0, 100000);
+            hRPDvsEMM[j][i] = new TH2D(Form("hRPDvsEMM_%i_%i", j, i), Form("hRPDvsEMM;EMM%i;RPDM%i", j+1, i), 200, 0, 200000, 200, 0, 100000);
+        }
+    }
+
+    TH2D * hRPD2x2PXY[10];
+    TH2D * hRPD2x2MXY[10];
+
+    TH2D * hRPD2x2PMX[10];
+    TH2D * hRPD2x2PMY[10];
+
+    TH1D * hRPD2x2PEP[10];
+    TH1D * hRPD2x2MEP[10];
+
+    TH1D * hHF2EPP[10];
+    TH1D * hHF2EPM[10];
+    for ( int c = 0; c < 10; c++ ) {
+        hRPD2x2PXY[c] = new TH2D( Form("hRPD2x2PXY_%i", c), Form(";RPD2x2PX_%i;RPD2x2PY_%i", c, c), 100, -3., 3., 100, -3, 3.);
+        hRPD2x2MXY[c] = new TH2D( Form("hRPD2x2MXY_%i", c), Form(";RPD2x2MX_%i;RPD2x2MY_%i", c, c), 100, -3., 3., 100, -3, 3.);
+
+        hRPD2x2PMX[c] = new TH2D( Form("hRPD2x2PMX_%i", c), Form(";RPD2x2PX_%i;RPD2x2MX_%i", c, c), 100, -3., 3., 100, -3, 3.);
+        hRPD2x2PMY[c] = new TH2D( Form("hRPD2x2PMY_%i", c), Form(";RPD2x2PY_%i;RPD2x2MY_%i", c, c), 100, -3., 3., 100, -3, 3.);
+
+        hRPD2x2PEP[c] = new TH1D( Form("hRPD2x2PEP_%i", c), Form(";RPD2x2PEP_%i;", c), 100, -3.1416, 3.1416);
+        hRPD2x2MEP[c] = new TH1D( Form("hRPD2x2MEP_%i", c), Form(";RPD2x2MEP_%i;", c), 100, -3.1416, 3.1416);
+
+        hHF2EPP[c] = new TH1D( Form("hHF2EPP_%i", c), Form(";HF2EPP_%i;", c), 100, -3.1416, 3.1416);
+        hHF2EPM[c] = new TH1D( Form("hHF2EPM_%i", c), Form(";HF2EPM_%i;", c), 100, -3.1416, 3.1416);
+
+    }
+
+
 
 	Double_t        hZDCM_EM1[10];
 	Double_t        hZDCM_EM2[10];
@@ -559,6 +614,7 @@ ZDCTreeAna(string input = "", string s = "test.root")
 	int idx = 0;
 	while ( trV->GetEntry(idx) ) {
 		if (idx%1000 == 0) cout << " --> idx = " << idx << endl;
+		//cout << " --> idx = " << idx << endl;
 		int c = int(centBin)/20;
 		hCentBin->Fill(centBin);
 		double P_HAD[5] = { 0,
@@ -699,6 +755,13 @@ ZDCTreeAna(string input = "", string s = "test.root")
 			for ( int i = 0; i < 16; i++ ) {
 				hP1NRPD[c][i]->Fill(P_RPD[i]);
 			}
+            if ( centBin < 100 ) {
+                for ( int i = 0; i < 16; i++ ) {
+                    for ( int j = i+1; j < 16; j++ ) {
+                        hRPDvsRPD1NP[j][i]->Fill(P_RPD[j], P_RPD[i]);
+                    }
+                }
+            }
 		}
 		if ( P_select and bP2nT ) {
 			for ( int i = 0; i < 4; i++ ) {
@@ -757,6 +820,13 @@ ZDCTreeAna(string input = "", string s = "test.root")
 			for ( int i = 0; i < 16; i++ ) {
 				hM1NRPD[c][i]->Fill(M_RPD[i]);
 			}
+            if ( centBin < 100 ) {
+                for ( int i = 0; i < 16; i++ ) {
+                    for ( int j = i+1; j < 16; j++ ) {
+                        hRPDvsRPD1NM[j][i]->Fill(M_RPD[j], M_RPD[i]);
+                    }
+                }
+            }
 		}
 		if ( M_select and bM2nT ) {
 			for ( int i = 0; i < 4; i++ ) {
@@ -877,8 +947,38 @@ ZDCTreeAna(string input = "", string s = "test.root")
             }
         }
 
+        for ( int i = 0; i < 16; i++ ) {
+            for ( int j = 0; j < 5; j++ ) {
+                hRPDvsEMP[j][i]->Fill(P_EM[j+1], P_RPD[i]);
+                hRPDvsEMM[j][i]->Fill(M_EM[j+1], M_RPD[i]);
+            }
+        }
+
+        double PX = 0.;
+        double PY = 0.;
+        double MX = 0.;
+        double MY = 0.;
+        double RPDEP_P = RPDEP2x2(P_RPD, PX, PY, centBin, true);
+        double RPDEP_M = RPDEP2x2(M_RPD, MX, MY, centBin, false);
+
+        hRPDEP1vsHFEP2P[c]->Fill( RPDEP_P, argp_HFQ2 );
+        hRPDEP1vsHFEP2M[c]->Fill( RPDEP_M, argm_HFQ2 );
+        hRPDEP[c]->Fill( RPDEP_M, RPDEP_P );
+
+        hRPD2x2PXY[c]->Fill(PX, PY);
+        hRPD2x2MXY[c]->Fill(MX, MY);
+
+        hRPD2x2PMX[c]->Fill(PX, MX);
+        hRPD2x2PMY[c]->Fill(PY, MY);
+
+        hRPD2x2PEP[c]->Fill(RPDEP_P);
+        hRPD2x2MEP[c]->Fill(RPDEP_M);
+
+        hHF2EPP[c]->Fill(argp_HFQ2);
+        hHF2EPM[c]->Fill(argm_HFQ2);
+
 		idx++;
-        //if ( idx > 1000000 ) break;
+        //if ( idx > 10000000 ) break;
 	}
 
 
@@ -1080,6 +1180,43 @@ ZDCTreeAna(string input = "", string s = "test.root")
                 hRPDvsRPDHighP[j][i][c]->Write();
                 hRPDvsRPDHighM[j][i][c]->Write();
             }
+        }
+    }
+
+    auto fRPD1N45 = fsave->mkdir("RPD1N45");
+    fRPD1N45->cd();
+    for ( int i = 0; i < 16; i++ ) {
+        for ( int j = i+1; j < 16; j++ ) {
+            hRPDvsRPD1NP[j][i]->Write();
+            hRPDvsRPD1NM[j][i]->Write();
+        }
+    }
+
+    auto fEP = fsave->mkdir("EP");
+    fEP->cd();
+    for ( int c = 0; c < 10; c++ ) {
+        hRPDEP1vsHFEP2P[c]->Write();
+        hRPDEP1vsHFEP2M[c]->Write();
+        hRPDEP[c]->Write();
+
+        hRPD2x2PXY[c]->Write();
+        hRPD2x2MXY[c]->Write();
+
+        hRPD2x2PMX[c]->Write();
+        hRPD2x2PMY[c]->Write();
+
+        hRPD2x2PEP[c]->Write();
+        hRPD2x2MEP[c]->Write();
+        hHF2EPP[c]->Write();
+        hHF2EPM[c]->Write();
+    }
+
+    auto fRPDvsEM = fsave->mkdir("RPDvsEM");
+    fRPDvsEM->cd();
+    for ( int i = 0; i < 16; i++ ) {
+        for ( int j = 0; j < 5; j++ ) {
+            hRPDvsEMP[j][i]->Write();
+            hRPDvsEMM[j][i]->Write();
         }
     }
 }
