@@ -306,8 +306,8 @@ void QWV0Validator::doFakeRates(
             // Fill values to be histogrammed
             mass = iCandidate->mass();
             CandidatepT = (sqrt(iCandidate->momentum().perp2()));
-            //CandidateEta = iCandidate->momentum().eta();
-            CandidateEta = iCandidate->rapidity();
+            CandidateEta = iCandidate->momentum().eta();
+            //CandidateEta = iCandidate->rapidity();
             CandidateR = (sqrt(iCandidate->vertex().perp2()));
             candidateMassAll[v0_type]->Fill(mass);
             CandidateStatus = 0;
@@ -459,12 +459,8 @@ void QWV0Validator::doEfficiencies(
                          second_daughter_id &&
                          std::abs((gen_vertex.daughterTracks().at(1))->pdgId()) ==
                          first_daughter_id)) {
-                    if ((std::abs((gen_vertex.daughterTracks().at(0))->momentum().eta()) <
-                                2.4 &&
-                                gen_vertex.daughterTracks().at(0)->pt() > 0.9) &&
-                            (std::abs((gen_vertex.daughterTracks().at(1))->momentum().eta()) <
-                             2.4 &&
-                             gen_vertex.daughterTracks().at(1)->pt() > 0.9)) {
+                    if ( (std::abs((gen_vertex.daughterTracks().at(0))->momentum().eta()) < 2.4) &&
+                            (std::abs((gen_vertex.daughterTracks().at(1))->momentum().eta()) < 2.4) ) {
                         // found desired generated Candidate
                         float candidateGenpT = sqrt((*source)->momentum().perp2());
                         float candidateGenEta = (*source)->momentum().eta();
@@ -490,8 +486,7 @@ void QWV0Validator::doEfficiencies(
                         }
                         if ((candidateEff[0] == 1 && candidateEff[1] == 1) &&
                                 (reco_daughter[0].key() != reco_daughter[1].key()) &&
-                                (reconstructed_V0_couples.find(
-                                                               V0Couple(reco_daughter[0], reco_daughter[1])) !=
+                                (reconstructed_V0_couples.find(V0Couple(reco_daughter[0], reco_daughter[1])) !=
                                  reconstructed_V0_couples.end())) {
                             candidateEff_num_[v0_type]->Fill(candidateGenpT, candidateGenEta, candidateGenR);
                         }
