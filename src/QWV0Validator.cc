@@ -35,36 +35,17 @@ Implementation: in cmssw official release
 #include "SimTracker/TrackerHitAssociation/interface/TrackerHitAssociator.h"
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingParticle.h"
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingVertex.h"
-//#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
-//#include "TrackingTools/PatternTools/interface/TrajectoryStateClosestToBeamLineBuilder.h"
-//#include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
 
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Candidate/interface/VertexCompositeCandidate.h"
-//#include "DataFormats/V0Candidate/interface/V0Candidate.h"
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
 #include "DataFormats/RecoCandidate/interface/TrackAssociation.h"
 
-//#include "SimTracker/TrackHistory/interface/TrackClassifier.h"
-//#include "SimDataFormats/TrackingAnalysis/interface/TrackingParticleFwd.h"
-
-//#include "Geometry/CommonDetUnit/interface/TrackingGeometry.h"
-//#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
-//#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
-//#include "Geometry/CommonDetUnit/interface/GeomDet.h"
-//#include "Geometry/CommonDetUnit/interface/GluedGeomDet.h"
-
-//#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
-//#include "MagneticField/VolumeBasedEngine/interface/VolumeBasedMagneticField.h"
-
-//#include "RecoVertex/VertexTools/interface/VertexDistance3D.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-//#include "HepMC/GenVertex.h"
-//#include "HepMC/GenParticle.h"
-
 #include "TH3.h"
+#include "TH2.h"
 
 class QWV0Validator : public edm::EDAnalyzer {
     public:
@@ -74,16 +55,19 @@ class QWV0Validator : public edm::EDAnalyzer {
         struct V0Couple {
             reco::TrackRef one;
             reco::TrackRef two;
+            double mass;
             explicit V0Couple(reco::TrackRef first_daughter,
-                    reco::TrackRef second_daughter) {
+                    reco::TrackRef second_daughter, double m) {
                 one = first_daughter.key() < second_daughter.key() ? first_daughter
                     : second_daughter;
                 two = first_daughter.key() > second_daughter.key() ? first_daughter
                     : second_daughter;
+                mass = m;
                 assert(one != two);
             }
             bool operator<(const V0Couple &rh) const {
-                return one.key() < rh.one.key();
+                if (one.key() == rh.one.key()) return two.key() < rh.two.key();
+                else return (one.key() < rh.one.key());
             }
             bool operator==(const V0Couple &rh) const {
                 return ((one.key() == rh.one.key()) && (two.key() == rh.two.key()));
@@ -105,7 +89,7 @@ class QWV0Validator : public edm::EDAnalyzer {
                 const reco::VertexCompositeCandidateCollection &collection,
                 const reco::SimToRecoCollection &simtorecoCollection);
 
-        // eff -- pt, eta, R
+        // eff -- pt, eta, (R) mass
         std::array<TH3D *, 2> candidateEff_num_;
         std::array<TH3D *, 2> candidateEff_denom_;
 
@@ -200,14 +184,14 @@ QWV0Validator::QWV0Validator(const edm::ParameterSet& iConfig) :
     }
 
     // Ks Plots follow
-    // eff -- pt, eta, R
+    // eff -- pt, eta, (R) mass
     auto fKs = fs->mkdir("Ks");
     candidateEff_num_[QWV0Validator::KSHORT] = fKs.make<TH3D>(
-            "K0sEff_num", "K0sEff_num;p_{T};#eta;R", pTbins.size()-1, pTbins.data(),
-            etaBins.size()-1, etaBins.data(), Rbins.size()-1, Rbins.data() );
+            "K0sEff_num", "K0sEff_num;p_{T};#eta", pTbins.size()-1, pTbins.data(),
+            etaBins.size()-1, etaBins.data(), vKsMass.size()-1, vKsMass.data() );
     candidateEff_denom_[QWV0Validator::KSHORT] = fKs.make<TH3D>(
-            "K0sEff_denom", "K0sEff_denom;p_{T};#eta;R", pTbins.size()-1, pTbins.data(),
-            etaBins.size()-1, etaBins.data(), Rbins.size()-1, Rbins.data() );
+            "K0sEff_denom", "K0sEff_denom;p_{T};#eta", pTbins.size()-1, pTbins.data(),
+            etaBins.size()-1, etaBins.data(), vKsMass.size()-1, vKsMass.data() );
 
     // fak -- pt, eta, mass
     candidateFake_num_[QWV0Validator::KSHORT] = fKs.make<TH3D>(
@@ -236,14 +220,14 @@ QWV0Validator::QWV0Validator(const edm::ParameterSet& iConfig) :
             "ksCandStatus", "Fake type by cand status", 10, 0., 10.);
 
     // Lambda Plots follow
-    // eff -- pt, eta, R
+    // eff -- pt, eta, (R) mass
     auto fLm = fs->mkdir("Lm");
     candidateEff_num_[QWV0Validator::LAMBDA] = fLm.make<TH3D>(
-            "LamEff_num", "LmEff_num;p_{T};#eta;R", pTbins.size()-1, pTbins.data(),
-            etaBins.size()-1, etaBins.data(), Rbins.size()-1, Rbins.data() );
+            "LamEff_num", "LmEff_num;p_{T};#eta", pTbins.size()-1, pTbins.data(),
+            etaBins.size()-1, etaBins.data(), vLmMass.size()-1, vLmMass.data() );
     candidateEff_denom_[QWV0Validator::LAMBDA] = fLm.make<TH3D>(
-            "LamEff_denom", "LmEff_denom;p_{T};#eta;R", pTbins.size()-1, pTbins.data(),
-            etaBins.size()-1, etaBins.data(), Rbins.size()-1, Rbins.data() );
+            "LamEff_denom", "LmEff_denom;p_{T};#eta", pTbins.size()-1, pTbins.data(),
+            etaBins.size()-1, etaBins.data(), vLmMass.size()-1, vLmMass.data() );
 
     // fak -- pt, eta, mass
     candidateFake_num_[QWV0Validator::LAMBDA] = fLm.make<TH3D>(
@@ -421,14 +405,14 @@ void QWV0Validator::doEfficiencies(
 
     std::set<V0Couple> reconstructed_V0_couples;
     if (!collection.empty()) {
-        for (reco::VertexCompositeCandidateCollection::const_iterator iCandidate =
-                collection.begin();
+        for (reco::VertexCompositeCandidateCollection::const_iterator iCandidate = collection.begin();
                 iCandidate != collection.end(); iCandidate++) {
+
             reconstructed_V0_couples.insert(
-                    V0Couple((dynamic_cast<const reco::RecoChargedCandidate*>(
-                                iCandidate->daughter(0)))->track(),
-                        (dynamic_cast<const reco::RecoChargedCandidate*>(
-                                                                         iCandidate->daughter(1)))->track()));
+                    V0Couple((dynamic_cast<const reco::RecoChargedCandidate*>( iCandidate->daughter(0)))->track(),
+                        (dynamic_cast<const reco::RecoChargedCandidate*>( iCandidate->daughter(1)))->track(), iCandidate->mass())
+                    );
+
         }
     }
 
@@ -463,31 +447,31 @@ void QWV0Validator::doEfficiencies(
                         // found desired generated Candidate
                         float candidateGenpT = sqrt((*source)->momentum().perp2());
                         float candidateGenEta = (*source)->momentum().eta();
-                        float candidateGenR = sqrt((*source)->vertex().perp2());
-                        candidateEff_denom_[v0_type]->Fill(candidateGenpT, candidateGenEta, candidateGenR);
+                        //float candidateGenR = sqrt((*source)->vertex().perp2());
+                        //candidateEff_denom_[v0_type]->Fill(candidateGenpT, candidateGenEta, candidateGenR);
+                        candidateEff_denom_[v0_type]->Fill(candidateGenpT, candidateGenEta, (*source)->mass());
 
                         std::array<reco::TrackRef, 2> reco_daughter;
 
                         for (unsigned int daughter = 0; daughter < 2; ++daughter) {
-                            if (simtorecoCollection.find(
-                                        gen_vertex.daughterTracks()[daughter]) !=
-                                    simtorecoCollection.end()) {
+                            if (simtorecoCollection.find( gen_vertex.daughterTracks()[daughter]) != simtorecoCollection.end()) {
                                 if (!simtorecoCollection[gen_vertex.daughterTracks()[daughter]].empty()) {
                                     candidateEff[daughter] = 1;  // Found a daughter track
-                                    reco_daughter[daughter] =
-                                        simtorecoCollection[gen_vertex.daughterTracks()[daughter]]
-                                        .begin()
+                                    reco_daughter[daughter] = simtorecoCollection[gen_vertex.daughterTracks()[daughter]].begin()
                                         ->first.castTo<reco::TrackRef>();
                                 }
                             } else {
                                 candidateEff[daughter] = 2;  // First daughter not found
                             }
                         }
-                        if ((candidateEff[0] == 1 && candidateEff[1] == 1) &&
-                                (reco_daughter[0].key() != reco_daughter[1].key()) &&
-                                (reconstructed_V0_couples.find(V0Couple(reco_daughter[0], reco_daughter[1])) !=
-                                 reconstructed_V0_couples.end())) {
-                            candidateEff_num_[v0_type]->Fill(candidateGenpT, candidateGenEta, candidateGenR);
+                        if ( (candidateEff[0] == 1 && candidateEff[1] == 1) &&
+                                (reco_daughter[0].key() != reco_daughter[1].key())
+                                ) {
+                                auto v0couple = reconstructed_V0_couples.find(V0Couple(reco_daughter[0], reco_daughter[1], 0.));
+                                if ( v0couple != reconstructed_V0_couples.end() ) {
+                                    //candidateEff_num_[v0_type]->Fill(candidateGenpT, candidateGenEta, candidateGenR);
+                                    candidateEff_num_[v0_type]->Fill(candidateGenpT, candidateGenEta, v0couple->mass);
+                                }
                         }
                     }  // Check that daughters are inside the desired kinematic region
                 }    // Check decay products of the current generatex vertex
