@@ -216,6 +216,13 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("pPhiCM");
 	produces<std::vector<double> >("nPhiCM");
 
+	produces<std::vector<double> >("pPxCM");
+	produces<std::vector<double> >("pPyCM");
+	produces<std::vector<double> >("pPzCM");
+	produces<std::vector<double> >("nPxCM");
+	produces<std::vector<double> >("nPyCM");
+	produces<std::vector<double> >("nPzCM");
+
 	produces<std::vector<double> >("pTrkQuality");
 	produces<std::vector<double> >("pTrkNHit");
 	produces<std::vector<double> >("pTrkPt");
@@ -269,6 +276,13 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	std::unique_ptr<std::vector<double> > ppdgId( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppPhiCM( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnPhiCM( new std::vector<double> );
+
+	std::unique_ptr<std::vector<double> > ppPxCM( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppPyCM( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppPzCM( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnPxCM( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnPyCM( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnPzCM( new std::vector<double> );
 
 	std::unique_ptr<std::vector<double> > ppTrkQuality( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppTrkNHit( new std::vector<double> );
@@ -335,6 +349,13 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.put(std::move(ppdgId), std::string("pdgId"));
 		iEvent.put(std::move(ppPhiCM), std::string("pPhiCM"));
 		iEvent.put(std::move(pnPhiCM), std::string("nPhiCM"));
+
+		iEvent.put(std::move(ppPxCM), std::string("pPxCM"));
+		iEvent.put(std::move(ppPyCM), std::string("pPyCM"));
+		iEvent.put(std::move(ppPzCM), std::string("pPzCM"));
+		iEvent.put(std::move(pnPxCM), std::string("nPxCM"));
+		iEvent.put(std::move(pnPyCM), std::string("nPyCM"));
+		iEvent.put(std::move(pnPzCM), std::string("nPzCM"));
 
 		iEvent.put(std::move(ppTrkQuality),  std::string("pTrkQuality"));
 		iEvent.put(std::move(ppTrkNHit),     std::string("pTrkNHit"));
@@ -558,13 +579,25 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			b.set(dynamic_cast<reco::Candidate&>(v0));
 			if ( v0.daughter(0)->charge() > 0 ) {
 				ppPhiCM->push_back(v0.daughter(0)->phi());
+				ppPxCM->push_back(v0.daughter(0)->px());
+				ppPyCM->push_back(v0.daughter(0)->py());
+				ppPzCM->push_back(v0.daughter(0)->pz());
 			} else {
 				pnPhiCM->push_back(v0.daughter(0)->phi());
+				pnPxCM->push_back(v0.daughter(0)->px());
+				pnPyCM->push_back(v0.daughter(0)->py());
+				pnPzCM->push_back(v0.daughter(0)->pz());
 			}
 			if ( v0.daughter(1)->charge() > 0 ) {
 				ppPhiCM->push_back(v0.daughter(1)->phi());
+				ppPxCM->push_back(v0.daughter(1)->px());
+				ppPyCM->push_back(v0.daughter(1)->py());
+				ppPzCM->push_back(v0.daughter(1)->pz());
 			} else {
 				pnPhiCM->push_back(v0.daughter(1)->phi());
+				pnPxCM->push_back(v0.daughter(1)->px());
+				pnPyCM->push_back(v0.daughter(1)->py());
+				pnPzCM->push_back(v0.daughter(1)->pz());
 			}
 //			std::cout << " ---> " << __LINE__ << " v0.pdgId() = " << v0.pdgId() << " v0.p4() = " << v0.p4() << std::endl;
 //			std::cout << " after boost -> " << __LINE__ << " d0.p4() = " << v0.daughter(0)->p4() << " d0charge = " << v0.daughter(0)->charge() << std::endl;
@@ -601,6 +634,13 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	iEvent.put(std::move(ppdgId), std::string("pdgId"));
 	iEvent.put(std::move(ppPhiCM), std::string("pPhiCM"));
 	iEvent.put(std::move(pnPhiCM), std::string("nPhiCM"));
+
+	iEvent.put(std::move(ppPxCM), std::string("pPxCM"));
+	iEvent.put(std::move(ppPyCM), std::string("pPyCM"));
+	iEvent.put(std::move(ppPzCM), std::string("pPzCM"));
+	iEvent.put(std::move(pnPxCM), std::string("nPxCM"));
+	iEvent.put(std::move(pnPyCM), std::string("nPyCM"));
+	iEvent.put(std::move(pnPzCM), std::string("nPzCM"));
 
     iEvent.put(std::move(ppTrkQuality),  std::string("pTrkQuality"));
     iEvent.put(std::move(ppTrkNHit),     std::string("pTrkNHit"));
