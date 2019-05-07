@@ -225,14 +225,22 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 
 	produces<std::vector<double> >("pTrkQuality");
 	produces<std::vector<double> >("pTrkNHit");
+	produces<std::vector<double> >("pTrkPx");
+	produces<std::vector<double> >("pTrkPy");
+	produces<std::vector<double> >("pTrkPz");
 	produces<std::vector<double> >("pTrkPt");
+	produces<std::vector<double> >("pTrkPhi");
 	produces<std::vector<double> >("pTrkPtError");
 	produces<std::vector<double> >("pTrkEta");
 	produces<std::vector<double> >("pTrkNPxLayer");
 
 	produces<std::vector<double> >("nTrkQuality");
 	produces<std::vector<double> >("nTrkNHit");
+	produces<std::vector<double> >("nTrkPx");
+	produces<std::vector<double> >("nTrkPy");
+	produces<std::vector<double> >("nTrkPz");
 	produces<std::vector<double> >("nTrkPt");
+	produces<std::vector<double> >("nTrkPhi");
 	produces<std::vector<double> >("nTrkPtError");
 	produces<std::vector<double> >("nTrkEta");
 	produces<std::vector<double> >("nTrkNPxLayer");
@@ -286,14 +294,22 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	std::unique_ptr<std::vector<double> > ppTrkQuality( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppTrkNHit( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppTrkPx( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppTrkPy( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppTrkPz( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppTrkPt( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppTrkPhi( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppTrkPtError( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppTrkEta( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppTrkNPxLayer( new std::vector<double> );
 
 	std::unique_ptr<std::vector<double> > pnTrkQuality( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnTrkNHit( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnTrkPx( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnTrkPy( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnTrkPz( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnTrkPt( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnTrkPhi( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnTrkPtError( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnTrkEta( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnTrkNPxLayer( new std::vector<double> );
@@ -359,14 +375,22 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		iEvent.put(std::move(ppTrkQuality),  std::string("pTrkQuality"));
 		iEvent.put(std::move(ppTrkNHit),     std::string("pTrkNHit"));
+		iEvent.put(std::move(ppTrkPx),       std::string("pTrkPx"));
+		iEvent.put(std::move(ppTrkPy),       std::string("pTrkPy"));
+		iEvent.put(std::move(ppTrkPz),       std::string("pTrkPz"));
 		iEvent.put(std::move(ppTrkPt),       std::string("pTrkPt"));
+		iEvent.put(std::move(ppTrkPhi),      std::string("pTrkPhi"));
 		iEvent.put(std::move(ppTrkPtError),  std::string("pTrkPtError"));
 		iEvent.put(std::move(ppTrkEta),      std::string("pTrkEta"));
 		iEvent.put(std::move(ppTrkNPxLayer), std::string("pTrkNPxLayer"));
 
 		iEvent.put(std::move(pnTrkQuality),  std::string("nTrkQuality"));
 		iEvent.put(std::move(pnTrkNHit),     std::string("nTrkNHit"));
+		iEvent.put(std::move(pnTrkPx),       std::string("nTrkPx"));
+		iEvent.put(std::move(pnTrkPy),       std::string("nTrkPy"));
+		iEvent.put(std::move(pnTrkPz),       std::string("nTrkPz"));
 		iEvent.put(std::move(pnTrkPt),       std::string("nTrkPt"));
+		iEvent.put(std::move(pnTrkPhi),      std::string("nTrkPhi"));
 		iEvent.put(std::move(pnTrkPtError),  std::string("nTrkPtError"));
 		iEvent.put(std::move(pnTrkEta),      std::string("nTrkEta"));
 		iEvent.put(std::move(pnTrkNPxLayer), std::string("nTrkNPxLayer"));
@@ -537,7 +561,11 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 auto trk = dynamic_cast<const reco::RecoChargedCandidate*>(v0.daughter(0))->track();
                 ppTrkQuality ->push_back(trk->qualityMask());
                 ppTrkNHit    ->push_back(trk->numberOfValidHits());
+                ppTrkPx      ->push_back(trk->px());
+                ppTrkPy      ->push_back(trk->py());
+                ppTrkPz      ->push_back(trk->pz());
                 ppTrkPt      ->push_back(trk->pt());
+                ppTrkPhi     ->push_back(trk->phi());
                 ppTrkPtError ->push_back(trk->ptError());
                 ppTrkEta     ->push_back(trk->eta());
                 ppTrkNPxLayer->push_back(trk->hitPattern().pixelLayersWithMeasurement());
@@ -545,7 +573,11 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 auto trk = dynamic_cast<const reco::RecoChargedCandidate*>(v0.daughter(0))->track();
                 pnTrkQuality ->push_back(trk->qualityMask());
                 pnTrkNHit    ->push_back(trk->numberOfValidHits());
+                pnTrkPx      ->push_back(trk->px());
+                pnTrkPy      ->push_back(trk->py());
+                pnTrkPz      ->push_back(trk->pz());
                 pnTrkPt      ->push_back(trk->pt());
+                pnTrkPhi     ->push_back(trk->phi());
                 pnTrkPtError ->push_back(trk->ptError());
                 pnTrkEta     ->push_back(trk->eta());
                 pnTrkNPxLayer->push_back(trk->hitPattern().pixelLayersWithMeasurement());
@@ -554,7 +586,11 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 auto trk = dynamic_cast<const reco::RecoChargedCandidate*>(v0.daughter(1))->track();
                 ppTrkQuality ->push_back(trk->qualityMask());
                 ppTrkNHit    ->push_back(trk->numberOfValidHits());
+                ppTrkPx      ->push_back(trk->px());
+                ppTrkPy      ->push_back(trk->py());
+                ppTrkPz      ->push_back(trk->pz());
                 ppTrkPt      ->push_back(trk->pt());
+                ppTrkPhi     ->push_back(trk->phi());
                 ppTrkPtError ->push_back(trk->ptError());
                 ppTrkEta     ->push_back(trk->eta());
                 ppTrkNPxLayer->push_back(trk->hitPattern().pixelLayersWithMeasurement());
@@ -562,7 +598,11 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 auto trk = dynamic_cast<const reco::RecoChargedCandidate*>(v0.daughter(1))->track();
                 pnTrkQuality ->push_back(trk->qualityMask());
                 pnTrkNHit    ->push_back(trk->numberOfValidHits());
+                pnTrkPx      ->push_back(trk->px());
+                pnTrkPy      ->push_back(trk->py());
+                pnTrkPz      ->push_back(trk->pz());
                 pnTrkPt      ->push_back(trk->pt());
+                pnTrkPhi     ->push_back(trk->phi());
                 pnTrkPtError ->push_back(trk->ptError());
                 pnTrkEta     ->push_back(trk->eta());
                 pnTrkNPxLayer->push_back(trk->hitPattern().pixelLayersWithMeasurement());
@@ -644,14 +684,22 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
     iEvent.put(std::move(ppTrkQuality),  std::string("pTrkQuality"));
     iEvent.put(std::move(ppTrkNHit),     std::string("pTrkNHit"));
+    iEvent.put(std::move(ppTrkPx),       std::string("pTrkPx"));
+    iEvent.put(std::move(ppTrkPy),       std::string("pTrkPy"));
+    iEvent.put(std::move(ppTrkPz),       std::string("pTrkPz"));
     iEvent.put(std::move(ppTrkPt),       std::string("pTrkPt"));
+    iEvent.put(std::move(ppTrkPhi),      std::string("pTrkPhi"));
     iEvent.put(std::move(ppTrkPtError),  std::string("pTrkPtError"));
     iEvent.put(std::move(ppTrkEta),      std::string("pTrkEta"));
     iEvent.put(std::move(ppTrkNPxLayer), std::string("pTrkNPxLayer"));
 
     iEvent.put(std::move(pnTrkQuality),  std::string("nTrkQuality"));
     iEvent.put(std::move(pnTrkNHit),     std::string("nTrkNHit"));
+    iEvent.put(std::move(pnTrkPx),       std::string("nTrkPx"));
+    iEvent.put(std::move(pnTrkPy),       std::string("nTrkPy"));
+    iEvent.put(std::move(pnTrkPz),       std::string("nTrkPz"));
     iEvent.put(std::move(pnTrkPt),       std::string("nTrkPt"));
+    iEvent.put(std::move(pnTrkPhi),      std::string("nTrkPhi"));
     iEvent.put(std::move(pnTrkPtError),  std::string("nTrkPtError"));
     iEvent.put(std::move(pnTrkEta),      std::string("nTrkEta"));
     iEvent.put(std::move(pnTrkNPxLayer), std::string("nTrkNPxLayer"));
