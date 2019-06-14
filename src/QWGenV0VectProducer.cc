@@ -66,9 +66,14 @@ QWGenV0VectProducer::QWGenV0VectProducer(const edm::ParameterSet& pset) :
 
 	produces<std::vector<double> >("pdgId");
 
+	produces<std::vector<double> >("pPt");
+	produces<std::vector<double> >("pEta");
 	produces<std::vector<double> >("pPx");
 	produces<std::vector<double> >("pPy");
 	produces<std::vector<double> >("pPz");
+
+	produces<std::vector<double> >("nPt");
+	produces<std::vector<double> >("nEta");
 	produces<std::vector<double> >("nPx");
 	produces<std::vector<double> >("nPy");
 	produces<std::vector<double> >("nPz");
@@ -98,9 +103,14 @@ void QWGenV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	std::unique_ptr<std::vector<double> > pmass( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppdgId( new std::vector<double> );
 
+	std::unique_ptr<std::vector<double> > ppPt( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppEta( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppPx( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppPy( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppPz( new std::vector<double> );
+
+	std::unique_ptr<std::vector<double> > pnPt( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnEta( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnPx( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnPy( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnPz( new std::vector<double> );
@@ -148,14 +158,17 @@ void QWGenV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
             auto tp1p4CM = ROOT::Math::VectorUtil::boost( tp1p4, boost );
 
             if ( (tp0->charge()>0) and (tp1->charge()<0) ) {
+                ppPt->push_back( tp0->pt() );
+                ppEta->push_back( tp0->eta() );
                 ppPx->push_back( tp0->px() );
                 ppPy->push_back( tp0->py() );
                 ppPz->push_back( tp0->pz() );
 
+                pnPt->push_back( tp1->pt() );
+                pnEta->push_back( tp1->eta() );
                 pnPx->push_back( tp1->px() );
                 pnPy->push_back( tp1->py() );
                 pnPz->push_back( tp1->pz() );
-
 
                 ppPxCM->push_back( tp0p4CM.Px() );
                 ppPyCM->push_back( tp0p4CM.Py() );
@@ -165,10 +178,14 @@ void QWGenV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
                 pnPyCM->push_back( tp1p4CM.Py() );
                 pnPzCM->push_back( tp1p4CM.Pz() );
             } else if ( (tp0->charge()<0) and (tp1->charge()>0) ) {
+                ppPt->push_back( tp1->pt() );
+                ppEta->push_back( tp1->eta() );
                 ppPx->push_back( tp1->px() );
                 ppPy->push_back( tp1->py() );
                 ppPz->push_back( tp1->pz() );
 
+                pnPt->push_back( tp0->pt() );
+                pnEta->push_back( tp0->eta() );
                 pnPx->push_back( tp0->px() );
                 pnPy->push_back( tp0->py() );
                 pnPz->push_back( tp0->pz() );
@@ -191,9 +208,14 @@ void QWGenV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	iEvent.put(std::move(pmass), std::string("mass"));
 	iEvent.put(std::move(ppdgId), std::string("pdgId"));
 
+	iEvent.put(std::move(ppPt), std::string("pPt"));
+	iEvent.put(std::move(ppEta), std::string("pEta"));
 	iEvent.put(std::move(ppPx), std::string("pPx"));
 	iEvent.put(std::move(ppPy), std::string("pPy"));
 	iEvent.put(std::move(ppPz), std::string("pPz"));
+
+	iEvent.put(std::move(pnPt), std::string("nPt"));
+	iEvent.put(std::move(pnEta), std::string("nEta"));
 	iEvent.put(std::move(pnPx), std::string("nPx"));
 	iEvent.put(std::move(pnPy), std::string("nPy"));
 	iEvent.put(std::move(pnPz), std::string("nPz"));

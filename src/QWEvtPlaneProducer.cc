@@ -23,6 +23,8 @@ QWEvtPlaneProducer::QWEvtPlaneProducer(const edm::ParameterSet& pset) :
 {
 	consumes<reco::EvtPlaneCollection>(src_);
 	produces<std::vector<double> >("angle");
+	produces<std::vector<double> >("sumSin");
+	produces<std::vector<double> >("sumCos");
 }
 
 void QWEvtPlaneProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -30,12 +32,18 @@ void QWEvtPlaneProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 	edm::Handle<reco::EvtPlaneCollection> eps;
 	iEvent.getByLabel( src_, eps );
 
-	std::vector<double> vangle(eps->size());
+	std::vector<double> vangle;
+	std::vector<double> vsumSin;
+	std::vector<double> vsumCos;
 	for ( auto ep : *eps ) {
 		vangle.push_back(ep.angle(level_));
+		vsumSin.push_back(ep.sumSin(level_));
+		vsumCos.push_back(ep.sumCos(level_));
 	}
 
 	iEvent.put(std::make_unique<std::vector<double>>(vangle), std::string("angle"));
+	iEvent.put(std::make_unique<std::vector<double>>(vsumSin), std::string("sumSin"));
+	iEvent.put(std::make_unique<std::vector<double>>(vsumCos), std::string("sumCos"));
 
 	return;
 }
