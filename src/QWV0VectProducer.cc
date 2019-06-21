@@ -105,6 +105,7 @@ private:
 	double dauPtMax_;
 	double dauPterrorMin_;
 	double dauPterrorMax_;
+	double dauDCASig_;
 
 	double mis_ks_range_;
 	double mis_la_range_;
@@ -179,6 +180,7 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	dauPtMax_ = dcuts.getUntrackedParameter<double>("dauPtMax",  std::numeric_limits<double>::max());
 	dauPterrorMin_ = dcuts.getUntrackedParameter<double>("dauPterrorMin", -std::numeric_limits<double>::max());
 	dauPterrorMax_ = dcuts.getUntrackedParameter<double>("dauPterrorMax",  std::numeric_limits<double>::max());
+	dauDCASig_ = dcuts.getUntrackedParameter<double>("dauDCASig", 1.0);
 
 	mis_ks_range_ = pset.getUntrackedParameter<double>("mis_ks_range", 0.020);
 	mis_la_range_ = pset.getUntrackedParameter<double>("mis_la_range", 0.010);
@@ -233,6 +235,8 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("pTrkPtError");
 	produces<std::vector<double> >("pTrkEta");
 	produces<std::vector<double> >("pTrkNPxLayer");
+	produces<std::vector<double> >("pTrkDCASigXY");
+	produces<std::vector<double> >("pTrkDCASigZ");
 
 	produces<std::vector<double> >("nTrkQuality");
 	produces<std::vector<double> >("nTrkNHit");
@@ -244,6 +248,8 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("nTrkPtError");
 	produces<std::vector<double> >("nTrkEta");
 	produces<std::vector<double> >("nTrkNPxLayer");
+	produces<std::vector<double> >("nTrkDCASigXY");
+	produces<std::vector<double> >("nTrkDCASigZ");
 
 	produces<reco::VertexCompositeCandidateCollection>();
 }
@@ -302,6 +308,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	std::unique_ptr<std::vector<double> > ppTrkPtError( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppTrkEta( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > ppTrkNPxLayer( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppTrkDCASigXY( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > ppTrkDCASigZ( new std::vector<double> );
 
 	std::unique_ptr<std::vector<double> > pnTrkQuality( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnTrkNHit( new std::vector<double> );
@@ -313,6 +321,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	std::unique_ptr<std::vector<double> > pnTrkPtError( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnTrkEta( new std::vector<double> );
 	std::unique_ptr<std::vector<double> > pnTrkNPxLayer( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnTrkDCASigXY( new std::vector<double> );
+	std::unique_ptr<std::vector<double> > pnTrkDCASigZ( new std::vector<double> );
 
 	std::unique_ptr< VertexCompositeCandidateCollection > pV0( new VertexCompositeCandidateCollection );
 
@@ -383,6 +393,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.put(std::move(ppTrkPtError),  std::string("pTrkPtError"));
 		iEvent.put(std::move(ppTrkEta),      std::string("pTrkEta"));
 		iEvent.put(std::move(ppTrkNPxLayer), std::string("pTrkNPxLayer"));
+		iEvent.put(std::move(ppTrkDCASigXY), std::string("pTrkDCASigXY"));
+		iEvent.put(std::move(ppTrkDCASigZ),  std::string("pTrkDCASigZ"));
 
 		iEvent.put(std::move(pnTrkQuality),  std::string("nTrkQuality"));
 		iEvent.put(std::move(pnTrkNHit),     std::string("nTrkNHit"));
@@ -394,6 +406,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.put(std::move(pnTrkPtError),  std::string("nTrkPtError"));
 		iEvent.put(std::move(pnTrkEta),      std::string("nTrkEta"));
 		iEvent.put(std::move(pnTrkNPxLayer), std::string("nTrkNPxLayer"));
+		iEvent.put(std::move(pnTrkDCASigXY), std::string("nTrkDCASigXY"));
+		iEvent.put(std::move(pnTrkDCASigZ),  std::string("nTrkDCASigZ"));
 
 		iEvent.put(std::move(pV0));
 		return;
@@ -462,6 +476,29 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 				or d2->pt() < dauPtMin_ or d2->pt() > dauPtMax_ ) continue;
 			if ( d1->get<reco::TrackRef>()->ptError() / d1->pt() < dauPterrorMin_ or d1->get<reco::TrackRef>()->ptError() / d1->pt() > dauPterrorMax_
 				or d2->get<reco::TrackRef>()->ptError() / d2->pt() < dauPterrorMin_ or d2->get<reco::TrackRef>()->ptError() / d2->pt() > dauPterrorMax_ ) continue;
+
+			double xVtxError = vtxPrimary->xError();
+			double yVtxError = vtxPrimary->yError();
+			double zVtxError = vtxPrimary->zError();
+            math::XYZPoint bestvtx(pv->x(),pv->y(),pv->z());
+
+			double dzvtx1 = d1->dz(bestvtx);
+			double dxyvtx1 = d1->dxy(bestvtx);
+			double dzerror1 = sqrt(d1->dzError()*d1->dzError()+zVtxError*zVtxError);
+			double dxyerror1 = sqrt(d1->d0Error()*d1->d0Error()+xVtxError*yVtxError);
+			double dauLongImpactSig1 = fabs(dzvtx1/dzerror1);
+			double dauTransImpactSig1 = fabs(dxyvtx1/dxyerror1);
+
+			double dzvtx2 = d2->dz(bestvtx);
+			double dxyvtx2 = d2->dxy(bestvtx);
+			double dzerror2 = sqrt(d2->dzError()*d2->dzError()+zVtxError*zVtxError);
+			double dxyerror2 = sqrt(d2->d0Error()*d2->d0Error()+xVtxError*yVtxError);
+			double dauLongImpactSig2 = fabs(dzvtx2/dzerror2);
+			double dauTransImpactSig2 = fabs(dxyvtx2/dxyerror2);
+
+            if ( dauLongImpactSig1 > dauDCASig_ or dauTransImpactSig1 > dauDCASig_
+                    or dauLongImpactSig2 > dauDCASig_ or dauTransImpactSig2 > dauDCASig_ ) continue;
+
 
 			double pxd1 = d1->px();
 			double pyd1 = d1->py();
@@ -569,6 +606,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 ppTrkPtError ->push_back(trk->ptError());
                 ppTrkEta     ->push_back(trk->eta());
                 ppTrkNPxLayer->push_back(trk->hitPattern().pixelLayersWithMeasurement());
+                ppTrkDCASigXY->push_back(dauTransImpactSig1);
+                ppTrkDCASigZ ->push_back(dauLongImpactSig1);
 			} else {
                 auto trk = dynamic_cast<const reco::RecoChargedCandidate*>(v0.daughter(0))->track();
                 pnTrkQuality ->push_back(trk->qualityMask());
@@ -581,6 +620,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 pnTrkPtError ->push_back(trk->ptError());
                 pnTrkEta     ->push_back(trk->eta());
                 pnTrkNPxLayer->push_back(trk->hitPattern().pixelLayersWithMeasurement());
+                pnTrkDCASigXY->push_back(dauTransImpactSig1);
+                pnTrkDCASigZ ->push_back(dauLongImpactSig1);
 			}
 			if ( v0.daughter(1)->charge() > 0 ) {
                 auto trk = dynamic_cast<const reco::RecoChargedCandidate*>(v0.daughter(1))->track();
@@ -594,6 +635,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 ppTrkPtError ->push_back(trk->ptError());
                 ppTrkEta     ->push_back(trk->eta());
                 ppTrkNPxLayer->push_back(trk->hitPattern().pixelLayersWithMeasurement());
+                ppTrkDCASigXY->push_back(dauTransImpactSig2);
+                ppTrkDCASigZ ->push_back(dauLongImpactSig2);
             } else {
                 auto trk = dynamic_cast<const reco::RecoChargedCandidate*>(v0.daughter(1))->track();
                 pnTrkQuality ->push_back(trk->qualityMask());
@@ -606,9 +649,9 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 pnTrkPtError ->push_back(trk->ptError());
                 pnTrkEta     ->push_back(trk->eta());
                 pnTrkNPxLayer->push_back(trk->hitPattern().pixelLayersWithMeasurement());
+                pnTrkDCASigXY->push_back(dauTransImpactSig2);
+                pnTrkDCASigZ ->push_back(dauLongImpactSig2);
 			}
-
-
 
 
 			// boostToCM
@@ -692,6 +735,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
     iEvent.put(std::move(ppTrkPtError),  std::string("pTrkPtError"));
     iEvent.put(std::move(ppTrkEta),      std::string("pTrkEta"));
     iEvent.put(std::move(ppTrkNPxLayer), std::string("pTrkNPxLayer"));
+    iEvent.put(std::move(ppTrkDCASigXY), std::string("pTrkDCASigXY"));
+    iEvent.put(std::move(ppTrkDCASigZ),  std::string("pTrkDCASigZ"));
 
     iEvent.put(std::move(pnTrkQuality),  std::string("nTrkQuality"));
     iEvent.put(std::move(pnTrkNHit),     std::string("nTrkNHit"));
@@ -703,6 +748,8 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
     iEvent.put(std::move(pnTrkPtError),  std::string("nTrkPtError"));
     iEvent.put(std::move(pnTrkEta),      std::string("nTrkEta"));
     iEvent.put(std::move(pnTrkNPxLayer), std::string("nTrkNPxLayer"));
+    iEvent.put(std::move(pnTrkDCASigXY), std::string("nTrkDCASigXY"));
+    iEvent.put(std::move(pnTrkDCASigZ),  std::string("nTrkDCASigZ"));
 
 	iEvent.put(std::move(pV0));
 }
