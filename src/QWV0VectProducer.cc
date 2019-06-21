@@ -180,7 +180,7 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	dauPtMax_ = dcuts.getUntrackedParameter<double>("dauPtMax",  std::numeric_limits<double>::max());
 	dauPterrorMin_ = dcuts.getUntrackedParameter<double>("dauPterrorMin", -std::numeric_limits<double>::max());
 	dauPterrorMax_ = dcuts.getUntrackedParameter<double>("dauPterrorMax",  std::numeric_limits<double>::max());
-	dauDCASig_ = dcuts.getUntrackedParameter<double>("dauDCASig", 1.0);
+	dauDCASig_ = dcuts.getUntrackedParameter<double>("dauDCASig", 0.0);
 
 	mis_ks_range_ = pset.getUntrackedParameter<double>("mis_ks_range", 0.020);
 	mis_la_range_ = pset.getUntrackedParameter<double>("mis_la_range", 0.010);
@@ -446,6 +446,10 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		double sigmaDistMagXYZ = sqrt(ROOT::Math::Similarity(totalCov, distVecXYZ)) / distMagXYZ;
 		double vtxDecaySigXYZ = distMagXYZ/sigmaDistMagXYZ;
 		double dca = -999.;
+        double dauLongImpactSig1 = -999.;
+        double dauTransImpactSig1 = -999.;
+        double dauLongImpactSig2 = -999.;
+        double dauTransImpactSig2 = -999.;
 		if ( v0.numberOfDaughters() == 2 ) {
 			auto bT0 = v0.daughter(0)->bestTrack();
 			auto bT1 = v0.daughter(1)->bestTrack();
@@ -462,42 +466,42 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 
 
-//			auto d1 = v0.daughter(0)->get<reco::TrackRef>();
-//			auto d2 = v0.daughter(1)->get<reco::TrackRef>();
+			auto d1 = v0.daughter(0)->get<reco::TrackRef>();
+			auto d2 = v0.daughter(1)->get<reco::TrackRef>();
 
-			auto d1 = v0.daughter(0);
-			auto d2 = v0.daughter(1);
+//			auto d1 = dynamic_cast<const RecoChargedCandidate*>(v0.daughter(0));
+//			auto d2 = dynamic_cast<const RecoChargedCandidate*>(v0.daughter(1));
 
 			if ( d1->eta() < dauEtaMin_ or d1->eta() > dauEtaMax_
 				or d2->eta() < dauEtaMin_ or d2->eta() > dauEtaMax_ ) continue;
-			if ( d1->get<reco::TrackRef>()->numberOfValidHits() < dauNhitsMin_ or d1->get<reco::TrackRef>()->numberOfValidHits() > dauNhitsMax_
-				or d2->get<reco::TrackRef>()->numberOfValidHits() < dauNhitsMin_ or d2->get<reco::TrackRef>()->numberOfValidHits() > dauNhitsMax_ ) continue;
+			if ( d1->numberOfValidHits() < dauNhitsMin_ or d1->numberOfValidHits() > dauNhitsMax_
+				or d2->numberOfValidHits() < dauNhitsMin_ or d2->numberOfValidHits() > dauNhitsMax_ ) continue;
 			if ( d1->pt() < dauPtMin_ or d1->pt() > dauPtMax_
 				or d2->pt() < dauPtMin_ or d2->pt() > dauPtMax_ ) continue;
-			if ( d1->get<reco::TrackRef>()->ptError() / d1->pt() < dauPterrorMin_ or d1->get<reco::TrackRef>()->ptError() / d1->pt() > dauPterrorMax_
-				or d2->get<reco::TrackRef>()->ptError() / d2->pt() < dauPterrorMin_ or d2->get<reco::TrackRef>()->ptError() / d2->pt() > dauPterrorMax_ ) continue;
+			if ( d1->ptError() / d1->pt() < dauPterrorMin_ or d1->ptError() / d1->pt() > dauPterrorMax_
+				or d2->ptError() / d2->pt() < dauPterrorMin_ or d2->ptError() / d2->pt() > dauPterrorMax_ ) continue;
 
-			double xVtxError = vtxPrimary->xError();
-			double yVtxError = vtxPrimary->yError();
-			double zVtxError = vtxPrimary->zError();
+			double xVtxError = pv->xError();
+			double yVtxError = pv->yError();
+			double zVtxError = pv->zError();
             math::XYZPoint bestvtx(pv->x(),pv->y(),pv->z());
 
 			double dzvtx1 = d1->dz(bestvtx);
 			double dxyvtx1 = d1->dxy(bestvtx);
 			double dzerror1 = sqrt(d1->dzError()*d1->dzError()+zVtxError*zVtxError);
 			double dxyerror1 = sqrt(d1->d0Error()*d1->d0Error()+xVtxError*yVtxError);
-			double dauLongImpactSig1 = fabs(dzvtx1/dzerror1);
-			double dauTransImpactSig1 = fabs(dxyvtx1/dxyerror1);
+			dauLongImpactSig1 = fabs(dzvtx1/dzerror1);
+			dauTransImpactSig1 = fabs(dxyvtx1/dxyerror1);
 
 			double dzvtx2 = d2->dz(bestvtx);
 			double dxyvtx2 = d2->dxy(bestvtx);
 			double dzerror2 = sqrt(d2->dzError()*d2->dzError()+zVtxError*zVtxError);
 			double dxyerror2 = sqrt(d2->d0Error()*d2->d0Error()+xVtxError*yVtxError);
-			double dauLongImpactSig2 = fabs(dzvtx2/dzerror2);
-			double dauTransImpactSig2 = fabs(dxyvtx2/dxyerror2);
+			dauLongImpactSig2 = fabs(dzvtx2/dzerror2);
+			dauTransImpactSig2 = fabs(dxyvtx2/dxyerror2);
 
-            if ( dauLongImpactSig1 > dauDCASig_ or dauTransImpactSig1 > dauDCASig_
-                    or dauLongImpactSig2 > dauDCASig_ or dauTransImpactSig2 > dauDCASig_ ) continue;
+            if ( dauLongImpactSig1 < dauDCASig_ or dauTransImpactSig1 < dauDCASig_
+              or dauLongImpactSig2 < dauDCASig_ or dauTransImpactSig2 < dauDCASig_ ) continue;
 
 
 			double pxd1 = d1->px();
