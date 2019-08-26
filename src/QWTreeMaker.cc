@@ -22,26 +22,37 @@ private:
 	virtual void analyze(const edm::Event&, const edm::EventSetup&);
 	virtual void endJob() {};
 
-	edm::InputTag   src_;
-	std::vector<std::string>	vTags_;
-
 	TTree*	trV;
-	std::map< std::string, std::vector<double>* >	psv_;
+	std::map< std::string, std::vector<double>* >	pV_;
+	std::map< std::string, double* >		pD_;
+	std::map< std::string, edm::InputTag >		pVInput_;
+	std::map< std::string, edm::InputTag >		pDInput_;
+	std::vector<std::string>			Vnames_;
+	std::vector<std::string>			Dnames_;
 };
 
-QWTreeMaker::QWTreeMaker(const edm::ParameterSet& pset) :
-	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
-	vTags_(pset.getUntrackedParameter< std::vector<std::string> >("vTag"))
+QWTreeMaker::QWTreeMaker(const edm::ParameterSet& pset)
 {
-	for ( auto tag : vTags_ ) {
-		consumes<std::vector<double> >(edm::InputTag(src_.label(), tag));
-	}
-
 	edm::Service<TFileService> fs;
 	trV = fs->make<TTree>("trV", "trV");
-	for ( auto tag : vTags_ ) {
-		psv_[tag] = new std::vector<double>;
-		trV->Branch(tag.c_str(), psv_[tag]);
+
+	auto pVtag = pset.getUntrackedParameter< std::vector< edm::ParameterSet > >("Vtags");
+	for ( auto tag : pVtag ) {
+		consumes<std::vector<double> >(tag.getUntrackedParameter<edm::InputTag>("tag"));
+		std::string name = tag.getUntrackedParameter<std::string>("name");
+		pV_[name] = new std::vector<double>;
+		trV->Branch(name.c_str(), pV_[name]);
+		pVInput_[name] = tag.getUntrackedParameter<edm::InputTag>("tag");
+		Vnames_.push_back(name);
+	}
+	auto pDtag = pset.getUntrackedParameter< std::vector< edm::ParameterSet > >("Dtags");
+	for ( auto tag : pDtag ) {
+		consumes<double>(tag.getUntrackedParameter<edm::InputTag>("tag"));
+		std::string name = tag.getUntrackedParameter<std::string>("name");
+		pD_[name] = new double;
+		trV->Branch(name.c_str(), pD_[name]);
+		pDInput_[name] = tag.getUntrackedParameter<edm::InputTag>("tag");
+		Dnames_.push_back(name);
 	}
 }
 
@@ -49,10 +60,16 @@ void
 QWTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	for ( auto tag : vTags_ ) {
+
+	for ( auto it : Vnames_ ) {
 		Handle<std::vector<double> > handle;
-		iEvent.getByLabel(InputTag(src_.label(), tag), handle);
-		*(psv_[tag]) = *handle;
+		iEvent.getByLabel(pVInput_[it], handle);
+		*(pV_[it]) = *handle;
+	}
+	for ( auto it : Dnames_ ) {
+		Handle<double> handle;
+		iEvent.getByLabel(pDInput_[it], handle);
+		*(pD_[it]) = *handle;
 	}
 
 	trV->Fill();
