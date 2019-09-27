@@ -89,11 +89,11 @@ class QWV0Validator : public edm::EDAnalyzer {
                 const reco::VertexCompositeCandidateCollection &collection,
                 const reco::SimToRecoCollection &simtorecoCollection);
 
-        double dau_pt_;     // daughter lower pT cut
-        double dau_eta_;    // daughter |eta| cut
-        double cand_eta_;   // candidate |eta| cut
+//        double dau_pt_;     // daughter lower pT cut
+//        double dau_eta_;    // daughter |eta| cut
+//        const double cand_eta_ = 2.5;   // candidate |eta| cut
 
-        // eff -- pt, eta, (R) mass
+        // eff -- pt, eta, mass
         std::array<TH3D *, 2> candidateEff_num_;
         std::array<TH3D *, 2> candidateEff_acc_;
         std::array<TH3D *, 2> candidateEff_denom_;
@@ -121,14 +121,13 @@ class QWV0Validator : public edm::EDAnalyzer {
 
 typedef std::vector<TrackingVertex> TrackingVertexCollection;
 typedef edm::Ref<TrackingVertexCollection> TrackingVertexRef;
-typedef edm::RefVector<edm::HepMCProduct, HepMC::GenVertex> GenVertexRefVector;
-typedef edm::RefVector<edm::HepMCProduct, HepMC::GenParticle>
-GenParticleRefVector;
+//typedef edm::RefVector<edm::HepMCProduct, HepMC::GenVertex> GenVertexRefVector;
+//typedef edm::RefVector<edm::HepMCProduct, HepMC::GenParticle> GenParticleRefVector;
 
 QWV0Validator::QWV0Validator(const edm::ParameterSet& iConfig) :
-    dau_pt_(iConfig.getUntrackedParameter<double>("dau_pt")),
-    dau_eta_(iConfig.getUntrackedParameter<double>("dau_eta")),
-    cand_eta_(iConfig.getUntrackedParameter<double>("cand_eta")),
+//    dau_pt_(iConfig.getUntrackedParameter<double>("dau_pt")),
+//    dau_eta_(iConfig.getUntrackedParameter<double>("dau_eta")),
+//    cand_eta_(iConfig.getUntrackedParameter<double>("cand_eta")),
     recoRecoToSimCollectionToken_(consumes<reco::RecoToSimCollection>(
                 iConfig.getUntrackedParameter<edm::InputTag>("trackAssociatorMap"))),
     recoSimToRecoCollectionToken_(consumes<reco::SimToRecoCollection>(
@@ -179,20 +178,8 @@ QWV0Validator::QWV0Validator(const edm::ParameterSet& iConfig) :
 
     std::vector<double> pTbins{0.2, 0.4, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.8, 3.6, 4.6,6.0, 7.0, 8.5};
 
-    double maxR = 40.;
-    int NR = 80;
-    std::vector<double> Rbins;
-    Rbins.reserve(NR);
-    {
-        double dR = maxR / NR;
-        for ( int i = 0; i < NR; i++ ) {
-            Rbins.push_back( dR*i );
-        }
-        Rbins.push_back(maxR);
-    }
-
     // Ks Plots follow
-    // eff -- pt, eta, (R) mass
+    // eff -- pt, eta, mass
     auto fKs = fs->mkdir("Ks");
     candidateEff_num_[QWV0Validator::KSHORT] = fKs.make<TH3D>(
             "K0sEff_num", "K0sEff_num;p_{T};#eta", pTbins.size()-1, pTbins.data(),
@@ -295,8 +282,8 @@ void QWV0Validator::doFakeRates(
             // Fill values to be histogrammed
             mass = iCandidate->mass();
             CandidatepT = (sqrt(iCandidate->momentum().perp2()));
-            CandidateEta = iCandidate->momentum().eta();
-            //CandidateEta = iCandidate->rapidity();
+            //CandidateEta = iCandidate->momentum().eta();
+            CandidateEta = iCandidate->rapidity();
             //CandidateR = (sqrt(iCandidate->vertex().perp2()));
             candidateMassAll[v0_type]->Fill(mass);
             CandidateStatus = 0;
@@ -448,7 +435,7 @@ void QWV0Validator::doEfficiencies(
         for (TrackingVertex::tp_iterator source = gen_vertex.sourceTracks_begin();
                 source != gen_vertex.sourceTracks_end(); ++source) {
             if (std::abs((*source)->pdgId()) == parent_particle_id &&
-                    std::abs((*source)->eta()) < cand_eta_ ) {
+                    std::abs((*source)->eta()) < 2.4 ) {
                 if ((std::abs((gen_vertex.daughterTracks().at(0))->pdgId()) ==
                             first_daughter_id &&
                             std::abs((gen_vertex.daughterTracks().at(1))->pdgId()) ==
@@ -459,14 +446,12 @@ void QWV0Validator::doEfficiencies(
                          first_daughter_id)) {
 
                     float candidateGenpT = sqrt((*source)->momentum().perp2());
-                    float candidateGenEta = (*source)->momentum().eta();
+                    float candidateGenEta = (*source)->rapidity();
                     // found gen level candidate in cand_eta_ range
                     candidateEff_denom_[v0_type]->Fill(candidateGenpT, candidateGenEta, (*source)->mass());
 
-                    if ( (std::abs((gen_vertex.daughterTracks().at(0))->momentum().eta()) < dau_eta_) &&
-                            (gen_vertex.daughterTracks().at(0))->pt() > dau_pt_ &&
-                            (std::abs((gen_vertex.daughterTracks().at(1))->momentum().eta()) < dau_eta_) &&
-                            (gen_vertex.daughterTracks().at(1))->pt() > dau_pt_ ) {
+                    if ( (std::abs((gen_vertex.daughterTracks().at(0))->momentum().eta()) < 2.4) &&
+                         (std::abs((gen_vertex.daughterTracks().at(1))->momentum().eta()) < 2.4) ) {
                         // found desired generated Candidate, with daughter pt and eta requirement.
                         candidateEff_acc_[v0_type]->Fill(candidateGenpT, candidateGenEta, (*source)->mass());
 
