@@ -95,8 +95,8 @@ QWV0MVAVectProducer::QWV0MVAVectProducer(const edm::ParameterSet& pset) :
 	mvaCut_(pset.getUntrackedParameter<double>("mvaCut")),
 	ptMin_(pset.getUntrackedParameter<double>("ptMin", 0.2)),
 	ptMax_(pset.getUntrackedParameter<double>("ptMax", 8.5)),
-	rapMin_(pset.getUntrackedParameter<double>("rapMin", -1.0)),
-	rapMax_(pset.getUntrackedParameter<double>("rapMax",  1.0))
+	rapMin_(pset.getUntrackedParameter<double>("rapMin", -2.5)),
+	rapMax_(pset.getUntrackedParameter<double>("rapMax",  2.5))
 {
     TMVA::Tools::Instance();
     reader = new TMVA::Reader( "!Color:!Silent" );
@@ -129,9 +129,10 @@ QWV0MVAVectProducer::QWV0MVAVectProducer(const edm::ParameterSet& pset) :
     reader->AddSpectator( "phi",    &phi_);
     reader->AddSpectator( "pdgId",  &pdgId_);
 
-    reader->BookMVA( string("BDT"), mvaXML_ );
+    reader->BookMVA( string("BDT")+V0Src_.instance(), mvaXML_ );
 
 	consumes<reco::VertexCompositeCandidateCollection>(V0Src_);
+	consumes<reco::VertexCollection>(vertexSrc_);
 	consumes<double>(dbCent_);
 
 	produces<reco::VertexCompositeCandidateCollection>(V0Src_.instance());
@@ -167,7 +168,7 @@ void QWV0MVAVectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 			and recoVertices[primaryvtx].tracksSize() >=2 ) break;
 	}
 	if ( primaryvtx == recoVertices.size() ) {
-		iEvent.put(std::move(pV0));
+		iEvent.put(std::move(pV0), V0Src_.instance());
 		return;
 	}
 
@@ -313,7 +314,7 @@ void QWV0MVAVectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
                 nTrkDCASigZ_  = (dauLongImpactSig2);
 			}
 
-            double mva = reader->EvaluateMVA("BDT");
+            double mva = reader->EvaluateMVA(string("BDT")+V0Src_.instance());
             if ( mva > mvaCut_ ) {
                 pV0	->push_back( v0 );
             }
