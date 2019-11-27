@@ -251,7 +251,7 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("nTrkDCASigXY");
 	produces<std::vector<double> >("nTrkDCASigZ");
 
-	produces<reco::VertexCompositeCandidateCollection>();
+	produces<reco::VertexCompositeCandidateCollection>(V0Src_.instance());
 }
 
 QWV0VectProducer::~QWV0VectProducer()
@@ -409,7 +409,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.put(std::move(pnTrkDCASigXY), std::string("nTrkDCASigXY"));
 		iEvent.put(std::move(pnTrkDCASigZ),  std::string("nTrkDCASigZ"));
 
-		iEvent.put(std::move(pV0));
+		iEvent.put(std::move(pV0), std::string(V0Src_.instance()));
 		return;
 	}
 
@@ -755,7 +755,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
     iEvent.put(std::move(pnTrkDCASigXY), std::string("nTrkDCASigXY"));
     iEvent.put(std::move(pnTrkDCASigZ),  std::string("nTrkDCASigZ"));
 
-	iEvent.put(std::move(pV0));
+	iEvent.put(std::move(pV0), std::string(V0Src_.instance()));
 }
 
 
