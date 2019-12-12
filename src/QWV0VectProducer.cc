@@ -56,6 +56,8 @@ private:
 		double	Etamax_;
 		double	Rapmin_;
 		double	Rapmax_;
+		double	AbsRapmin_;
+		double	AbsRapmax_;
 		double	Massmin_;
 		double	Massmax_;
 
@@ -129,6 +131,8 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 		cut.Etamax_ = pcut.getUntrackedParameter<double>("Etamax", 2.4);
 		cut.Rapmin_ = pcut.getUntrackedParameter<double>("Rapmin", -3.0);
 		cut.Rapmax_ = pcut.getUntrackedParameter<double>("Rapmax", 3.0);
+		cut.AbsRapmin_ = pcut.getUntrackedParameter<double>("AbsRapmin", -1.0);
+		cut.AbsRapmax_ = pcut.getUntrackedParameter<double>("AbsRapmax", 3.0);
 		cut.Massmin_ = pcut.getUntrackedParameter<double>("Massmin", 0.);
 		cut.Massmax_ = pcut.getUntrackedParameter<double>("Massmax", 1000);
 
@@ -540,6 +544,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			if ( pt > cut.pTmax_ or pt < cut.pTmin_ ) continue;
 			if ( eta > cut.Etamax_ or eta < cut.Etamin_ ) continue;
 			if ( rapidity > cut.Rapmax_ or rapidity < cut.Rapmin_ ) continue;
+			if ( fabs(rapidity) > cut.AbsRapmax_ or fabs(rapidity) < cut.AbsRapmin_ ) continue;
 			if ( mass > cut.Massmax_ or mass < cut.Massmin_ ) continue;
 
 			if ( Chi2 > cut.Chi2max_ or Chi2 < cut.Chi2min_ ) continue;

@@ -315,7 +315,32 @@ void QWV0MVAVectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 			}
 
             double mva = reader->EvaluateMVA(string("BDT")+V0Src_.instance());
+//            std::cout    << " pt_             = " << pt_             << std::endl;
+//            std::cout    << " rapidity_       = " << rapidity_       << std::endl;
+//            std::cout    << " vtxChi2_        = " << vtxChi2_        << std::endl;
+//            std::cout    << " cosThetaXYZ_    = " << cosThetaXYZ_    << std::endl;
+//            std::cout    << " Lxyz_           = " << Lxyz_           << std::endl;
+//            std::cout    << " vtxDecaySigXYZ_ = " << vtxDecaySigXYZ_ << std::endl;
+//            std::cout    << " DCA_            = " << DCA_            << std::endl;
+//            std::cout    << " pTrkNHit_       = " << pTrkNHit_       << std::endl;
+//            std::cout    << " pTrkPt_         = " << pTrkPt_         << std::endl;
+//            std::cout    << " pTrkPtError_    = " << pTrkPtError_    << std::endl;
+//            std::cout    << " pTrkEta_        = " << pTrkEta_        << std::endl;
+//            std::cout    << " pTrkNPxLayer_   = " << pTrkNPxLayer_   << std::endl;
+//            std::cout    << " pTrkDCASigXY_   = " << pTrkDCASigXY_   << std::endl;
+//            std::cout    << " pTrkDCASigZ_    = " << pTrkDCASigZ_    << std::endl;
+//            std::cout    << " nTrkNHit_       = " << nTrkNHit_       << std::endl;
+//            std::cout    << " nTrkPt_         = " << nTrkPt_         << std::endl;
+//            std::cout    << " nTrkPtError_    = " << nTrkPtError_    << std::endl;
+//            std::cout    << " nTrkEta_        = " << nTrkEta_        << std::endl;
+//            std::cout    << " nTrkNPxLayer_   = " << nTrkNPxLayer_   << std::endl;
+//            std::cout    << " nTrkDCASigXY_   = " << nTrkDCASigXY_   << std::endl;
+//            std::cout    << " nTrkDCASigZ_    = " << nTrkDCASigZ_    << std::endl;
+
             if ( mva > mvaCut_ ) {
+//            std::cout    << " Cent_           = " << Cent_           << std::endl;
+//            std::cout    << " mva             = " << mva             << std::endl;
+//            std::cout    << " mass_           = " << mass_           << std::endl;
                 pV0	->push_back( v0 );
             }
 	}
