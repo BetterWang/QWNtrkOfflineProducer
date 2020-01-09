@@ -33,6 +33,7 @@ private:
 	virtual void produce(edm::Event&, const edm::EventSetup&) override;
 	///
 	bool TrackQuality_ppReco(const reco::TrackCollection::const_iterator&, const reco::Vertex&);
+	bool TrackQuality_ppReco2018(const reco::TrackCollection::const_iterator&, const reco::Vertex&);
 	bool TrackQuality_HIReco(const reco::TrackCollection::const_iterator&, const reco::Vertex&);
 	bool TrackQuality_Pixel(const reco::TrackCollection::const_iterator&, const reco::Vertex&);
 
@@ -41,7 +42,7 @@ private:
 	edm::InputTag	fweight_;
 	edm::InputTag	centralitySrc_;
 
-	enum    TrackCut {trackUndefine = 0, ppReco = 1, HIReco, Pixel};
+	enum    TrackCut {trackUndefine = 0, ppReco = 1, HIReco, Pixel, ppReco2018 };
 	TrackCut sTrackQuality;
 	double  dzdzerror_;
 	double  dzdzerror_pix_;
@@ -57,6 +58,7 @@ private:
 
 	bool	bEff_;
 	bool	bFlip_;
+	int     Year_;
 
 	TH2D*	hEff_cbin[2000];
 };
@@ -83,6 +85,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	chi2_ = pset.getUntrackedParameter<double>("chi2", 12.); // pixel: nominal 12, tight 9, loose 18.,
 
 	bFlip_ = pset.getUntrackedParameter<bool>("bFlip", false);
+	Year_  = pset.getUntrackedParameter<int>("Year", -1);
 
 	bEff_ = true;
 
@@ -90,6 +93,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 		sTrackQuality = HIReco;
 	} else if ( trackSrc_.label() == "generalTracks" ) {
 		sTrackQuality = ppReco;
+        if ( Year_ == 2018 ) sTrackQuality = ppReco2018;
 	} else if ( trackSrc_.label() == "hiGeneralAndPixelTracks" ) {
 		sTrackQuality = Pixel;
 	} else {
@@ -358,6 +362,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		if ( sTrackQuality == HIReco and not TrackQuality_HIReco(itTrack, recoVertices[primaryvtx]) ) continue;
 		else if ( sTrackQuality == ppReco and not TrackQuality_ppReco(itTrack, recoVertices[primaryvtx]) ) continue;
 		else if ( sTrackQuality == Pixel  and not TrackQuality_Pixel (itTrack, recoVertices[primaryvtx]) ) continue;
+		else if ( sTrackQuality == ppReco2018 and not TrackQuality_ppReco2018(itTrack, recoVertices[primaryvtx]) ) continue;
 
 		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 		if (itTrack->hitPattern().pixelLayersWithMeasurement() < minPxLayers_) continue;
@@ -418,26 +423,54 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 bool
 QWEventProducer::TrackQuality_ppReco(const reco::TrackCollection::const_iterator& itTrack, const reco::Vertex& recoVertex)
 {
-        if ( itTrack->charge() == 0 ) return false;
-        if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
-        if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) return false;
+    if ( itTrack->charge() == 0 ) return false;
+    if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
+    if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) return false;
 
-	math::XYZPoint v1( recoVertex.position().x(), recoVertex.position().y(), recoVertex.position().z() );
-	double vxError = recoVertex.xError();
-	double vyError = recoVertex.yError();
-	double vzError = recoVertex.zError();
-	double d0 = -1.* itTrack->dxy(v1);
+    math::XYZPoint v1( recoVertex.position().x(), recoVertex.position().y(), recoVertex.position().z() );
+    double vxError = recoVertex.xError();
+    double vyError = recoVertex.yError();
+    double vzError = recoVertex.zError();
+    double d0 = -1.* itTrack->dxy(v1);
 
-        double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
-        if ( fabs( d0/derror ) > d0d0error_ ) {
-                return false;
-        }
-        double dz=itTrack->dz(v1);
-        double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
-        if ( fabs( dz/dzerror ) > dzdzerror_ ) {
-                return false;
-        }
-        return true;
+    double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
+    if ( fabs( d0/derror ) > d0d0error_ ) {
+        return false;
+    }
+    double dz=itTrack->dz(v1);
+    double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
+    if ( fabs( dz/dzerror ) > dzdzerror_ ) {
+        return false;
+    }
+    return true;
+}
+
+///
+bool
+QWEventProducer::TrackQuality_ppReco2018(const reco::TrackCollection::const_iterator& itTrack, const reco::Vertex& recoVertex)
+{
+    if ( itTrack->charge() == 0 ) return false;
+    if ( !itTrack->quality(reco::TrackBase::highPurity) ) return false;
+    if ( itTrack->ptError()/itTrack->pt() > pterrorpt_ ) return false;
+    if ( itTrack->normalizedChi2() / itTrack->hitPattern().trackerLayersWithMeasurement() > chi2_ ) return false;
+    if ( itTrack->numberOfValidHits() < 11 ) return false;
+
+    math::XYZPoint v1( recoVertex.position().x(), recoVertex.position().y(), recoVertex.position().z() );
+    double vxError = recoVertex.xError();
+    double vyError = recoVertex.yError();
+    double vzError = recoVertex.zError();
+    double d0 = -1.* itTrack->dxy(v1);
+
+    double derror=sqrt(itTrack->dxyError()*itTrack->dxyError()+vxError*vyError);
+    if ( fabs( d0/derror ) > d0d0error_ ) {
+        return false;
+    }
+    double dz=itTrack->dz(v1);
+    double dzerror=sqrt(itTrack->dzError()*itTrack->dzError()+vzError*vzError);
+    if ( fabs( dz/dzerror ) > dzdzerror_ ) {
+        return false;
+    }
+    return true;
 }
 
 ///
