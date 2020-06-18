@@ -5,7 +5,7 @@ from httplib import HTTPException
 
 config = config()
 
-config.General.requestName = 'HIEmptyBX_ZDCDigiTree_run326998-327564_v2'
+config.General.requestName = 'HIEmptyBX_ZDCDigiTree_run326998-327564_v3'
 config.General.workArea = 'CrabArea'
 config.General.transferOutputs = True
 config.General.transferLogs = False

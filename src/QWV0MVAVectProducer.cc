@@ -136,6 +136,7 @@ QWV0MVAVectProducer::QWV0MVAVectProducer(const edm::ParameterSet& pset) :
 	consumes<double>(dbCent_);
 
 	produces<reco::VertexCompositeCandidateCollection>(V0Src_.instance());
+	produces<std::vector<double>>(V0Src_.instance() + "MVA");
 }
 
 QWV0MVAVectProducer::~QWV0MVAVectProducer()
@@ -149,6 +150,7 @@ void QWV0MVAVectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	using namespace reco;
 
 	std::unique_ptr< VertexCompositeCandidateCollection > pV0( new VertexCompositeCandidateCollection );
+    std::unique_ptr< std::vector<double> > pmva( new std::vector<double>());
 
 	edm::ESHandle<TransientTrackBuilder> theB;
 	iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
@@ -342,10 +344,12 @@ void QWV0MVAVectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 //            std::cout    << " mva             = " << mva             << std::endl;
 //            std::cout    << " mass_           = " << mass_           << std::endl;
                 pV0	->push_back( v0 );
+                pmva->push_back( mva );
             }
 	}
 
 	iEvent.put(std::move(pV0), V0Src_.instance());
+	iEvent.put(std::move(pmva), V0Src_.instance() + "MVA");
 }
 
 
