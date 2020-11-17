@@ -48,6 +48,7 @@ private:
 	edm::InputTag	trackSrc_;
 
 	edm::InputTag	V0Src_;
+    bool bAPCut_;
 
 	typedef struct {
 		double	pTmin_;
@@ -118,7 +119,8 @@ private:
 QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc")),
-	V0Src_(pset.getUntrackedParameter<edm::InputTag>("V0Src"))
+	V0Src_(pset.getUntrackedParameter<edm::InputTag>("V0Src")),
+    bAPCut_(pset.getUntrackedParameter<bool>("APCut",  true))
 {
 
 	auto pcuts = pset.getUntrackedParameter< std::vector< edm::ParameterSet > >("cuts");
@@ -508,31 +510,32 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
               or dauLongImpactSig2 < dauDCASig_ or dauTransImpactSig2 < dauDCASig_ ) continue;
 
 
-			double pxd1 = d1->px();
-			double pyd1 = d1->py();
-			double pzd1 = d1->pz();
-			double pd1  = d1->p();
-			double pxd2 = d2->px();
-			double pyd2 = d2->py();
-			double pzd2 = d2->pz();
-			double pd2  = d2->p();
+            if ( bAPCut_ ) {
+                double pxd1 = d1->px();
+                double pyd1 = d1->py();
+                double pzd1 = d1->pz();
+                double pd1  = d1->p();
+                double pxd2 = d2->px();
+                double pyd2 = d2->py();
+                double pzd2 = d2->pz();
+                double pd2  = d2->p();
 
-			TVector3 dauvec1(pxd1,pyd1,pzd1);
-			TVector3 dauvec2(pxd2,pyd2,pzd2);
-			TVector3 dauvecsum(dauvec1+dauvec2);
+                TVector3 dauvec1(pxd1,pyd1,pzd1);
+                TVector3 dauvec2(pxd2,pyd2,pzd2);
+                TVector3 dauvecsum(dauvec1+dauvec2);
 
-			if ( V0Src_.instance() == "Kshort" ) {
-				double v0masspiproton1 = sqrt((sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
-				double v0masspiproton2 = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))-dauvecsum.Mag2());
-				if((v0masspiproton1>=(1.115683-mis_la_range_) && v0masspiproton1<=(1.115683+mis_la_range_)) || (v0masspiproton2>=(1.115683-mis_la_range_) && v0masspiproton2<=(1.115683+mis_la_range_)) ) continue;
-			}
-			if ( V0Src_.instance() == "Lambda" ) {
-				double v0masspipi = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
-				double v0massee = sqrt((sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))*(sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))-dauvecsum.Mag2());
-				if( (v0masspipi>=(0.497614-mis_ks_range_) && v0masspipi<=(0.497614+mis_ks_range_)) || v0massee <= mis_ph_range_ ) continue;
-			}
-
-		} else {
+                if ( V0Src_.instance() == "Kshort" ) {
+                    double v0masspiproton1 = sqrt((sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
+                    double v0masspiproton2 = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))-dauvecsum.Mag2());
+                    if((v0masspiproton1>=(1.115683-mis_la_range_) && v0masspiproton1<=(1.115683+mis_la_range_)) || (v0masspiproton2>=(1.115683-mis_la_range_) && v0masspiproton2<=(1.115683+mis_la_range_)) ) continue;
+                }
+                if ( V0Src_.instance() == "Lambda" ) {
+                    double v0masspipi = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
+                    double v0massee = sqrt((sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))*(sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))-dauvecsum.Mag2());
+                    if( (v0masspipi>=(0.497614-mis_ks_range_) && v0masspipi<=(0.497614+mis_ks_range_)) || v0massee <= mis_ph_range_ ) continue;
+                }
+            }
+        } else {
 			continue;
 		}
 
