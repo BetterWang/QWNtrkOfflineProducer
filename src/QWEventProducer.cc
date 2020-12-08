@@ -284,6 +284,7 @@ QWEventProducer::QWEventProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("vz");
 	produces<std::vector<double> >("Nchi2");
 	produces<std::vector<double> >("Nchi2oNLayers");
+	produces<double>("ptMax");
 }
 
 QWEventProducer::~QWEventProducer()
@@ -308,6 +309,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	auto pvz = std::make_unique<std::vector<double>>();
 	auto pNchi2 = std::make_unique<std::vector<double>>();
 	auto pNchi2oNLayers = std::make_unique<std::vector<double>>();
+    double ptMax = 0.;
 
 	Handle<VertexCollection> vertexCollection;
 	iEvent.getByLabel(vertexSrc_, vertexCollection);
@@ -335,6 +337,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		iEvent.put(std::move(pNchi2oNLayers), std::string("Nchi2oNLayers"));
 		iEvent.put(std::move(pref), std::string("ref"));
 		iEvent.put(std::move(pvz), std::string("vz"));
+		iEvent.put(std::make_unique<double>(ptMax), std::string("ptMax"));
 		return;
 	}
 	pvz->push_back(recoVertices[primaryvtx].z());
@@ -359,8 +362,10 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		else if ( sTrackQuality == ppReco and not TrackQuality_ppReco(itTrack, recoVertices[primaryvtx]) ) continue;
 		else if ( sTrackQuality == Pixel  and not TrackQuality_Pixel (itTrack, recoVertices[primaryvtx]) ) continue;
 
-		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ or itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 		if (itTrack->hitPattern().pixelLayersWithMeasurement() < minPxLayers_) continue;
+		if ( itTrack->eta() > Etamax_ or itTrack->eta() < Etamin_ ) continue;
+        if ( itTrack->pt() > ptMax ) ptMax = itTrack->pt();
+        if ( itTrack->pt() > pTmax_ or itTrack->pt() < pTmin_ ) continue;
 
 //		if (theMagneticField) {
 //			reco::TransientTrack tTrack(*itTrack, theMagneticField);
@@ -381,6 +386,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		} else {
 			weight = 0.;
 		}
+
 
 		pphi->push_back(itTrack->phi());
 		ppT->push_back(itTrack->pt());
@@ -411,6 +417,7 @@ void QWEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(std::move(pNchi2oNLayers), std::string("Nchi2oNLayers"));
 	iEvent.put(std::move(pref), std::string("ref"));
 	iEvent.put(std::move(pvz), std::string("vz"));
+	iEvent.put(std::make_unique<double>(ptMax), std::string("ptMax"));
 }
 
 
