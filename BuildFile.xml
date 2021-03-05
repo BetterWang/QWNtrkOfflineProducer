@@ -24,5 +24,6 @@
 <use name="CalibFormats/HcalObjects"/>
 <use name="DQMServices/Core"/>
 <use name="SimDataFormats/TrackingAnalysis"/>
+<use name="DataFormats/HeavyIonEvent"/>
 <flags EDM_PLUGIN="1"/>
 <library   file="src/*.cc" name="QWNtrkOffline"/>
