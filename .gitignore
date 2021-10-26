@@ -10,3 +10,7 @@ run2018/*
 !run2018/*.txt
 !run2018/*.sh
 !run2018/macro
+run2021/*
+!run2021/*.py
+!run2021/*.txt
+!run2021/*.sh

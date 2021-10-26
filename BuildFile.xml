@@ -22,6 +22,7 @@
 <use name="SimDataFormats/GeneratorProducts"/>
 <use name="TrackingTools/IPTools"/>
 <use name="CalibFormats/HcalObjects"/>
+<use name="TrackingTools/Records"/>
 <use name="DQMServices/Core"/>
 <flags EDM_PLUGIN="1"/>
 <library   file="src/*.cc" name="QWNtrkOffline"/>
