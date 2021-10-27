@@ -164,7 +164,7 @@ else:
 #-----------
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = ''
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+#process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
     SkipEvent = cms.untracked.vstring('ProductNotFound')
@@ -244,18 +244,46 @@ process.tree = cms.EDAnalyzer('QWTreeMaker',
             name = cms.untracked.string('CapId')
             ),
         ),
-        Dtags = cms.untracked.VPSet()
+    Dtags = cms.untracked.VPSet(
+        cms.PSet(
+            tag = cms.untracked.InputTag('QWInfo', 'BX'),
+            name = cms.untracked.string('BX')
+            ),
+        cms.PSet(
+            tag = cms.untracked.InputTag('QWInfo', 'Lumi'),
+            name = cms.untracked.string('Lumi')
+            ),
+        )
     )
+
+# event info
+process.QWInfo = cms.EDProducer('QWEventInfoProducer')
+
+#process.QWBXTask = DQMEDAnalyzer('QWZDC2018BXTask',
+#    srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
+#    srcDid = cms.untracked.InputTag('zdcdigi', 'DetId'),
+#    BX = cms.untracked.InputTag('QWInfo', 'BX'),
+#    SOI = cms.untracked.int32(1),
+#    BXShift = cms.untracked.int32(0),
+#    )
+#
+
+process.zdcBX = cms.EDAnalyzer('QWZDC2018BXAnalyzer',
+		BX = cms.untracked.InputTag('QWInfo', 'BX'),
+		srcfC = cms.untracked.InputTag('zdcdigi', 'regularfC'),
+		srcDetId = cms.untracked.InputTag('zdcdigi', 'DetId'),
+		SOI = cms.untracked.int32(4)
+		)
 
 process.digiPath = cms.Path(
     process.hltSelect *
     process.digis *
     process.zdcdigi *
-    process.zdcADCFilter *
-#    process.QWInfo *
-#    process.zdcBX *
+#    process.zdcADCFilter *
+    process.QWInfo *
+    process.zdcBX *
 #    process.zdccalibana *
-#    process.tree *
+    process.tree *
     process.zdcana
 )
 
