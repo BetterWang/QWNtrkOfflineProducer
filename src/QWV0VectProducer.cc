@@ -48,6 +48,7 @@ private:
 	edm::InputTag	trackSrc_;
 
 	edm::InputTag	V0Src_;
+    bool bAPCut_;
 
 	typedef struct {
 		double	pTmin_;
@@ -56,6 +57,8 @@ private:
 		double	Etamax_;
 		double	Rapmin_;
 		double	Rapmax_;
+		double	AbsRapmin_;
+		double	AbsRapmax_;
 		double	Massmin_;
 		double	Massmax_;
 
@@ -116,7 +119,8 @@ private:
 QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	vertexSrc_(pset.getUntrackedParameter<edm::InputTag>("vertexSrc")),
 	trackSrc_(pset.getUntrackedParameter<edm::InputTag>("trackSrc")),
-	V0Src_(pset.getUntrackedParameter<edm::InputTag>("V0Src"))
+	V0Src_(pset.getUntrackedParameter<edm::InputTag>("V0Src")),
+    bAPCut_(pset.getUntrackedParameter<bool>("APCut",  true))
 {
 
 	auto pcuts = pset.getUntrackedParameter< std::vector< edm::ParameterSet > >("cuts");
@@ -129,6 +133,8 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 		cut.Etamax_ = pcut.getUntrackedParameter<double>("Etamax", 2.4);
 		cut.Rapmin_ = pcut.getUntrackedParameter<double>("Rapmin", -3.0);
 		cut.Rapmax_ = pcut.getUntrackedParameter<double>("Rapmax", 3.0);
+		cut.AbsRapmin_ = pcut.getUntrackedParameter<double>("AbsRapmin", -1.0);
+		cut.AbsRapmax_ = pcut.getUntrackedParameter<double>("AbsRapmax", 3.0);
 		cut.Massmin_ = pcut.getUntrackedParameter<double>("Massmin", 0.);
 		cut.Massmax_ = pcut.getUntrackedParameter<double>("Massmax", 1000);
 
@@ -251,7 +257,7 @@ QWV0VectProducer::QWV0VectProducer(const edm::ParameterSet& pset) :
 	produces<std::vector<double> >("nTrkDCASigXY");
 	produces<std::vector<double> >("nTrkDCASigZ");
 
-	produces<reco::VertexCompositeCandidateCollection>();
+	produces<reco::VertexCompositeCandidateCollection>(V0Src_.instance());
 }
 
 QWV0VectProducer::~QWV0VectProducer()
@@ -409,7 +415,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.put(std::move(pnTrkDCASigXY), std::string("nTrkDCASigXY"));
 		iEvent.put(std::move(pnTrkDCASigZ),  std::string("nTrkDCASigZ"));
 
-		iEvent.put(std::move(pV0));
+		iEvent.put(std::move(pV0), std::string(V0Src_.instance()));
 		return;
 	}
 
@@ -504,31 +510,32 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
               or dauLongImpactSig2 < dauDCASig_ or dauTransImpactSig2 < dauDCASig_ ) continue;
 
 
-			double pxd1 = d1->px();
-			double pyd1 = d1->py();
-			double pzd1 = d1->pz();
-			double pd1  = d1->p();
-			double pxd2 = d2->px();
-			double pyd2 = d2->py();
-			double pzd2 = d2->pz();
-			double pd2  = d2->p();
+            if ( bAPCut_ ) {
+                double pxd1 = d1->px();
+                double pyd1 = d1->py();
+                double pzd1 = d1->pz();
+                double pd1  = d1->p();
+                double pxd2 = d2->px();
+                double pyd2 = d2->py();
+                double pzd2 = d2->pz();
+                double pd2  = d2->p();
 
-			TVector3 dauvec1(pxd1,pyd1,pzd1);
-			TVector3 dauvec2(pxd2,pyd2,pzd2);
-			TVector3 dauvecsum(dauvec1+dauvec2);
+                TVector3 dauvec1(pxd1,pyd1,pzd1);
+                TVector3 dauvec2(pxd2,pyd2,pzd2);
+                TVector3 dauvecsum(dauvec1+dauvec2);
 
-			if ( V0Src_.instance() == "Kshort" ) {
-				double v0masspiproton1 = sqrt((sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
-				double v0masspiproton2 = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))-dauvecsum.Mag2());
-				if((v0masspiproton1>=(1.115683-mis_la_range_) && v0masspiproton1<=(1.115683+mis_la_range_)) || (v0masspiproton2>=(1.115683-mis_la_range_) && v0masspiproton2<=(1.115683+mis_la_range_)) ) continue;
-			}
-			if ( V0Src_.instance() == "Lambda" ) {
-				double v0masspipi = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
-				double v0massee = sqrt((sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))*(sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))-dauvecsum.Mag2());
-				if( (v0masspipi>=(0.497614-mis_ks_range_) && v0masspipi<=(0.497614+mis_ks_range_)) || v0massee <= mis_ph_range_ ) continue;
-			}
-
-		} else {
+                if ( V0Src_.instance() == "Kshort" ) {
+                    double v0masspiproton1 = sqrt((sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.93827*0.93827+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
+                    double v0masspiproton2 = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.93827*0.93827+pd2*pd2))-dauvecsum.Mag2());
+                    if((v0masspiproton1>=(1.115683-mis_la_range_) && v0masspiproton1<=(1.115683+mis_la_range_)) || (v0masspiproton2>=(1.115683-mis_la_range_) && v0masspiproton2<=(1.115683+mis_la_range_)) ) continue;
+                }
+                if ( V0Src_.instance() == "Lambda" ) {
+                    double v0masspipi = sqrt((sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))*(sqrt(0.13957*0.13957+pd1*pd1)+sqrt(0.13957*0.13957+pd2*pd2))-dauvecsum.Mag2());
+                    double v0massee = sqrt((sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))*(sqrt(0.000511*0.000511+pd1*pd1)+sqrt(0.000511*0.000511+pd2*pd2))-dauvecsum.Mag2());
+                    if( (v0masspipi>=(0.497614-mis_ks_range_) && v0masspipi<=(0.497614+mis_ks_range_)) || v0massee <= mis_ph_range_ ) continue;
+                }
+            }
+        } else {
 			continue;
 		}
 
@@ -540,6 +547,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 			if ( pt > cut.pTmax_ or pt < cut.pTmin_ ) continue;
 			if ( eta > cut.Etamax_ or eta < cut.Etamin_ ) continue;
 			if ( rapidity > cut.Rapmax_ or rapidity < cut.Rapmin_ ) continue;
+			if ( fabs(rapidity) > cut.AbsRapmax_ or fabs(rapidity) < cut.AbsRapmin_ ) continue;
 			if ( mass > cut.Massmax_ or mass < cut.Massmin_ ) continue;
 
 			if ( Chi2 > cut.Chi2max_ or Chi2 < cut.Chi2min_ ) continue;
@@ -755,7 +763,7 @@ void QWV0VectProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
     iEvent.put(std::move(pnTrkDCASigXY), std::string("nTrkDCASigXY"));
     iEvent.put(std::move(pnTrkDCASigZ),  std::string("nTrkDCASigZ"));
 
-	iEvent.put(std::move(pV0));
+	iEvent.put(std::move(pV0), std::string(V0Src_.instance()));
 }
 
 
