@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -17,7 +17,7 @@
 #include <complex>
 #include <TMath.h>
 
-class QWCaloQProducer : public edm::EDProducer {
+class QWCaloQProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWCaloQProducer(const edm::ParameterSet&);
 	~QWCaloQProducer();

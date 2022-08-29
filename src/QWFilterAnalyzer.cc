@@ -7,7 +7,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/stream/EDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -28,7 +28,7 @@ using namespace std;
 // class declaration
 //
 
-class QWFilterAnalyzer : public edm::EDAnalyzer {
+class QWFilterAnalyzer : public edm::stream::EDAnalyzer<> {
 public:
   explicit QWFilterAnalyzer(const edm::ParameterSet&);
   ~QWFilterAnalyzer();

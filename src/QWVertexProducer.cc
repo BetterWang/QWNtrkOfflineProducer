@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -24,7 +24,7 @@
 #include "TMath.h"
 
 using namespace std;
-class QWVertexProducer : public edm::EDProducer {
+class QWVertexProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWVertexProducer(const edm::ParameterSet&);
 	~QWVertexProducer();

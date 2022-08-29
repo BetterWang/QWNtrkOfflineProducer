@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -15,7 +15,7 @@
 #include "iostream"
 
 using namespace std;
-class QWXeXeB2CentProducer : public edm::EDProducer {
+class QWXeXeB2CentProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWXeXeB2CentProducer(const edm::ParameterSet&);
 	~QWXeXeB2CentProducer();

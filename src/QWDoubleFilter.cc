@@ -1,11 +1,11 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDFilter.h"
+#include "FWCore/Framework/interface/stream/EDFilter.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "iostream"
 
-class QWDoubleFilter : public edm::EDFilter {
+class QWDoubleFilter : public edm::stream::EDFilter<> {
 public:
 	explicit QWDoubleFilter(const edm::ParameterSet&);
 	~QWDoubleFilter() {return;}

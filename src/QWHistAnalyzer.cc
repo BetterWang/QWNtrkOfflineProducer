@@ -1,4 +1,4 @@
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/stream/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Utilities/interface/InputTag.h"
@@ -7,7 +7,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1D.h"
 
-class QWHistAnalyzer : public edm::EDAnalyzer {
+class QWHistAnalyzer : public edm::stream::EDAnalyzer<> {
 public:
 	explicit QWHistAnalyzer(const edm::ParameterSet&);
 	~QWHistAnalyzer() {};

@@ -1,4 +1,4 @@
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/stream/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Utilities/interface/InputTag.h"
@@ -8,7 +8,7 @@
 #include "TH1D.h"
 #include <iostream>
 
-class QWVectorAnalyzer : public edm::EDAnalyzer {
+class QWVectorAnalyzer : public edm::stream::EDAnalyzer<> {
 public:
 	explicit QWVectorAnalyzer(const edm::ParameterSet&);
 	~QWVectorAnalyzer() {};

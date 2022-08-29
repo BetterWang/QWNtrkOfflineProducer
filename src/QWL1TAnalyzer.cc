@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/stream/EDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
@@ -22,7 +22,7 @@
 #include <TTree.h>
 
 using namespace std;
-class QWL1TAnalyzer : public edm::EDAnalyzer {
+class QWL1TAnalyzer : public edm::stream::EDAnalyzer<> {
 public:
 	explicit QWL1TAnalyzer(const edm::ParameterSet&);
 	~QWL1TAnalyzer();

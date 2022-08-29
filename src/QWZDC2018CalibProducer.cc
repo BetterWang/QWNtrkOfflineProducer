@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
@@ -14,7 +14,7 @@
 #include "iostream"
 
 using namespace std;
-class QWZDC2018CalibProducer : public edm::EDProducer {
+class QWZDC2018CalibProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWZDC2018CalibProducer(const edm::ParameterSet&);
 	~QWZDC2018CalibProducer();

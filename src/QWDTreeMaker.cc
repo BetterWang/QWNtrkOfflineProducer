@@ -1,4 +1,4 @@
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/stream/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Utilities/interface/InputTag.h"
@@ -13,7 +13,7 @@
 #include "vector"
 
 
-class QWDTreeMaker : public edm::EDAnalyzer {
+class QWDTreeMaker : public edm::stream::EDAnalyzer<> {
 public:
 	explicit QWDTreeMaker(const edm::ParameterSet&);
 	~QWDTreeMaker() {};

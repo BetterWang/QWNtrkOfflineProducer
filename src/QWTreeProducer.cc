@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -18,7 +18,7 @@
 #include "TMath.h"
 
 using namespace std;
-class QWTreeProducer : public edm::EDProducer {
+class QWTreeProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWTreeProducer(const edm::ParameterSet&);
 	~QWTreeProducer();

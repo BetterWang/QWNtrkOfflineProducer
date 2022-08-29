@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -35,7 +35,7 @@ typedef ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SMa
 typedef ROOT::Math::SVector<double, 3> SVector3;
 
 using namespace std;
-class QWV0VectProducer : public edm::EDProducer {
+class QWV0VectProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWV0VectProducer(const edm::ParameterSet&);
 	~QWV0VectProducer();

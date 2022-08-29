@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -16,7 +16,7 @@
 #include <algorithm>
 
 using namespace std;
-class QWGenEventProducer : public edm::EDProducer {
+class QWGenEventProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWGenEventProducer(const edm::ParameterSet&);
 	~QWGenEventProducer();

@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -17,7 +17,7 @@
 #include "TMath.h"
 
 using namespace std;
-class QWVectorSelector : public edm::EDProducer {
+class QWVectorSelector : public edm::stream::EDProducer<> {
 public:
 	explicit QWVectorSelector(const edm::ParameterSet&);
 	~QWVectorSelector();

@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -14,7 +14,7 @@
 #include "TMath.h"
 
 using namespace std;
-class QWInt2Double : public edm::EDProducer {
+class QWInt2Double : public edm::stream::EDProducer<> {
 public:
 	explicit QWInt2Double(const edm::ParameterSet&);
 	~QWInt2Double();

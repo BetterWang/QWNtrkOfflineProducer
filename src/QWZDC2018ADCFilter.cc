@@ -1,12 +1,12 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDFilter.h"
+#include "FWCore/Framework/interface/stream/EDFilter.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/HcalDetId/interface/HcalZDCDetId.h"
 #include "iostream"
 
-class QWZDC2018ADCFilter : public edm::EDFilter {
+class QWZDC2018ADCFilter : public edm::stream::EDFilter<> {
 public:
 	explicit QWZDC2018ADCFilter(const edm::ParameterSet&);
 	~QWZDC2018ADCFilter() {return;}

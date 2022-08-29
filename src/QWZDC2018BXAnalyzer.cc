@@ -15,7 +15,7 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/stream/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "CalibFormats/HcalObjects/interface/HcalCoderDb.h"
@@ -24,7 +24,7 @@
 #include "CalibCalorimetry/HcalAlgos/interface/HcalPulseShapes.h"
 #include "DataFormats/HcalDigi/interface/HcalDigiCollections.h"
 
-class QWZDC2018BXAnalyzer : public edm::EDAnalyzer {
+class QWZDC2018BXAnalyzer : public edm::stream::EDAnalyzer<> {
 	public:
 		QWZDC2018BXAnalyzer(edm::ParameterSet const&);
 		~QWZDC2018BXAnalyzer() override{}

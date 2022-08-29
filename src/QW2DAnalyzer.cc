@@ -1,4 +1,4 @@
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/stream/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Utilities/interface/InputTag.h"
@@ -11,7 +11,7 @@
 #include <iostream>
 #include <tuple>
 
-class QW2DAnalyzer : public edm::EDAnalyzer {
+class QW2DAnalyzer : public edm::stream::EDAnalyzer<> {
 public:
 	explicit QW2DAnalyzer(const edm::ParameterSet&);
 	~QW2DAnalyzer() {};

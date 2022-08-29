@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
@@ -22,7 +22,7 @@
 
 
 using namespace std;
-class QWZDCProducer : public edm::EDProducer {
+class QWZDCProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWZDCProducer(const edm::ParameterSet&);
 	~QWZDCProducer();

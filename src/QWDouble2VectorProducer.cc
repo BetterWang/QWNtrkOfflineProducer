@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -12,7 +12,7 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-class QWDouble2VectorProducer : public edm::EDProducer {
+class QWDouble2VectorProducer : public edm::stream::EDProducer<> {
 public:
 	explicit QWDouble2VectorProducer(const edm::ParameterSet&);
 	~QWDouble2VectorProducer();

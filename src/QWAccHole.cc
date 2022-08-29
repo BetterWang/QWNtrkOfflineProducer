@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -15,7 +15,7 @@
 #include "TRandom.h"
 
 using namespace std;
-class QWAccHole : public edm::EDProducer {
+class QWAccHole : public edm::stream::EDProducer<> {
 public:
 	explicit QWAccHole(const edm::ParameterSet&);
 	~QWAccHole();

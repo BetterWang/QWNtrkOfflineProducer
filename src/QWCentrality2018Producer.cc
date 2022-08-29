@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
@@ -15,7 +15,7 @@
 
 
 using namespace std;
-class QWCentrality2018Producer : public edm::EDProducer {
+class QWCentrality2018Producer : public edm::stream::EDProducer<> {
 public:
 	explicit QWCentrality2018Producer(const edm::ParameterSet&);
 	~QWCentrality2018Producer();

@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
@@ -21,7 +21,7 @@
 #include "boost/bimap.hpp"
 
 using namespace std;
-class QWZDC2018Producer : public edm::EDProducer {
+class QWZDC2018Producer : public edm::stream::EDProducer<> {
 public:
 	explicit QWZDC2018Producer(const edm::ParameterSet&);
 	~QWZDC2018Producer();

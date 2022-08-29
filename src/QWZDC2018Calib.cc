@@ -1,4 +1,4 @@
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/stream/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Utilities/interface/InputTag.h"
@@ -9,7 +9,7 @@
 #include "TProfile.h"
 #include <iostream>
 
-class QWZDC2018Calib : public edm::EDAnalyzer {
+class QWZDC2018Calib : public edm::stream::EDAnalyzer<> {
 public:
 	explicit QWZDC2018Calib(const edm::ParameterSet&);
 	~QWZDC2018Calib() {};
